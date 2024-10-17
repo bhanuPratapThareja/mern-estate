@@ -14,9 +14,9 @@ app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 
 app.use((err, req, res, next) => {
-  console.log("reached general err handler: ", err);
-  res.status(400);
-  next()
+  const statusCode = err.statusCode || 500
+  const message = err.message || 'Internal Server Error'
+  return res.status(statusCode).json({ statusCode, message })
 });
 
 mongoose
