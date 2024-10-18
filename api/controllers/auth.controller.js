@@ -1,8 +1,9 @@
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from 'uuid';
+
 import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
-import mongoose from "mongoose";
 
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
@@ -51,8 +52,8 @@ export const signin = async (req, res, next) => {
     if (!passwordsMatch) {
       return next(errorHandler(401, "Invalid credentials!"));
     }
-    const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET);
 
+    const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET);
     const userWithId = existingUser.toObject({ getters: true })
     const { password: pass, ...userInfo } = userWithId
 
@@ -64,3 +65,47 @@ export const signin = async (req, res, next) => {
     return next(error);
   }
 };
+
+export const google = async (req, res, next) => {
+  try {
+    const existingUser = await User.findOne({ email: req.body.email })
+    
+    if(existingUser) {
+
+      const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET);
+      const userWithId = existingUser.toObject({ getters: true })
+      const { password: pass, ...userInfo } = userWithId
+
+      res
+        .cookie("access_token", token, { httpOnly: true })
+        .status(200)
+        .json({ user: userInfo });
+    } else {
+      const generatedPassword = uuidv4();
+      const hashedPassword = bcryptjs.hashSync(generatedPassword, 10)
+
+      const newUser = new User({
+        username: req.body.displayName.split(' ').join('') + '###' + uuidv4(),
+        email: req.body.email,
+        password: hashedPassword,
+        avatar: req.body.photoURL
+      })
+
+      try {
+        await newUser.save()
+        const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+        const userWithId = newUser.toObject({ getters: true })
+        const { password: pass, ...userInfo } = userWithId
+
+        res
+          .cookie("access_token", token, { httpOnly: true })
+          .status(200)
+          .json({ user: userInfo });
+      } catch (error) {
+        return next(error)
+      }
+    }
+  } catch (error) {
+    return next(error)
+  }
+}

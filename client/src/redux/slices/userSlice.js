@@ -9,7 +9,11 @@ const userSlice = createSlice({
         error: null,
         loading: false
     },
-    reducers: {},
+    reducers: {
+        addSignedInUser(state, action) {
+            state.user = action.payload.user
+        }
+    },
     extraReducers(builder) {
         builder
             .addCase(signInUser.pending, (state) => {
