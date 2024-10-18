@@ -1,6 +1,8 @@
-import { useState, useReducer } from 'react'
+import { useReducer } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from "react-router-dom";
-import axios from 'axios'
+
+import { signInUser } from '../redux/actions/userActions';
 
 const INITIAL_STATE = {
   formData: {
@@ -30,35 +32,31 @@ const reducer = (state, action) => {
 }
 
 export default function SignIn() {
-  const [formStata, dispatch] = useReducer(reducer, INITIAL_STATE)
-  const [loading, setLoading] = useState(false)
+  const [formStata, dispatchFunction] = useReducer(reducer, INITIAL_STATE)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const loading = useSelector(({ user }) => user.loading)
 
   const handleChange = e => {
     const payload = {
       name: e.target.name,
       value: e.target.value
     }
-    dispatch({ type: 'INPUT_CHANGE', payload })
+    dispatchFunction({ type: 'INPUT_CHANGE', payload })
   }
 
   const handleSubmit = async e => {
     e.preventDefault()
-    setLoading(true)
 
     const data = {
       email: formStata.formData.email.value,
       password: formStata.formData.password.value
     }
 
-    try {
-      await axios.post('/api/auth/signin', data)
-      navigate('/')
-    } catch (error) {
-
-    } finally {
-      setLoading(false)
-    }
+    dispatch(signInUser(data))
+      .unwrap()
+      .then(() => navigate('/'))
   }
 
   return (
@@ -96,7 +94,7 @@ export default function SignIn() {
           <span className="text-blue-700">Sign in</span>
         </Link>
       </div>
-      {error && <p className='text-red-500 mt-5'>{error}</p>}
+      {/* {error && <p className='text-red-500 mt-5'>{error}</p>} */}
     </div>
   );
 }

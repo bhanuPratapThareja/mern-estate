@@ -26,7 +26,6 @@ export const signup = async (req, res, next) => {
     res
       .status(201)
       .json({
-        user: newUser.toObject({ getters: true }),
         message: "User Created Successfully!",
       });
   } catch (error) {

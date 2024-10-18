@@ -1,26 +1,64 @@
-import { useState } from 'react'
+import { useState, useReducer } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios'
 
+const INITIAL_STATE = {
+  formData: {
+    username: {
+      value: '',
+      error: ''
+    },
+    email: {
+      value: '',
+      error: ''
+    },
+    password: {
+      value: '',
+      error: ''
+    }
+  },
+  formError: null,
+  loading: false
+}
+
+const reducer = (state, action) => {
+  const { name, value } = action.payload
+  const newFormState = { ...state }
+  switch (action.type) {
+    case 'INPUT_CHANGE':
+      newFormState['formData'][name].value = value
+      return newFormState
+    default:
+      return state
+  }
+}
+
 export default function SignUp() {
-  const [formData, setFormData] = useState({})
-  const [error, setError] = useState(null)
+  const [formState, dispatch] = useReducer(reducer, INITIAL_STATE)
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
   const handleChange = e => {
-    setFormData({ ...formData, [e.target.name]: e.target.value})
+    const payload = { name: e.target.name, value: e.target.value }
+    dispatch({ type: 'INPUT_CHANGE', payload })
   }
 
   const handleSubmit = async e => {
     e.preventDefault()
     setLoading(true)
-    setError(null)
+
+    const data = {
+      username: formState.formData.username.value,
+      email: formState.formData.email.value,
+      password: formState.formData.password.value
+    }
+
     try {
-      await axios.post('/api/auth/signup', formData)
+      await axios.post('/api/auth/signup', data)
+      
       navigate('/sign-in')
     } catch (error) {
-      setError(error.response.data.message)
+
     } finally {
       setLoading(false)
     }
@@ -36,6 +74,7 @@ export default function SignUp() {
           className="border p-3 rounded-lg"
           id="userName"
           name="username"
+          value={formState.formData.username.value}
           onChange={handleChange}
         />
         <input
@@ -44,6 +83,7 @@ export default function SignUp() {
           className="border p-3 rounded-lg"
           id="email"
           name="email"
+          value={formState.formData.email.value}
           onChange={handleChange}
         />
         <input
@@ -52,6 +92,7 @@ export default function SignUp() {
           className="border p-3 rounded-lg"
           id="password"
           name="password"
+          value={formState.formData.password.value}
           onChange={handleChange}
         />
         <button type='submit' disabled={loading} className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-70">
@@ -61,10 +102,10 @@ export default function SignUp() {
       <div className="flex gap-2 mt-5">
         <p>Have an account?</p>
         <Link to="/sign-in">
-          <span className="text-blue-700">Sign in</span>
+          <span className="text-blue-700">Sign In</span>
         </Link>
       </div>
-      {error && <p className='text-red-500 mt-5'>{error}</p>}
+      {/* {error && <p className='text-red-500 mt-5'>{error}</p>} */}
     </div>
   );
 }
