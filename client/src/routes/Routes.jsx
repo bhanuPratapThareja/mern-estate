@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 
 import RootLayout from '../layouts/RootLayout'
-import PrivateRoute from '../routes/PrivateRoute'
+import PrivateRoutes from '../routes/PrivateRoutes'
 
 import Home from '../pages/Home'
 import Signin from '../pages/SignIn'
@@ -31,7 +31,7 @@ export const router = createBrowserRouter([
                 element: <About />
             },
             {
-                element: <PrivateRoute />,
+                element: <PrivateRoutes />,
                 children: [
                     {
                         path: '/profile',
