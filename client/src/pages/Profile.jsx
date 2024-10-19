@@ -1,7 +1,7 @@
-import React from 'react'
-
-export default function Profile() {
+export default function () {
   return (
-    <div>Profile</div>
+    <div>
+      
+    </div>
   )
 }

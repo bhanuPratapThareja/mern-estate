@@ -5,13 +5,13 @@ import { signInUser } from "../actions/userActions";
 const userSlice = createSlice({
     name: 'user',
     initialState: {
-        user: null,
+        currentUser: null,
         error: null,
         loading: false
     },
     reducers: {
         addSignedInUser(state, action) {
-            state.user = action.payload.user
+            state.currentUser = action.payload.user
         }
     },
     extraReducers(builder) {
@@ -22,7 +22,7 @@ const userSlice = createSlice({
             })
             .addCase(signInUser.fulfilled, (state, action) => {
                 state.loading = false
-                state.user = action.payload.user
+                state.currentUser = action.payload.user
             })
             .addCase(signInUser.rejected, (state, action) => {
                 state.loading = false

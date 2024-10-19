@@ -37,7 +37,7 @@ export default function SignIn() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const loading = useSelector(({ user }) => user.loading)
+  const { loading } = useSelector(state => state.user)
 
   const handleChange = e => {
     const payload = {

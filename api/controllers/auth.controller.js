@@ -37,10 +37,9 @@ export const signup = async (req, res, next) => {
 export const signin = async (req, res, next) => {
   const { email, password } = req.body;
 
-  let existingUser;
-
   try {
-    existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email });
+    
     if (!existingUser) {
       return next(errorHandler(404, "User not found!"));
     }
@@ -49,19 +48,20 @@ export const signin = async (req, res, next) => {
       password,
       existingUser.password
     );
+    
     if (!passwordsMatch) {
       return next(errorHandler(401, "Invalid credentials!"));
     }
 
     const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET);
-    const userWithId = existingUser.toObject({ getters: true })
-    const { password: pass, ...userInfo } = userWithId
+    const { password: pass, __v, _id, ...userInfo } = existingUser.toObject({ getters: true })
 
     res
       .cookie("access_token", token, { httpOnly: true })
       .status(200)
       .json({ user: userInfo });
   } catch (error) {
+    console.log('signin error: ', error)
     return next(error);
   }
 };
@@ -71,10 +71,8 @@ export const google = async (req, res, next) => {
     const existingUser = await User.findOne({ email: req.body.email })
     
     if(existingUser) {
-
       const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET);
-      const userWithId = existingUser.toObject({ getters: true })
-      const { password: pass, ...userInfo } = userWithId
+      const { password: pass, ...userInfo } = existingUser.toObject({ getters: true })
 
       res
         .cookie("access_token", token, { httpOnly: true })
@@ -94,8 +92,7 @@ export const google = async (req, res, next) => {
       try {
         await newUser.save()
         const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
-        const userWithId = newUser.toObject({ getters: true })
-        const { password: pass, ...userInfo } = userWithId
+        const { password: pass, ...userInfo } = newUser.toObject({ getters: true })
 
         res
           .cookie("access_token", token, { httpOnly: true })
