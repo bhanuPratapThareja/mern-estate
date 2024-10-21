@@ -54,10 +54,11 @@ export const signin = async (req, res, next) => {
     }
 
     const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET);
+    console.log('existingUser:: ', existingUser)
     const { password: pass, __v, _id, ...userInfo } = existingUser.toObject({ getters: true })
 
     res
-      .cookie("access_token", token, { httpOnly: true })
+      .cookie("access_token", token)
       .status(200)
       .json({ user: userInfo });
   } catch (error) {
@@ -75,7 +76,7 @@ export const google = async (req, res, next) => {
       const { password: pass, ...userInfo } = existingUser.toObject({ getters: true })
 
       res
-        .cookie("access_token", token, { httpOnly: true })
+        .cookie("access_token", token)
         .status(200)
         .json({ user: userInfo });
     } else {
@@ -95,7 +96,7 @@ export const google = async (req, res, next) => {
         const { password: pass, ...userInfo } = newUser.toObject({ getters: true })
 
         res
-          .cookie("access_token", token, { httpOnly: true })
+          .cookie("access_token", token)
           .status(200)
           .json({ user: userInfo });
       } catch (error) {

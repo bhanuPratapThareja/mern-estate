@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
 import { useSelector } from "react-redux"
+import axios from 'axios'
 import useImageUpload from '../hooks/useImageUpload'
 
 export default function () {
@@ -24,7 +25,9 @@ export default function () {
 
   const onHandleUpdate = e => {
     e.preventDefault()
-
+    axios.post('/api/user/update/6711f86f92d22fd34dd6b981', formData)
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
   }
 
   return (

@@ -18,11 +18,14 @@ export default function useImageUpload() {
             setImageUploadProgress(Math.round(progress))
         }, err => {
         console.log('hook upload avatar err: ', err)
-        setImageUploadError(true)
+            setImageUploadError(err)
         }, () => {
         getDownloadURL(uploadTask.snapshot.ref)
             .then(downloadUrl => {
                 setImageUrl(downloadUrl)
+            })
+            .catch(err => {
+                setImageUploadError(err)
             })
         })
     }
