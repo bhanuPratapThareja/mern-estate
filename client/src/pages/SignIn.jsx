@@ -6,15 +6,13 @@ import { signInUser } from '../redux/actions/userActions';
 import OAuth from '../components/OAuth';
 
 const INITIAL_STATE = {
-  formData: {
-    email: {
-      value: '',
-      error: ''
-    },
-    password: {
-      value: '',
-      error: ''
-    }
+  email: {
+    value: '',
+    error: ''
+  },
+  password: {
+    value: '',
+    error: ''
   },
   formError: null,
   loading: false
@@ -25,7 +23,7 @@ const reducer = (state, action) => {
   const newFormState = { ...state }
   switch (action.type) {
     case 'INPUT_CHANGE':
-      newFormState['formData'][name].value = value
+      newFormState[name].value = value
       return newFormState
     default:
       return state
@@ -33,17 +31,15 @@ const reducer = (state, action) => {
 }
 
 export default function SignIn() {
-  const [formStata, dispatchFunction] = useReducer(reducer, INITIAL_STATE)
+  const [formState, dispatchFunction] = useReducer(reducer, INITIAL_STATE)
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
   const { loading } = useSelector(state => state.user)
 
   const handleChange = e => {
-    const payload = {
-      name: e.target.name,
-      value: e.target.value
-    }
+    const { name, value } = e.target
+    const payload = { name, value }
     dispatchFunction({ type: 'INPUT_CHANGE', payload })
   }
 
@@ -51,10 +47,10 @@ export default function SignIn() {
     e.preventDefault()
 
     const data = {
-      email: formStata.formData.email.value,
-      password: formStata.formData.password.value
+      email: formState.email.value,
+      password: formState.password.value
     }
-
+    
     dispatch(signInUser(data))
       .unwrap()
       .then(() => navigate('/'))
@@ -70,7 +66,7 @@ export default function SignIn() {
           className="border p-3 rounded-lg"
           id="email"
           name="email"
-          value={formStata.formData.email.value}
+          value={formState.email.value}
           onChange={handleChange}
         />
         <input
@@ -79,14 +75,16 @@ export default function SignIn() {
           className="border p-3 rounded-lg"
           id="password"
           name="password"
-          value={formStata.formData.password.value}
+          value={formState.password.value}
           onChange={handleChange}
         />
         <button type='submit' className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-70">
           {loading ? 'Loading...' : 'Sign In'}
         </button>
+        
         <OAuth />
       </form>
+
       <div className="flex gap-2 mt-5">
         <p>Dont have an account?</p>
         <Link to="/sign-up">

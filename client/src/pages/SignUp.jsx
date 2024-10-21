@@ -3,20 +3,18 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios'
 import OAuth from '../components/OAuth';
 
-const INITIAL_STATE = {
-  formData: {
-    username: {
-      value: '',
-      error: ''
-    },
-    email: {
-      value: '',
-      error: ''
-    },
-    password: {
-      value: '',
-      error: ''
-    }
+const INITIAL_FORM_STATE = {
+  username: {
+    value: '',
+    error: ''
+  },
+  email: {
+    value: '',
+    error: ''
+  },
+  password: {
+    value: '',
+    error: ''
   },
   formError: null,
   loading: false
@@ -27,7 +25,7 @@ const reducer = (state, action) => {
   const newFormState = { ...state }
   switch (action.type) {
     case 'INPUT_CHANGE':
-      newFormState['formData'][name].value = value
+      newFormState[name].value = value
       return newFormState
     default:
       return state
@@ -35,7 +33,7 @@ const reducer = (state, action) => {
 }
 
 export default function SignUp() {
-  const [formState, dispatch] = useReducer(reducer, INITIAL_STATE)
+  const [formState, dispatch] = useReducer(reducer, INITIAL_FORM_STATE)
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
@@ -49,9 +47,9 @@ export default function SignUp() {
     setLoading(true)
 
     const data = {
-      username: formState.formData.username.value,
-      email: formState.formData.email.value,
-      password: formState.formData.password.value
+      username: formState.username.value,
+      email: formState.email.value,
+      password: formState.password.value
     }
 
     try {
@@ -75,7 +73,7 @@ export default function SignUp() {
           className="border p-3 rounded-lg"
           id="userName"
           name="username"
-          value={formState.formData.username.value}
+          value={formState.username.value}
           onChange={handleChange}
         />
         <input
@@ -84,7 +82,7 @@ export default function SignUp() {
           className="border p-3 rounded-lg"
           id="email"
           name="email"
-          value={formState.formData.email.value}
+          value={formState.email.value}
           onChange={handleChange}
         />
         <input
@@ -93,14 +91,16 @@ export default function SignUp() {
           className="border p-3 rounded-lg"
           id="password"
           name="password"
-          value={formState.formData.password.value}
+          value={formState.password.value}
           onChange={handleChange}
         />
         <button type='submit' disabled={loading} className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-70">
           {loading ? 'Loading...' : 'Sign Up'}
         </button>
+
         <OAuth />
       </form>
+      
       <div className="flex gap-2 mt-5">
         <p>Have an account?</p>
         <Link to="/sign-in">

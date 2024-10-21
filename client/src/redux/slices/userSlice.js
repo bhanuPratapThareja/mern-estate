@@ -14,9 +14,7 @@ const userSlice = createSlice({
             state.currentUser = action.payload.user
         },
         removeUserState(state) {
-            console.log('remove user state')
             state.currentUser = null
-            console.log('new state: ', state)
         }
     },
     extraReducers(builder) {

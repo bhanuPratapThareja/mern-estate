@@ -7,7 +7,7 @@ export default function Home() {
   const onUserPurge = () => {
     persistor.purge()
       .then(() => {
-        console.log('pruged')
+        console.log('purged')
         dispatch(userSliceActions.removeUserState())
       })
     }
