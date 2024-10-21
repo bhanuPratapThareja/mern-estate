@@ -30,3 +30,18 @@ export const updateUser = async (req, res, next) => {
         next(error)
     }
 }
+
+export const deleteUser = async (req, res, next) => {
+    if(req.user.id !== req.params.id) {
+        const error = errorHandler(401, 'Login Id mismatch!')
+        return res.status(403).send(new Error('User not authorized! Login ID mismatch!'))
+    }
+
+    try {
+        await User.findByIdAndDelete(req.params.id)
+        res.clearCookie('access_token')
+        res.status(200).json('User has been deleted!')
+    } catch (error) {
+        next(error)
+    }
+}

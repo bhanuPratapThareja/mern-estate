@@ -57,7 +57,7 @@ export default function SignUp() {
       
       navigate('/sign-in')
     } catch (error) {
-
+      console.log('sign up err: ', error)
     } finally {
       setLoading(false)
     }

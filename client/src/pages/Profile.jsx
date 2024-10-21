@@ -1,8 +1,10 @@
 import { useRef, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from "react-redux"
+import { useNavigate } from 'react-router-dom'
 
 import useImageUpload from '../hooks/useImageUpload'
-import { updateUser } from '../redux/actions/userActions'
+import { updateUser, deleteUser } from '../redux/actions/userActions'
+import { userSliceActions, persistor } from '../redux/store'
 
 const INITIA_USER_STATE = { username: '', email: '', password: '', avatar: ''}
 
@@ -13,6 +15,7 @@ export default function () {
   const [formData, setFormData] = useState(INITIA_USER_STATE)
   const [updateSuccess, setUpdateSuccess] = useState(false)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const [imageUploadProgress, imagerUploadError, imageUrl, uploadImage] = useImageUpload()
 
@@ -41,6 +44,18 @@ export default function () {
 
   const handleChange = e => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  const onDeleteUser = () => {
+    dispatch(deleteUser(currentUser.id))
+      .unwrap()
+      .then(res => {
+        navigate('/sign-up')
+        setTimeout(() => {
+          dispatch(userSliceActions.removeUserState())
+        }, 0);
+      })
+      .catch(err => console.log('del err: ', err))
   }
 
   return (
@@ -80,7 +95,7 @@ export default function () {
       </form>
 
       <div className="flex justify-between mt-2">
-        <span className="text-red-700 cursor-pointer font-semibold">Delete Account</span>
+        <span onClick={onDeleteUser} className="text-red-700 cursor-pointer font-semibold">Delete Account</span>
         <span className="text-red-700 cursor-pointer font-semibold">Sign out</span>
       </div>
 

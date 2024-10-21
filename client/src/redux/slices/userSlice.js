@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { signInUser, updateUser } from "../actions/userActions";
+import { signInUser, updateUser, deleteUser } from "../actions/userActions";
 
 const userSlice = createSlice({
     name: 'user',
@@ -13,6 +13,7 @@ const userSlice = createSlice({
     reducers: {
         addSignedInUser(state, action) {
             state.currentUser = action.payload.user
+            state.error = null
         },
         removeUserState(state) {
             state.currentUser = null
@@ -36,7 +37,7 @@ const userSlice = createSlice({
             })
 
             // update
-            .addCase(updateUser.pending, (state, action) => {
+            .addCase(updateUser.pending, (state) => {
                 state.updating = true
                 state.error = null
             })
@@ -46,6 +47,19 @@ const userSlice = createSlice({
             })
             .addCase(updateUser.rejected, (state, action) => {
                 state.updating = false
+                state.error = action.error
+            })
+
+            // delete
+            .addCase(deleteUser.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(deleteUser.fulfilled, (state, action) => {
+                state.loading = false
+            })
+            .addCase(deleteUser.rejected, (state, action) => {
+                state.loading = false
                 state.error = action.error
             })
     }

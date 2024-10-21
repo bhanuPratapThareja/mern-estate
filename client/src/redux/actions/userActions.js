@@ -11,3 +11,8 @@ export const updateUser = createAsyncThunk('user/update', async (userData) => {
     const response = await axios.post(`/api/user/update/${id}`, formData)
     return response.data
 })
+
+export const deleteUser = createAsyncThunk('user/delete', async id => {
+    console.log('id is: ', id)
+    return await axios.delete(`/api/user/delete/${id}`)
+})
