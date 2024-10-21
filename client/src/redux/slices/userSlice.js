@@ -1,13 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { signInUser } from "../actions/userActions";
+import { signInUser, updateUser } from "../actions/userActions";
 
 const userSlice = createSlice({
     name: 'user',
     initialState: {
         currentUser: null,
         error: null,
-        loading: false
+        loading: false,
+        updating: false
     },
     reducers: {
         addSignedInUser(state, action) {
@@ -19,6 +20,8 @@ const userSlice = createSlice({
     },
     extraReducers(builder) {
         builder
+
+            // singin
             .addCase(signInUser.pending, (state) => {
                 state.loading = true
                 state.error = null
@@ -29,6 +32,20 @@ const userSlice = createSlice({
             })
             .addCase(signInUser.rejected, (state, action) => {
                 state.loading = false
+                state.error = action.error
+            })
+
+            // update
+            .addCase(updateUser.pending, (state, action) => {
+                state.updating = true
+                state.error = null
+            })
+            .addCase(updateUser.fulfilled, (state, action) => {
+                state.updating = false
+                state.currentUser = action.payload.user
+            })
+            .addCase(updateUser.rejected, (state, action) => {
+                state.updating = false
                 state.error = action.error
             })
     }

@@ -8,6 +8,9 @@ export default function useImageUpload() {
     const [imageUrl, setImageUrl] = useState('')
 
     const uploadImage = (imageFile) => {
+        setImageUrl('')
+        setImageUploadProgress(0)
+        setImageUploadError(false)
         const storage = getStorage(app)
         const fileName = new Date().getTime() + imageFile.name
         const storageRef = ref(storage, fileName)

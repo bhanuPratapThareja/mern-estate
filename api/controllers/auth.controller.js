@@ -54,7 +54,6 @@ export const signin = async (req, res, next) => {
     }
 
     const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET);
-    console.log('existingUser:: ', existingUser)
     const { password: pass, __v, _id, ...userInfo } = existingUser.toObject({ getters: true })
 
     res

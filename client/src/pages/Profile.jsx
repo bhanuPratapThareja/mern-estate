@@ -1,13 +1,18 @@
 import { useRef, useState, useEffect } from 'react'
-import { useSelector } from "react-redux"
-import axios from 'axios'
+import { useSelector, useDispatch } from "react-redux"
+
 import useImageUpload from '../hooks/useImageUpload'
+import { updateUser } from '../redux/actions/userActions'
+
+const INITIA_USER_STATE = { username: '', email: '', password: '', avatar: ''}
 
 export default function () {
-  const { currentUser } = useSelector(state => state.user)
+  const { currentUser, updating, error } = useSelector(state => state.user)
   const fileRef = useRef()
   const [file, setFile] = useState(null)
-  const [formData, setFormData] = useState({})
+  const [formData, setFormData] = useState(INITIA_USER_STATE)
+  const [updateSuccess, setUpdateSuccess] = useState(false)
+  const dispatch = useDispatch()
 
   const [imageUploadProgress, imagerUploadError, imageUrl, uploadImage] = useImageUpload()
 
@@ -25,9 +30,17 @@ export default function () {
 
   const onHandleUpdate = e => {
     e.preventDefault()
-    axios.post('/api/user/update/6711f86f92d22fd34dd6b981', formData)
-      .then(res => console.log(res))
-      .catch(err => console.log(err))
+    setUpdateSuccess(false)
+    dispatch(updateUser({ formData, id: currentUser.id }))
+      .unwrap()
+      .then(() => {
+        setFormData(INITIA_USER_STATE)
+        setUpdateSuccess(true)
+      })
+  }
+
+  const handleChange = e => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
   return (
@@ -57,17 +70,22 @@ export default function () {
                 null
         }  
         </p>      
-        <input type="text" placeholder="User Name" className="border p-3 rounded-lg" />
-        <input type="email" placeholder="Email" className="border p-3 rounded-lg" />
-        <input type="password" placeholder="Password" className="border p-3 rounded-lg" />
+        <input type="text" value={formData.username} name='username' placeholder="User Name" onChange={handleChange} className="border p-3 rounded-lg" />
+        <input type="email" value={formData.email} name='email' placeholder="Email" onChange={handleChange} className="border p-3 rounded-lg" />
+        <input type="password" value={formData.password} name='password' placeholder="Password" onChange={handleChange} className="border p-3 rounded-lg" />
 
-        <button onClick={onHandleUpdate} className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-75">Update</button>
+        <button onClick={onHandleUpdate} className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-75">
+          {updating ? 'Updating': 'Update'}
+        </button>
       </form>
 
       <div className="flex justify-between mt-2">
         <span className="text-red-700 cursor-pointer font-semibold">Delete Account</span>
         <span className="text-red-700 cursor-pointer font-semibold">Sign out</span>
       </div>
+
+      <p className='text-red-700'>{error ? error.message : ''}</p>
+      <p className='text-green-700'>{updateSuccess ? 'User is updated successfully!' : ''}</p>
     </div>
   )
 }
