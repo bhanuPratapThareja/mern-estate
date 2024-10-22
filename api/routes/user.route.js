@@ -4,7 +4,7 @@ import { verifyUserToken } from '../middlewares/verifyUser.js'
 
 const router = express.Router()
 
-router.post('/update/:id', verifyUserToken, updateUser)
+router.patch('/update/:id', verifyUserToken, updateUser)
 router.delete('/delete/:id', verifyUserToken, deleteUser)
 
 export default router

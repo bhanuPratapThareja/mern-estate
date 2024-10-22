@@ -50,13 +50,14 @@ const userSlice = createSlice({
                 state.error = action.error
             })
 
-            // delete
+            // delete or logout
             .addCase(deleteUser.pending, (state) => {
                 state.loading = true
                 state.error = null
             })
             .addCase(deleteUser.fulfilled, (state, action) => {
                 state.loading = false
+                state.currentUser = null
             })
             .addCase(deleteUser.rejected, (state, action) => {
                 state.loading = false

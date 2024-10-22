@@ -20,7 +20,7 @@ export default function useImageUpload() {
             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
             setImageUploadProgress(Math.round(progress))
         }, err => {
-        console.log('hook upload avatar err: ', err)
+            console.log('hook upload avatar err: ', err)
             setImageUploadError(err)
         }, () => {
         getDownloadURL(uploadTask.snapshot.ref)

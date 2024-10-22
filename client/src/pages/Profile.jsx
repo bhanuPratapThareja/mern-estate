@@ -3,16 +3,16 @@ import { useSelector, useDispatch } from "react-redux"
 import { useNavigate } from 'react-router-dom'
 
 import useImageUpload from '../hooks/useImageUpload'
-import { updateUser, deleteUser } from '../redux/actions/userActions'
+import { updateUser, deleteUser, signoutUser } from '../redux/actions/userActions'
 import { userSliceActions, persistor } from '../redux/store'
 
-const INITIA_USER_STATE = { username: '', email: '', password: '', avatar: ''}
+const INITIAL_USER_STATE = { username: '', email: '', password: '', avatar: '' }
 
 export default function () {
   const { currentUser, updating, error } = useSelector(state => state.user)
   const fileRef = useRef()
   const [file, setFile] = useState(null)
-  const [formData, setFormData] = useState(INITIA_USER_STATE)
+  const [formData, setFormData] = useState(INITIAL_USER_STATE)
   const [updateSuccess, setUpdateSuccess] = useState(false)
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -37,7 +37,7 @@ export default function () {
     dispatch(updateUser({ formData, id: currentUser.id }))
       .unwrap()
       .then(() => {
-        setFormData(INITIA_USER_STATE)
+        setFormData(INITIAL_USER_STATE)
         setUpdateSuccess(true)
       })
   }
@@ -56,6 +56,12 @@ export default function () {
         }, 0);
       })
       .catch(err => console.log('del err: ', err))
+  }
+
+  const onSignout = () => {
+    dispatch(signoutUser())
+      .unwrap()
+      .then(() => navigate('/sign-in'))
   }
 
   return (
@@ -96,7 +102,7 @@ export default function () {
 
       <div className="flex justify-between mt-2">
         <span onClick={onDeleteUser} className="text-red-700 cursor-pointer font-semibold">Delete Account</span>
-        <span className="text-red-700 cursor-pointer font-semibold">Sign out</span>
+        <span onClick={onSignout} className="text-red-700 cursor-pointer font-semibold">Sign out</span>
       </div>
 
       <p className='text-red-700'>{error ? error.message : ''}</p>
