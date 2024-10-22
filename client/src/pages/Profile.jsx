@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from "react-redux"
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 import useImageUpload from '../hooks/useImageUpload'
 import { updateUser, deleteUser, signoutUser } from '../redux/actions/userActions'
@@ -98,7 +98,13 @@ export default function () {
         <button onClick={onHandleUpdate} className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-75">
           {updating ? 'Updating': 'Update'}
         </button>
+        
+        <Link to="/create-listing" className="bg-green-700 text-white text-center rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-75">
+          Create Listing
+        </Link>
       </form>
+
+      
 
       <div className="flex justify-between mt-2">
         <span onClick={onDeleteUser} className="text-red-700 cursor-pointer font-semibold">Delete Account</span>

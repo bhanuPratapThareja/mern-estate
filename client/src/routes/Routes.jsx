@@ -8,6 +8,7 @@ import Signin from '../pages/SignIn'
 import SignUp from '../pages/SignUp'
 import About from '../pages/About'
 import Profile from '../pages/Profile'
+import CreateListing from '../pages/CreateListing'
 
 export const router = createBrowserRouter([
     {
@@ -36,6 +37,10 @@ export const router = createBrowserRouter([
                     {
                         path: '/profile',
                         element: <Profile />
+                    },
+                    {
+                        path: '/create-listing',
+                        element: <CreateListing />
                     },
                 ]
             },
