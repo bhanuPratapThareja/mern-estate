@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from "react-redux"
 import { useNavigate, Link } from 'react-router-dom'
 
-import useImageUpload from '../hooks/useImageUpload'
+import { useImageUpload } from '../hooks/useImageUpload'
 import { updateUser, deleteUser, signoutUser } from '../redux/actions/userActions'
 import { userSliceActions, persistor } from '../redux/store'
 
@@ -17,7 +17,7 @@ export default function () {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const [imageUploadProgress, imagerUploadError, imageUrl, uploadImage] = useImageUpload()
+  const { imageUploadProgress, imagerUploadError, imageUrl, uploadImage } = useImageUpload()
 
   useEffect(() => {
     if(file) {
