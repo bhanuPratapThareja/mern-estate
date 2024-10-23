@@ -6,11 +6,13 @@ import { useImageUpload } from '../hooks/useImageUpload'
 import { updateUser, deleteUser, signoutUser } from '../redux/actions/userActions'
 import { userSliceActions } from '../redux/store'
 import { signout } from '../redux/actions/signoutActions'
+import { fetchListings } from '../redux/actions/listingActions'
 
 const INITIAL_USER_STATE = { username: '', email: '', password: '', avatar: '' }
 
 export default function () {
   const { currentUser, updating, error } = useSelector(state => state.user)
+  const { listings, fetchError } = useSelector(state => state.listings)
   const fileRef = useRef()
   const [file, setFile] = useState(null)
   const [formData, setFormData] = useState(INITIAL_USER_STATE)
@@ -63,6 +65,10 @@ export default function () {
     dispatch(signoutUser())
   }
 
+  const handleShowListings = () => {
+      dispatch(fetchListings(currentUser.id))
+  }
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold my-7 text-center">Profile</h1>
@@ -112,6 +118,31 @@ export default function () {
 
       <p className='text-red-700'>{error ? error.message : ''}</p>
       <p className='text-green-700'>{updateSuccess ? 'User is updated successfully!' : ''}</p>
+
+      <button onClick={handleShowListings} className='text-green-700 w-full'>Show Listings</button>
+      {fetchError && <p className='text-red-700'>Error showing listings</p>}
+
+      {listings.length && <div className='flex flex-col gap-4'>
+        <h1 className='text-center mt-7 text-2xl font-semibold'>Your Listings</h1>
+        {listings.map(listing => (
+        <div key={listing.id} className='border-2 rounded-lg p-3 flex gap-4 justify-between items-center'>
+          <Link to={`/listing/${listing.id}`}>
+            <img 
+              src={listing.imageUrls[0]} 
+              alt="listing cover" 
+              className='h-16 w-16 object-contain rounded-lg'
+            />
+          </Link>
+          <Link to={`/listing/${listing.id}`} className='text-slate-700 font-semibold hover:underline truncate flex-1'>
+            <p>{listing.name}</p>
+          </Link>
+          <div className='flex flex-col items-center'>
+            <button className='text-red-700'>Delete</button>
+            <button className='text-green-700'>Edit</button>
+          </div>
+        </div>
+      ))}
+        </div>}
     </div>
   )
 }

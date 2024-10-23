@@ -11,3 +11,8 @@ export const createListing = createAsyncThunk('listing/create', async listing =>
     const response = await axios.post('/api/listing/create', listing)
     return response.data
 })
+
+export const fetchListings = createAsyncThunk('listings/fetch', async id => {
+    const response = await axios.get('/api/user/listings/' + id)
+    return response.data
+})

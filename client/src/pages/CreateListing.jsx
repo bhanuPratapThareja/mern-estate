@@ -86,7 +86,7 @@ export default function CreateListing() {
             .unwrap()
             .then((res) => {
                 setFormData(INITIAL_FORM)
-                navigate(`/listing/${res.listing.id}`)
+                // navigate(`/listing/${res.listing.id}`)
             })
     }
     
