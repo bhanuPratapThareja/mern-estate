@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { signInUser, updateUser, deleteUser } from "../actions/userActions";
+import { signout } from "../actions/signoutActions";
 
 const userSlice = createSlice({
     name: 'user',
@@ -50,7 +51,7 @@ const userSlice = createSlice({
                 state.error = action.error
             })
 
-            // delete or logout
+            // delete
             .addCase(deleteUser.pending, (state) => {
                 state.loading = true
                 state.error = null
@@ -62,6 +63,14 @@ const userSlice = createSlice({
             .addCase(deleteUser.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.error
+            })
+
+            // signout
+            .addCase(signout, (state, action) => {
+                console.log('state:: ', state)
+                console.log('action::: ', action)
+                // state.currentUser = null
+                // state.error = null
             })
     }
 })

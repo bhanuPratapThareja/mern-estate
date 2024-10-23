@@ -1,14 +1,38 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import { useImageUpload } from '../hooks/useImageUpload'
 
+import { createListing } from '../redux/actions/listingActions'
+
+const INITIAL_FORM = {
+    imageUrls: [],
+    name: '',
+    description: '',
+    address: '',
+    type: 'rent',
+    bedrooms: 1,
+    bathrooms: 1,
+    regularPrice: 50,
+    discountPrice: 0,
+    offer: true,
+    parking: false,
+    furnished: false
+}
+
 export default function CreateListing() {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
     const [files, setFiles] = useState([])
-    const [formData, setFormData] = useState({ imageUrls: [] })
+    const [formData, setFormData] = useState(INITIAL_FORM)
     const [imageUploadError, setImageUploadError] = useState('')
     const [uploading, setUploading] = useState(false)
+
     const { uploadImage } = useImageUpload() 
+    const { creating, error } = useSelector(state => state.listings)
 
     const handleImageSubmit = () => {
+        setImageUploadError('')
         const promises = []
         if(files.length && files.length + formData.imageUrls.length < 7) {
             setUploading(true)
@@ -33,73 +57,99 @@ export default function CreateListing() {
         }
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        console.log('formData: ', formData)
-    }
-
     const onRemoveImage = index => {
         const filteredImageUrls = formData.imageUrls.filter((url, i) => i !== index)
         setFormData({ ...formData, imageUrls: filteredImageUrls })
     }
+
+    const handleChange = (e, inputType, radioName) => {
+        let { name, value, checked, id, type } = e.target
+         const newFormData = { ...formData }
+        if(inputType === 'checkbox') {
+            value = checked
+        }
+        if(inputType === 'radio') {
+           name = radioName
+           value = id
+        }
+        if(type === 'number' && value) {
+            value = +value
+        }
+       
+        newFormData[name] = value
+        setFormData(newFormData)
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        dispatch(createListing(formData))
+            .unwrap()
+            .then((res) => {
+                setFormData(INITIAL_FORM)
+                navigate(`/listing/${res.listing.id}`)
+            })
+    }
     
-    console.log(formData)
     return (
         <main className='p-3 max-w-4xl mx-auto'>
             <h1 className='text-3xl font-semibold text-center my-7'>Create a listing</h1>
             <form className='flex flex-col sm:flex-row gap-4' onSubmit={handleSubmit} noValidate>
                 
                 <div className='flex flex-col gap-4 flex-1'>
-                    <input type="text" placeholder='Name' name='name' id='name' maxLength={62} minLength={10} required className='border p-3 rounded-lg' />
-                    <textarea type="text" placeholder='Description' name='description' id='description' required className='border p-3 rounded-lg' />
-                    <input type="text" placeholder='Address' name='address' id='address' required className='border p-3 rounded-lg' />
+                    <input type="text" placeholder='Name' name='name' id='name' value={formData.name} onChange={handleChange} maxLength={62} minLength={10} required className='border p-3 rounded-lg' />
+                    <textarea type="text" placeholder='Description' name='description' id='description' value={formData.description} onChange={handleChange} required className='border p-3 rounded-lg' />
+                    <input type="text" placeholder='Address' name='address' id='address' value={formData.address} onChange={handleChange} required className='border p-3 rounded-lg' />
 
                     <div className='flex gap-6 flex-wrap'>
+
+                        <fieldset id="type" name='type' className='flex gap-2' >
+                            <div className='flex gap-2'>
+                                <input type="radio" name='type' id='sale' className='w-5' checked={formData.type === 'sale'} onChange={(e) => handleChange(e, 'radio', 'type')} />
+                                <label htmlFor="sale">Sale</label>
+                            </div>
+                            <div className='flex gap-2'>
+                                <input type="radio" name='type' id='rent' className='w-5' checked={formData.type === 'rent'} onChange={(e) => handleChange(e, 'radio', 'type')} />
+                                <label htmlFor="rent">Rent</label>
+                            </div>
+                        </fieldset>
+
                         <div className='flex gap-2'>
-                            <input type="checkbox" name='sell' id='sell' className='w-5' />
-                            <label htmlFor="sale">Sell</label>
+                            <input type="checkbox" name='parking' id='parking' className='w-5' checked={formData.parking} onChange={(e) => handleChange(e, 'checkbox')} />
+                            <label htmlFor="parking">Parking Spot</label>
                         </div>
                         <div className='flex gap-2'>
-                            <input type="checkbox" name='rent' id='rent' className='w-5' />
-                            <label htmlFor="rent">Rent</label>
-                        </div>
-                        <div className='flex gap-2'>
-                            <input type="checkbox" name='parkingSpot' id='parkingSpot' className='w-5' />
-                            <label htmlFor="parkingSpot">Parking Spot</label>
-                        </div>
-                        <div className='flex gap-2'>
-                            <input type="checkbox" name='furnished' id='furnished' className='w-5' />
+                            <input type="checkbox" name='furnished' id='furnished' className='w-5' checked={formData.furnished} onChange={(e) => handleChange(e, 'checkbox')}  />
                             <label htmlFor="furnished">Furnished</label>
                         </div>
                         <div className='flex gap-2'>
-                            <input type="checkbox" name='offer' id='offer' className='w-5' />
+                            <input type="checkbox" name='offer' id='offer' className='w-5' checked={formData.offer} onChange={(e) => handleChange(e, 'checkbox')} />
                             <label htmlFor="offer">Offer</label>
                         </div>
                     </div>
 
                     <div className='flex gap-6 flex-wrap'>
                         <div className='flex gap-2 items-center'>
-                                <input type="number" name='bedrooms' id='bedrooms' min={1} max={10} className='border border-grey-300 p-3 rounded-lg' required />
+                                <input type="number" name='bedrooms' id='bedrooms' value={formData.bedrooms} onChange={handleChange} min={1} max={10} className='border border-grey-300 p-3 rounded-lg' required />
                                 <label htmlFor="bedrooms">Beds</label>
                         </div>
                         <div className='flex gap-2 items-center'>
-                                <input type="number" name='bathrooms' id='bathrooms' min={1} max={10} className='border border-grey-300 p-3 rounded-lg' required />
+                                <input type="number" name='bathrooms' id='bathrooms' value={formData.bathrooms} onChange={handleChange} min={1} max={10} className='border border-grey-300 p-3 rounded-lg' required />
                                 <label htmlFor="bathrooms">Baths</label>
                         </div>
                         <div className='flex gap-2 items-center'>
-                                <input type="number" name='regularPrice' id='regularPrice' min={1} max={10} className='border border-grey-300 p-3 rounded-lg' required />
+                                <input type="number" name='regularPrice' id='regularPrice' value={formData.regularPrice} onChange={handleChange} min={50} max={100000} className='border border-grey-300 p-3 rounded-lg' required />
                                 <div className='flex flex-col items-center'>
                                     <label htmlFor="regularPrice">Regular price</label>
                                     <span className='text-xs'>($ / month)</span>
                                 </div>
                         </div>
-                        <div className='flex gap-2 items-center'>
-                                <input type="number" name='discountedPrice' id='discountedPrice' min={1} max={10} className='border border-grey-300 p-3 rounded-lg' required />
+                        {formData.offer && <div className='flex gap-2 items-center'>
+                                <input type="number" name='discountPrice' id='discountPrice' value={formData.discountPrice} onChange={handleChange} min={0} max={100000} className='border border-grey-300 p-3 rounded-lg' required />
                                 <div className='flex flex-col items-center'>
-                                    <label htmlFor="discountedPrice">Discounted price</label>
+                                    <label htmlFor="discountPrice">Discounted price</label>
                                     <span className='text-xs'>($ / month)</span>
                                 </div>
-                        </div>
+                        </div>}
                     </div>
 
                 </div>
@@ -110,7 +160,7 @@ export default function CreateListing() {
                     </p>
                     <div className='flex gap-4'>
                         <input type="file" onChange={e => setFiles(e.target.files)} id='images' accept='image/*' multiple className='border-2 p-3 border-grey-300 rounded w-full' />
-                        <button disabled={uploading} onClick={handleImageSubmit} type='button' className='p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80'>
+                        <button disabled={uploading || creating} onClick={handleImageSubmit} type='button' className='p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80'>
                             {uploading ? 'Uploading...' : 'Upload'}
                         </button>
                     </div>
@@ -123,7 +173,10 @@ export default function CreateListing() {
                         </div>
                      ))}
 
-                    <button type='submit' className='p-3 bg-slate-700 rounded-lg text-white uppercase disabled:opacity-70 hover:opacity-95'>Create Listing</button>
+                    <button type='submit' disabled={uploading || creating} className='p-3 bg-slate-700 rounded-lg text-white uppercase disabled:opacity-70 hover:opacity-95'>
+                        {creating ? 'Creating...' : 'Create Listing'}
+                    </button>
+                    {error && <p className='text-red-700 text-sm'>{error.message}</p>}
                 </div>
             </form>
         </main>

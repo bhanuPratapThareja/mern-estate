@@ -4,7 +4,8 @@ import { useNavigate, Link } from 'react-router-dom'
 
 import { useImageUpload } from '../hooks/useImageUpload'
 import { updateUser, deleteUser, signoutUser } from '../redux/actions/userActions'
-import { userSliceActions, persistor } from '../redux/store'
+import { userSliceActions } from '../redux/store'
+import { signout } from '../redux/actions/signoutActions'
 
 const INITIAL_USER_STATE = { username: '', email: '', password: '', avatar: '' }
 
@@ -60,8 +61,6 @@ export default function () {
 
   const onSignout = () => {
     dispatch(signoutUser())
-      .unwrap()
-      .then(() => navigate('/sign-in'))
   }
 
   return (
