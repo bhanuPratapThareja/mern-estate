@@ -42,6 +42,10 @@ export const router = createBrowserRouter([
                         path: '/create-listing',
                         element: <CreateListing />
                     },
+                    {
+                        path: '/edit-listing/:id',
+                        element: <CreateListing />
+                    },
                 ]
             },
         ]

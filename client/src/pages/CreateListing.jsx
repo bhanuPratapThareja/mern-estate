@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useImageUpload } from '../hooks/useImageUpload'
 
@@ -22,14 +22,22 @@ const INITIAL_FORM = {
 
 export default function CreateListing() {
     const dispatch = useDispatch()
-    const navigate = useNavigate()
+    const location = useLocation()
     const [files, setFiles] = useState([])
     const [formData, setFormData] = useState(INITIAL_FORM)
     const [imageUploadError, setImageUploadError] = useState('')
     const [uploading, setUploading] = useState(false)
+    const [mode, setMode] = useState('create')
 
     const { uploadImage } = useImageUpload() 
     const { creating, error } = useSelector(state => state.listings)
+
+    useEffect(() => {
+        if(location.state) {
+            setMode('edit')
+            setFormData({ ...location.state.listing })
+        }
+    }, [])
 
     const handleImageSubmit = () => {
         setImageUploadError('')
