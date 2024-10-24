@@ -1,4 +1,4 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import axios from 'axios'
 
 export const signInUser = createAsyncThunk('user/signin', async user => {
@@ -24,3 +24,5 @@ export const deleteUser = createAsyncThunk('user/delete', async id => {
 export const signoutUser = createAsyncThunk('user/delete', async() => {
     return await axios.post('/api/auth/signout')
 })
+
+export const signout = createAction('user/signout')

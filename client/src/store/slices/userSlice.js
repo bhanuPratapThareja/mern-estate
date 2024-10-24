@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { signInUser, updateUser, deleteUser } from "../actions/userActions";
-import { signout } from "../actions/signoutActions";
+import { signout } from "../actions/userActions";
 
 const userSlice = createSlice({
     name: 'user',

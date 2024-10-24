@@ -3,7 +3,7 @@ import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 
 import userReducer from './slices/userSlice'
-import { userSliceActions } from './slices/userSlice'
+import { userSliceActions } from '../store/slices/userSlice'
 
 import listingReducer from './slices/listingSlice'
 
@@ -28,5 +28,6 @@ export const store = configureStore({
 })
 
 export { userSliceActions }
-
+export * from './actions/userActions'
+export * from './actions/listingActions'
 export const persistor = persistStore(store)

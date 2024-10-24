@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createListing, fetchListings } from "../actions/listingActions";
+import { createListing, deleteListing, fetchListings, showListings } from "../actions/listingActions";
 import { signoutUser } from "../actions/userActions";
-// import { signout } from "../actions/signoutActions";
 
 const listingSlice = createSlice({
   name: "listing",
@@ -10,11 +9,11 @@ const listingSlice = createSlice({
     creating: false,
     loading: false,
     error: null,
-    fetchError: null
+    fetchError: null,
+    show: false
   },
   extraReducers(builder) {
     builder
-
       .addCase(createListing.pending, (state) => {
         state.creating = true;
         state.error = null;
@@ -44,11 +43,19 @@ const listingSlice = createSlice({
         state.fetchError = action.error;
       })
 
+      .addCase(showListings, (state, action) => {
+        state.show = action.payload
+      })
+
     //   .addCase(signout, (state, action) => {
     //     state.listings = [];
     //     state.creating = false;
     //     state.error = null;
     //   });
+
+      .addCase(deleteListing.fulfilled, (state, action) => {
+        state.listings = state.listings.filter(listing => listing.id !== action.meta.arg)
+      })
 
       .addCase(signoutUser.fulfilled, (state) => {
           console.log('signoutUser state: ', state)

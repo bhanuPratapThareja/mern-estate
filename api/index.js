@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
+import cors from 'cors'
 import dotenv from "dotenv";
 
 import userRouter from "./routes/user.route.js";
@@ -10,6 +11,7 @@ import listingRouter from "./routes/listing.route.js";
 dotenv.config();
 const app = express();
 
+app.use(cors())
 app.use(cookieParser())
 app.use(express.json())
 

@@ -4,7 +4,7 @@ import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth'
 import { app } from '../firebase'
 import axios from 'axios'
 
-import { userSliceActions } from '../redux/store.js'
+import { userSliceActions } from '../store'
 
 export default function OAuth() {
     const dispatch = useDispatch()

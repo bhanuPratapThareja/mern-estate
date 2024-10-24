@@ -1,4 +1,4 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import axios from 'axios'
 
 export const createListing = createAsyncThunk('listing/create', async listing => {
@@ -16,3 +16,10 @@ export const fetchListings = createAsyncThunk('listings/fetch', async id => {
     const response = await axios.get('/api/user/listings/' + id)
     return response.data
 })
+
+export const deleteListing = createAsyncThunk('listing/delete', async id => {
+    const response = await axios.delete('/api/listing/delete/' + id)
+    return response.data
+})
+
+export const showListings = createAction('listings/show')

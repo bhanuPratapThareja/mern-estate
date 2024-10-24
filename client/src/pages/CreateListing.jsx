@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useImageUpload } from '../hooks/useImageUpload'
 
-import { createListing } from '../redux/actions/listingActions'
+import { createListing } from '../store'
 
 const INITIAL_FORM = {
     imageUrls: [],

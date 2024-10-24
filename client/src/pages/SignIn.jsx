@@ -2,7 +2,7 @@ import { useReducer } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from "react-router-dom";
 
-import { signInUser } from '../redux/actions/userActions';
+import { signInUser } from '../store';
 import OAuth from '../components/OAuth';
 
 const INITIAL_STATE = {
