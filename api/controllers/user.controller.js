@@ -47,7 +47,10 @@ export const getUserListings = async (req, res, next) => {
 
     try {
         const listings = await Listing.find({ userRef: req.params.id })
-        const listingsWithIds = listings.map(listing => listing.toObject({ getters: true }))
+        const listingsWithIds = listings.map(listing => {
+            const { __v, _id, createdAt, updatedAt, ...rest } = listing.toObject({ getters: true })
+            return rest
+        })
         res.status(200).json(listingsWithIds)
     } catch (error) {
         return next(error)

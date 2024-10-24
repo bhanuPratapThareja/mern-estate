@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { useImageUpload } from '../hooks/useImageUpload'
 
@@ -23,6 +23,7 @@ const INITIAL_FORM = {
 export default function CreateListing() {
     const dispatch = useDispatch()
     const location = useLocation()
+    const params = useParams()
     const [files, setFiles] = useState([])
     const [formData, setFormData] = useState(INITIAL_FORM)
     const [imageUploadError, setImageUploadError] = useState('')
@@ -90,7 +91,8 @@ export default function CreateListing() {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        dispatch(createListing(formData))
+        console.log(formData)
+        dispatch(createListing({ listing: formData, mode }))
             .unwrap()
             .then((res) => {
                 setFormData(INITIAL_FORM)
@@ -100,7 +102,7 @@ export default function CreateListing() {
     
     return (
         <main className='p-3 max-w-4xl mx-auto'>
-            <h1 className='text-3xl font-semibold text-center my-7'>Create a listing</h1>
+            <h1 className='text-3xl font-semibold text-center my-7'>{mode === 'edit' ? 'Edit' : 'Create'} listing</h1>
             <form className='flex flex-col sm:flex-row gap-4' onSubmit={handleSubmit} noValidate>
                 
                 <div className='flex flex-col gap-4 flex-1'>
@@ -168,7 +170,7 @@ export default function CreateListing() {
                     </p>
                     <div className='flex gap-4'>
                         <input type="file" onChange={e => setFiles(e.target.files)} id='images' accept='image/*' multiple className='border-2 p-3 border-grey-300 rounded w-full' />
-                        <button disabled={uploading || creating} onClick={handleImageSubmit} type='button' className='p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80'>
+                        <button  onClick={handleImageSubmit} type='button' className='p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80'>
                             {uploading ? 'Uploading...' : 'Upload'}
                         </button>
                     </div>
@@ -181,8 +183,8 @@ export default function CreateListing() {
                         </div>
                      ))}
 
-                    <button type='submit' disabled={uploading || creating} className='p-3 bg-slate-700 rounded-lg text-white uppercase disabled:opacity-70 hover:opacity-95'>
-                        {creating ? 'Creating...' : 'Create Listing'}
+                    <button type='submit' className='p-3 bg-slate-700 rounded-lg text-white uppercase disabled:opacity-70 hover:opacity-95'>
+                        {mode === 'edit' ? 'Edit Listing' : creating ? 'Creating...' : 'Create Listing'}
                     </button>
                     {error && <p className='text-red-700 text-sm'>{error.message}</p>}
                 </div>

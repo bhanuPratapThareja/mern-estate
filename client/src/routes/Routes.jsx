@@ -43,7 +43,7 @@ export const router = createBrowserRouter([
                         element: <CreateListing />
                     },
                     {
-                        path: '/edit-listing/:id',
+                        path: '/edit-listing/:listingId',
                         element: <CreateListing />
                     },
                 ]

@@ -20,7 +20,15 @@ const listingSlice = createSlice({
       })
       .addCase(createListing.fulfilled, (state, action) => {
         state.creating = false;
-        state.listings.push(action.payload.listing);
+        if(action.meta.arg.mode === 'create') {
+          state.listings.push(action.payload.listing);
+        }
+        if(action.meta.arg.mode === 'edit') {
+          const index = state.listings.findIndex(listing => {
+            return listing.id === action.meta.arg.listing.id
+          })
+          state.listings[index] = action.payload.listing
+        }
       })
       .addCase(createListing.rejected, (state, action) => {
         console.log(action.error);
