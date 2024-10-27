@@ -24,4 +24,9 @@ export const deleteListing = createAsyncThunk('listing/delete', async id => {
     return response.data
 })
 
+export const getListing = createAsyncThunk('listing/get', async id => {
+    const response = await axios.get('/api/listing/fetch/' + id)
+    return response.data
+})
+
 export const showListings = createAction('listings/show')

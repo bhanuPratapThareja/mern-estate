@@ -9,6 +9,7 @@ import SignUp from '../pages/SignUp'
 import About from '../pages/About'
 import Profile from '../pages/Profile'
 import CreateListing from '../pages/CreateListing'
+import ListingPage from '../pages/ListingPage'
 
 export const router = createBrowserRouter([
     {
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
             {
                 path: '/about',
                 element: <About />
+            },
+            {
+                path: '/listing/:listingId',
+                element: <ListingPage />
             },
             {
                 element: <PrivateRoutes />,

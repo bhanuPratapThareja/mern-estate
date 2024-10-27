@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createListing, deleteListing, fetchListings, showListings } from "../actions/listingActions";
+import { createListing, deleteListing, fetchListings, getListing, showListings } from "../actions/listingActions";
 import { signoutUser } from "../actions/userActions";
 
 const listingSlice = createSlice({
@@ -10,7 +10,8 @@ const listingSlice = createSlice({
     loading: false,
     error: null,
     fetchError: null,
-    show: false
+    show: false,
+    selectedListing: null
   },
   extraReducers(builder) {
     builder
@@ -49,6 +50,20 @@ const listingSlice = createSlice({
         console.log(action.error);
         state.loading = false;
         state.fetchError = action.error;
+      })
+
+      .addCase(getListing.pending, (state) => {
+        state.loading = true
+        state.error = null
+        state.selectedListing = null
+      })
+      .addCase(getListing.fulfilled, (state, action) => {
+        state.loading = false
+        state.selectedListing = action.payload
+      })
+      .addCase(getListing.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.error
       })
 
       .addCase(showListings, (state, action) => {
