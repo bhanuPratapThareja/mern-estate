@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import { useNavigate } from 'react-router-dom'
 
 import { deleteUser, signoutUser } from '../../store'
@@ -7,6 +7,7 @@ import { userSliceActions } from '../../store'
 export default function ProfileAuth() {
     const { currentUser  } = useSelector(state => state.user)
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const onDeleteUser = () => {
         dispatch(deleteUser(currentUser.id))

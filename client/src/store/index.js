@@ -6,10 +6,12 @@ import userReducer from './slices/userSlice'
 import { userSliceActions } from '../store/slices/userSlice'
 
 import listingReducer from './slices/listingSlice'
+import contactReducer from './slices/contactSlice'
 
 const rootReducer = combineReducers({
     user: userReducer,
-    listings: listingReducer
+    listings: listingReducer,
+    contact: contactReducer
 })
 
 const persistConfig = {
@@ -30,4 +32,5 @@ export const store = configureStore({
 export { userSliceActions }
 export * from './actions/userActions'
 export * from './actions/listingActions'
+export * from './actions/contactActions'
 export const persistor = persistStore(store)
