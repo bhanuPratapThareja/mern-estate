@@ -22,8 +22,6 @@ export default function Contact({ listing }) {
         setMessage(e.target.value)
     }
 
-    console.log(message)
-
     return (
         <div className='flex flex-col gap-2'>
             <p>Contact <span className='font-semibold'>{landlord.username}</span>{' '}
