@@ -30,7 +30,7 @@ export default function CreateListing() {
     const [uploading, setUploading] = useState(false)
     const [mode, setMode] = useState('create')
 
-    const { uploadImage } = useImageUpload() 
+    const { uploadImage, custJSX } = useImageUpload() 
     const { creating, error } = useSelector(state => state.listings)
 
     useEffect(() => {
@@ -175,7 +175,7 @@ export default function CreateListing() {
                         </button>
                     </div>
                      <p className='text-red-700 text-sm'>{imageUploadError && imageUploadError}</p>
-                    
+                    {custJSX}
                      {formData.imageUrls.length > 0 && formData.imageUrls.map((url, i) => (
                         <div className='flex justify-between p-3 border-2 items-center' key={url}>
                             <img src={url} alt="listing image" className='w-20 h-20 object-contain rounded-lg' />
