@@ -7,6 +7,7 @@ const listingSlice = createSlice({
   initialState: {
     listings: [],
     searchedListings: [],
+    searchedListingsLength: 0,
     creating: false,
     loading: false,
     error: null,
@@ -88,7 +89,10 @@ const listingSlice = createSlice({
       })
       .addCase(searchListings.fulfilled, (state, action) => {
         state.loading = false
-        state.searchedListings = action.payload
+        console.log('action.payload: ', action.payload)
+        state.searchedListingsLength = action.payload.length
+        state.searchedListings = [ ...state.searchedListings, ...action.payload ]
+        // state.searchedListings = [ ]
       })
       .addCase(searchListings.rejected, (state, action) => {
         state.loading = false

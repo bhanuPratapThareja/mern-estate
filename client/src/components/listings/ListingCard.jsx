@@ -3,7 +3,7 @@ import { MdLocationOn } from "react-icons/md";
 
 export default function ListingCard({ listing, index }) {
   return (
-    <div className="bg-white shadow-md hover:shadow-lg transition-shadow rounded-lg overflow-hidden w-full sm:w-[300px]">
+    <div className="bg-white shadow-md hover:shadow-lg transition-shadow rounded-lg overflow-hidden w-full sm:w-[250px]">
         <Link to={`/listing/${listing.id}`}>
             <img 
                 src={listing.imageUrls[0] || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsyy8VtAm-3cfsMEDx515red4NlQrw8JO0ag&s'} 
@@ -16,7 +16,7 @@ export default function ListingCard({ listing, index }) {
                     <MdLocationOn className="h-4 w-4 text-green-700" style={{ fontSize: '4rem'}} />
                     <p className="text-sm text-grey-600">{listing.address}</p>
                 </div>
-                <p className="text-sm text-gray-600 line-clamp-2">{listing.description}</p>
+                <p className="text-sm text-gray-600 line-clamp-2 min-h-10">{listing.description}</p>
                 <p className="text-slate-500 mt-2 font-semibold">
                     ${listing.offer ? 
                     listing.discountPrice.toLocaleString('en-US') : 

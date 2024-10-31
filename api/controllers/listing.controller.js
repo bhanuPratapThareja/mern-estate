@@ -12,11 +12,9 @@ export const createListing = async (req, res, next) => {
 }
 
 export const updateListing = async (req, res, next) => {
-    console.log('check')
     let listing;
     try {
         listing = await Listing.findById(req.params.id)
-        console.log('listing: ', listing)
         if(!listing) {
             return next(errorHandler(404, 'Listing not found'))
         }
@@ -25,16 +23,12 @@ export const updateListing = async (req, res, next) => {
         return next(error)
     }
 
-    console.log('req.user.id: ', req.user.id)
-    console.log('listing.userRef.toString(): ', listing.userRef.toString())
-
     if(req.user.id !== listing.userRef.toString()) {
         return next(errorHandler(403, 'Invalid user'))
     }
 
     try {
         const updatedListing = await Listing.findByIdAndUpdate(req.params.id, req.body, { new: true })
-        console.log('updatedListing: ', updatedListing)
         const { _id, __v,  createdAt, updatedAt, ...rest } = updatedListing.toObject({ getters: true })
         res.status(200).json({ listing: rest })
     } catch (error) {
@@ -79,7 +73,6 @@ export const getListing = async (req, res, next) => {
 }
 
 export const searchListings = async (req, res, next) => {
-    console.log(req.query)
     try {
         const limit = +req.query.limit || 9 
         const startIndex = +req.query.startIndex || 0

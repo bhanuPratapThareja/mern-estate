@@ -21,7 +21,7 @@ export default function SearchPage() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [formData, setFormData] = useState(INITIAL_FORM_STATE)
-    const { searchedListings, loading, error } = useSelector(state => state.listings)
+    const { searchedListings, loading, error, searchedListingsLength } = useSelector(state => state.listings)
 
     useEffect(() => {
         handleChangeQuery()
@@ -38,16 +38,16 @@ export default function SearchPage() {
             } 
             searchesFromUrl[key] = value
         }
-        console.log(formData)
-        console.log(searchesFromUrl)
-        setFormData({ ...formData, searchTerm: searchesFromUrl.searchTerm || '',
+        setFormData({ 
+            ...formData, 
+            searchTerm: searchesFromUrl.searchTerm || '',
             type: searchesFromUrl.type || 'all',
             offer: searchesFromUrl.offer === 'true' ? true : false,
             parking: searchesFromUrl.parking === 'true' ? true : false,
             furnished: searchesFromUrl.furnished === 'true' ? true : false,
             sort: searchesFromUrl.sort || 'createdAt',
-            order: searchesFromUrl.order || 'desc' })
-
+            order: searchesFromUrl.order || 'desc' 
+        })
         getSearchListings(urlParams.toString())
     }
 
@@ -88,6 +88,17 @@ export default function SearchPage() {
         navigate(`/search?${searchQuery}`)
     }
 
+    const onShowMoreClick = () => {
+        const numberOfListings = searchedListings.length
+        const startIndex = numberOfListings
+        const urlParams = new URLSearchParams(location.search)
+        urlParams.set('startIndex', startIndex)
+        const searchQuery= urlParams.toString()
+        dispatch(searchListings(searchQuery))
+    }
+
+    console.log('searchedListingsLength: ', searchedListingsLength)
+
     return (
         <div className='flex flex-col md:flex-row md:min-h-screen'>
             <div className='p-7 min-w-[30%] flex-4 flex-wrap border-b-2 md:border-b-0 md:border-r-2'>
@@ -107,21 +118,20 @@ export default function SearchPage() {
                     </div>
                     <div className="flex flex-wrap gap-2 items-center">
                         
-                            <fieldset id="type" name='type' className='flex gap-2' >
-                                <div className="flex gap-2">
-                                    <label>Type:</label>
-                                    <input type="radio" name="type" id="all" className='w-5' checked={formData.type === 'all'} onChange={(e) => handleChange(e, 'radio')} />
-                                    <label htmlFor="all">Rent & sale</label>
-                                </div>
-                                <div className='flex gap-2'>
-                                    <input type="radio" name='type' id='sale' className='w-5' checked={formData.type === 'sale'} onChange={(e) => handleChange(e, 'radio')} />
-                                    <label htmlFor="sale">Sale</label>
-                                </div>
-                                <div className='flex gap-2'>
-                                    <input type="radio" name='type' id='rent' className='w-5' checked={formData.type === 'rent'} onChange={(e) => handleChange(e, 'radio')} />
-                                    <label htmlFor="rent">Rent</label>
-                                </div>
-                            </fieldset>
+                        <fieldset id="type" name='type' className='flex flex-wrap gap-2' >
+                            <div className="flex gap-2">
+                                <input type="radio" name="type" id="all" className='w-5' checked={formData.type === 'all'} onChange={(e) => handleChange(e, 'radio')} />
+                                <label htmlFor="all">Rent & sale</label>
+                            </div>
+                            <div className='flex gap-2'>
+                                <input type="radio" name='type' id='rent' className='w-5' checked={formData.type === 'rent'} onChange={(e) => handleChange(e, 'radio')} />
+                                <label htmlFor="rent">Rent</label>
+                            </div>
+                            <div className='flex gap-2'>
+                                <input type="radio" name='type' id='sale' className='w-5' checked={formData.type === 'sale'} onChange={(e) => handleChange(e, 'radio')} />
+                                <label htmlFor="sale">Sale</label>
+                            </div>
+                        </fieldset>
                        
                         <div className="flex gap-2">
                             <input type="checkbox" name="offer" id="offer" className='w-5' checked={formData.offer} onChange={handleChange} />
@@ -153,19 +163,24 @@ export default function SearchPage() {
 
             </div>
             
-            <div className='p-7'>
+            <div className='p-7 min-w-[70%]'>
                 <h1 className='text-3xl font-semibold'>Listing Results:</h1>
                 {loading && <p>Searching...</p>} 
                 {!loading && !searchedListings.length && (
                     <p className="text-xl text-slate-700">No listings found!</p>
                 )}
 
-                <div className="flex gap-4 flex-wrap mt-8">
+                <div className="flex flex-row gap-4 flex-wrap mt-8">
                 {searchedListings.length > 0 && searchedListings.map((listing, index) => 
                     <ListingCard key={listing.id} listing={listing} index={index} />
                 )}
                 </div>
+                {searchedListingsLength > 8 && <button onClick={onShowMoreClick} className="text-green-700 hover:underline p-7 text-center w-full">
+                    Show more
+                </button>}
             </div>
+
+           
             
         </div>
     )
