@@ -12,15 +12,21 @@ export const createListing = async (req, res, next) => {
 }
 
 export const updateListing = async (req, res, next) => {
+    console.log('check')
     let listing;
     try {
         listing = await Listing.findById(req.params.id)
+        console.log('listing: ', listing)
         if(!listing) {
             return next(errorHandler(404, 'Listing not found'))
         }
     } catch (error) {
+        console.log('error1 ', error)
         return next(error)
     }
+
+    console.log('req.user.id: ', req.user.id)
+    console.log('listing.userRef.toString(): ', listing.userRef.toString())
 
     if(req.user.id !== listing.userRef.toString()) {
         return next(errorHandler(403, 'Invalid user'))
@@ -28,10 +34,11 @@ export const updateListing = async (req, res, next) => {
 
     try {
         const updatedListing = await Listing.findByIdAndUpdate(req.params.id, req.body, { new: true })
+        console.log('updatedListing: ', updatedListing)
         const { _id, __v,  createdAt, updatedAt, ...rest } = updatedListing.toObject({ getters: true })
         res.status(200).json({ listing: rest })
     } catch (error) {
-        console.log('l err: ', error)
+        console.log('error: ', error)
         next(error)
     }
 }

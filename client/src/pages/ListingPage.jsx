@@ -64,14 +64,13 @@ export default function ListingPage() {
               </p>
               {listing.offer && (
                 <p className="bg-green-900 w-full max-w-[200px] text-white text-center p-1 rounded-md">
-                  ${listing.regularPrice - listing.discountPrice}
+                  ${listing.regularPrice - listing.discountPrice} OFF
                 </p>
               )}
             </div>
             <p className="text-slate-800">
                 <span className="font-semibold text-black">Description - {' '}</span>
-               {/* {listing.description} */}
-               Lorem, ipsum dolor sit amet consectetur adipisicing elit. Distinctio dolorem molestiae quas dicta voluptate quibusdam neque minus eveniet sit dolore fugit possimus iste perspiciatis similique facere, ratione, placeat, quod necessitatibus!
+               {listing.description}
             </p>
             <ul className="text-green-900 font-semibold text-sm flex items-center gap-4 sm:gap-6 flex-wrap">
                 <li className="flex items-center gap-1 whitespace-nowrap">

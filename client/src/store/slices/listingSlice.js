@@ -1,12 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createListing, deleteListing, fetchListings, getListing, showListings } from "../actions/listingActions";
+import { createListing, deleteListing, fetchListings, getListing, showListings, searchListings } from "../actions/listingActions";
 import { signoutUser } from "../actions/userActions";
 
 const listingSlice = createSlice({
   name: "listing",
   initialState: {
     listings: [],
-    searchListings: [],
+    searchedListings: [],
     creating: false,
     loading: false,
     error: null,
@@ -79,6 +79,20 @@ const listingSlice = createSlice({
 
       .addCase(deleteListing.fulfilled, (state, action) => {
         state.listings = state.listings.filter(listing => listing.id !== action.meta.arg)
+      })
+
+      // searchmlistings
+      .addCase(searchListings.pending, (state) => {
+          state.loading = true
+          state.error = null
+      })
+      .addCase(searchListings.fulfilled, (state, action) => {
+        state.loading = false
+        state.searchedListings = action.payload
+      })
+      .addCase(searchListings.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.error
       })
 
       .addCase(signoutUser.fulfilled, (state) => {

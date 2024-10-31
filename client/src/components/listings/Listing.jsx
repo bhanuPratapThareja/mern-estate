@@ -11,7 +11,7 @@ export default function Listing({ listing, onDeleteListing, onEditListing }) {
             />
         </Link>
         <Link to={`/listing/${listing.id}`} className='text-slate-700 font-semibold hover:underline truncate flex-1'>
-            <p>{listing.name}</p>
+            <p className='truncate'>{listing.name}</p>
         </Link>
         <div className='flex flex-col items-center'>
             <button onClick={() => onDeleteListing(listing.id)} className='text-red-700'>Delete</button>

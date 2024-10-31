@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 
 import { searchListings } from "../store/actions/listingActions"
+import ListingCard from "../components/listings/ListingCard"
 
 const INITIAL_FORM_STATE = {
     searchTerm: '',
@@ -20,6 +21,7 @@ export default function SearchPage() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [formData, setFormData] = useState(INITIAL_FORM_STATE)
+    const { searchedListings, loading, error } = useSelector(state => state.listings)
 
     useEffect(() => {
         handleChangeQuery()
@@ -88,7 +90,7 @@ export default function SearchPage() {
 
     return (
         <div className='flex flex-col md:flex-row md:min-h-screen'>
-            <div className='p-7 border-b-2 md:border-b-0 md:border-r-2'>
+            <div className='p-7 min-w-[30%] flex-4 flex-wrap border-b-2 md:border-b-0 md:border-r-2'>
 
                 <form onSubmit={handleSearch} className='flex flex-col gap-8'>
                     <div className='flex items-center gap-2'>
@@ -150,8 +152,19 @@ export default function SearchPage() {
                 </form>
 
             </div>
+            
             <div className='p-7'>
                 <h1 className='text-3xl font-semibold'>Listing Results:</h1>
+                {loading && <p>Searching...</p>} 
+                {!loading && !searchedListings.length && (
+                    <p className="text-xl text-slate-700">No listings found!</p>
+                )}
+
+                <div className="flex gap-4 flex-wrap mt-8">
+                {searchedListings.length > 0 && searchedListings.map((listing, index) => 
+                    <ListingCard key={listing.id} listing={listing} index={index} />
+                )}
+                </div>
             </div>
             
         </div>

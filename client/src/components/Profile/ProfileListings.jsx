@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
-import Listing from "../Listing"
+import Listing from "../listings/Listing"
 import { deleteListing, fetchListings } from '../../store'
 
 export default function ProfileListings() {
