@@ -29,4 +29,10 @@ export const getListing = createAsyncThunk('listing/get', async id => {
     return response.data
 })
 
+export const searchListings = createAsyncThunk('/listings/search', async searchQuery => {
+    console.log('searchQuery: ', searchQuery)
+    const response = await axios.get('/api/listing/search?' + searchQuery)
+    return response.data
+})
+
 export const showListings = createAction('listings/show')

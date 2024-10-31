@@ -6,6 +6,7 @@ const listingSlice = createSlice({
   name: "listing",
   initialState: {
     listings: [],
+    searchListings: [],
     creating: false,
     loading: false,
     error: null,

@@ -71,7 +71,8 @@ export const getListing = async (req, res, next) => {
     }
 }
 
-export const getListings = async (req, res, next) => {
+export const searchListings = async (req, res, next) => {
+    console.log(req.query)
     try {
         const limit = +req.query.limit || 9 
         const startIndex = +req.query.startIndex || 0

@@ -6,3 +6,30 @@ body {
     box-sizing: border-box;
     background-color: #eee;
 }
+
+.swiper {
+    width: 100%;
+    height: 100%;
+    /* display: flex;
+    justify-content: center !important;
+    align-items: center !important; */
+    /* border: 1px solid lightgray; */
+    /* padding: 50px; */
+    /* margin-top: 25px; */
+    /* object-fit: cover; */
+}
+
+
+.swiper-slide {
+ 
+    display: flex;
+    justify-content: center !important;
+}
+
+.swiper-slide img {
+    /* border: 2px solid red; */
+    /* display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; */
+}

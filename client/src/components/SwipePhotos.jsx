@@ -1,26 +1,28 @@
-import SwiperCore from 'swiper'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Navigation } from 'swiper/modules'
-import 'swiper/css/bundle'
+// core version + navigation, pagination modules:
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Autoplay } from 'swiper/modules';
+// import Swiper and modules styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 export default function SwipePhotos({ images }) {
-  
-  SwiperCore.use(Navigation)
-
-  return (
-      <>
-        <Swiper navigation>
-          {images.map((url) => {
-            return (
-              <SwiperSlide key={url}>
-              <div
-                className='h-[550px] min-w-full' 
-                style={{ background: `url($url) center no-repeat`, backgroundSize: 'cover' }}
-              ></div>
-              </SwiperSlide>
-            )
-})}
-        </Swiper>
-      </>
-  )
+    return (
+            <Swiper 
+              modules={[Navigation, Autoplay]} 
+              navigation
+              pagination={{ clickable: false }}
+              loop
+              autoplay
+              spaceBetween={50}
+            >
+              {images.map((url) => {
+                return (
+                  <SwiperSlide key={url}>
+                      <img src={url} alt='image' className='h-[550px] w-full object-cover' />
+                  </SwiperSlide>
+                )
+              })}
+            </Swiper>
+          )
 }
