@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { useImageUpload } from '../hooks/useImageUpload'
 
 import { createListing } from '../store'
+import { useImageUpload } from '../hooks/image-upload-hook'
 
 const INITIAL_FORM = {
     imageUrls: [],

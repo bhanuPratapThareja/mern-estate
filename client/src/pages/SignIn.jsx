@@ -1,82 +1,79 @@
-import { useReducer } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from "react-router-dom";
 
-import { signInUser } from '../store';
 import OAuth from '../components/OAuth';
+import { signInUser } from '../store';
+import { useForm } from '../hooks/form-hook';
+import { VALIDATORS } from '../utils/types';
 
-const INITIAL_STATE = {
-  email: {
-    value: '',
-    error: ''
+const INITIAL_FORM_STATE = {
+  inputs: {
+    email: {
+      name: 'email',
+      placeholder: 'Email',
+      displayName: 'Email',
+      value: '',
+      error: '',
+      touched: false,
+      validations: [VALIDATORS.REQUIRED, VALIDATORS.EMAIL, '/^\S+@\S+\.\+$/.test(value)']
+    },
+    password: {
+      name: 'password',
+      placeholder: 'Password',
+      displayName: 'Password',
+      value: '',
+      error: '',
+      touched: false,
+      minLength: 8,
+      validations: [VALIDATORS.REQUIRED, VALIDATORS.MIN_LENGTH, VALIDATORS.ALPHA_NUMERIC]
+    }
   },
-  password: {
-    value: '',
-    error: ''
-  },
-  formError: null,
-  loading: false
-}
-
-const reducer = (state, action) => {
-  const { name, value } = action.payload
-  const newFormState = { ...state }
-  switch (action.type) {
-    case 'INPUT_CHANGE':
-      newFormState[name].value = value
-      return newFormState
-    default:
-      return state
-  }
+  formError: null
 }
 
 export default function SignIn() {
-  const [formState, dispatchFunction] = useReducer(reducer, INITIAL_STATE)
   const navigate = useNavigate()
   const dispatch = useDispatch()
-
   const { loading } = useSelector(state => state.user)
-
-  const handleChange = e => {
-    const { name, value } = e.target
-    const payload = { name, value }
-    dispatchFunction({ type: 'INPUT_CHANGE', payload })
-  }
+  const [formState, changeHandler, blurHandler] = useForm(INITIAL_FORM_STATE)
 
   const handleSubmit = async e => {
     e.preventDefault()
-
     const data = {
-      email: formState.email.value,
-      password: formState.password.value
+      email: formState.inputs.email.value,
+      password: formState.inputs.password.value
     }
-    
     dispatch(signInUser(data))
       .unwrap()
       .then(() => navigate('/'))
   }
 
+  const { email, password } = formState.inputs
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl text-center font-semibold my-7">Sign In</h1>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
-        <input
+      <input
           type="email"
-          placeholder="Email"
           className="border p-3 rounded-lg"
-          id="email"
-          name="email"
-          value={formState.email.value}
-          onChange={handleChange}
+          placeholder={email.placeholder}
+          id={email.name}
+          name={email.name}
+          value={email.value}
+          onChange={changeHandler}
+          onBlur={blurHandler}
         />
         <input
-          type="password"
-          placeholder="Password"
-          className="border p-3 rounded-lg"
-          id="password"
-          name="password"
-          value={formState.password.value}
-          onChange={handleChange}
+           type="password"
+           className="border p-3 rounded-lg"
+           placeholder={password.placeholder}
+           id={password.name}
+           name={password.name}
+           value={password.value}
+           minLength={password.minLength}
+           onChange={changeHandler}
+           onBlur={blurHandler}
         />
         <button type='submit' className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-70">
           {loading ? 'Loading...' : 'Sign In'}

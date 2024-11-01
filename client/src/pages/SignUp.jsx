@@ -1,60 +1,64 @@
-import { useState, useReducer } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios'
+
 import OAuth from '../components/OAuth';
+import { useForm } from '../hooks/form-hook'
+import { VALIDATORS } from '../utils/types';
 
 const INITIAL_FORM_STATE = {
-  username: {
-    value: '',
-    error: ''
-  },
-  email: {
-    value: '',
-    error: ''
-  },
-  password: {
-    value: '',
-    error: ''
+  inputs: {
+    username: {
+      name: 'username',
+      placeholder: 'User Name',
+      displayName: 'User Name',
+      value: '',
+      error: '',
+      touched: false,
+      validations: [VALIDATORS.REQUIRED]
+    },
+    email: {
+      name: 'email',
+      placeholder: 'Email',
+      displayName: 'Email ID',
+      value: '',
+      error: '',
+      touched: false,
+      validations: [VALIDATORS.REQUIRED, VALIDATORS.EMAIL]
+    },
+    password: {
+      name: 'password',
+      placeholder: 'Password',
+      displayName: 'Password',
+      value: '',
+      error: '',
+      touched: false,
+      minLength: 8,
+      validations: [VALIDATORS.REQUIRED, VALIDATORS.MIN_LENGTH, VALIDATORS.ALPHA_NUMERIC]
+    }
   },
   formError: null,
-  loading: false
-}
-
-const reducer = (state, action) => {
-  const { name, value } = action.payload
-  const newFormState = { ...state }
-  switch (action.type) {
-    case 'INPUT_CHANGE':
-      newFormState[name].value = value
-      return newFormState
-    default:
-      return state
-  }
 }
 
 export default function SignUp() {
-  const [formState, dispatch] = useReducer(reducer, INITIAL_FORM_STATE)
-  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
-
-  const handleChange = e => {
-    const payload = { name: e.target.name, value: e.target.value }
-    dispatch({ type: 'INPUT_CHANGE', payload })
-  }
+  const [loading, setLoading] = useState(false)
+  const [formState, changeHandler, blurHandler] = useForm(INITIAL_FORM_STATE) 
 
   const handleSubmit = async e => {
     e.preventDefault()
     setLoading(true)
 
     const data = {
-      username: formState.username.value,
-      email: formState.email.value,
-      password: formState.password.value
+      username: formState.inputs.username.value,
+      email: formState.inputs.email.value,
+      password: formState.inputs.password.value
     }
 
+    console.log(data)
+    
     try {
       await axios.post('/api/auth/signup', data)
-      
       navigate('/sign-in')
     } catch (error) {
       console.log('sign up err: ', error)
@@ -63,37 +67,49 @@ export default function SignUp() {
     }
   }
 
+  const { username, email, password } = formState.inputs
+// console.log(email)
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl text-center font-semibold my-7">Sign Up</h1>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
         <input
           type="text"
-          placeholder="User Name"
           className="border p-3 rounded-lg"
-          id="userName"
-          name="username"
-          value={formState.username.value}
-          onChange={handleChange}
+          placeholder={username.placeholder}
+          id={username.name}
+          name={username.name}
+          value={username.value}
+          onChange={changeHandler}
+          onBlur={blurHandler}
         />
-        <input
+        {username.error && <p className='text-sm text-red-700 font-semibold ml-1'>{username.error}</p>}
+
+       <input
           type="email"
-          placeholder="Email"
           className="border p-3 rounded-lg"
-          id="email"
-          name="email"
-          value={formState.email.value}
-          onChange={handleChange}
+          placeholder={email.placeholder}
+          id={email.name}
+          name={email.name}
+          value={email.value}
+          onChange={changeHandler}
+          onBlur={blurHandler}
         />
+        {email.error && <p className='text-sm text-red-700 font-semibold ml-1'>{email.error}</p>}
+
         <input
-          type="password"
-          placeholder="Password"
-          className="border p-3 rounded-lg"
-          id="password"
-          name="password"
-          value={formState.password.value}
-          onChange={handleChange}
+           type="password"
+           className="border p-3 rounded-lg"
+           placeholder={password.placeholder}
+           id={password.name}
+           name={password.name}
+           value={password.value}
+           minLength={password.minLength}
+           onChange={changeHandler}
+           onBlur={blurHandler}
         />
+        {password.error && <p className='text-sm text-red-700 font-semibold ml-1'>{password.error}</p>}
+
         <button type='submit' disabled={loading} className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-70">
           {loading ? 'Loading...' : 'Sign Up'}
         </button>

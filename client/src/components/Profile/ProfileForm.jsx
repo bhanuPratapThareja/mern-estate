@@ -1,8 +1,9 @@
 import { useRef, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from "react-redux"
 import { Link } from 'react-router-dom'
-import { useImageUpload } from '../../hooks/useImageUpload'
+
 import { updateUser  } from '../../store'
+import { useImageUpload } from '../../hooks/image-upload-hook'
 
 const INITIAL_USER_STATE = { username: '', email: '', password: '', avatar: '' }
 
