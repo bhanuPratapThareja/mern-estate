@@ -15,6 +15,11 @@ const listingSlice = createSlice({
     show: false,
     selectedListing: null
   },
+  reducers: {
+    resetSerchedListings(state) {
+      state.searchedListings = []
+    }
+  },
   extraReducers(builder) {
     builder
       .addCase(createListing.pending, (state) => {
@@ -89,10 +94,11 @@ const listingSlice = createSlice({
       })
       .addCase(searchListings.fulfilled, (state, action) => {
         state.loading = false
-        console.log('action.payload: ', action.payload)
         state.searchedListingsLength = action.payload.length
-        state.searchedListings = [ ...state.searchedListings, ...action.payload ]
-        // state.searchedListings = [ ]
+        const combinedListings = [ ...state.searchedListings, ...action.payload ]
+        const listingsObject = combinedListings.map(JSON.stringify)
+        const uniqueListings = Array.from(new Set(listingsObject)).map(JSON.parse)
+        state.searchedListings = uniqueListings
       })
       .addCase(searchListings.rejected, (state, action) => {
         state.loading = false
@@ -108,4 +114,5 @@ const listingSlice = createSlice({
   },
 });
 
+export const listingSliceActions = listingSlice.actions
 export default listingSlice.reducer;

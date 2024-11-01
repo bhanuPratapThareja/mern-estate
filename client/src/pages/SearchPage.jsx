@@ -2,8 +2,9 @@ import { useState, useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 
-import { searchListings } from "../store/actions/listingActions"
 import ListingCard from "../components/listings/ListingCard"
+import { searchListings } from "../store"
+import { listingSliceActions } from "../store"
 
 const INITIAL_FORM_STATE = {
     searchTerm: '',
@@ -52,6 +53,7 @@ export default function SearchPage() {
     }
 
    const getSearchListings = searchQuery => {
+    dispatch(listingSliceActions.resetSerchedListings())
     dispatch(searchListings(searchQuery))
    }
 
@@ -97,8 +99,6 @@ export default function SearchPage() {
         dispatch(searchListings(searchQuery))
     }
 
-    console.log('searchedListingsLength: ', searchedListingsLength)
-
     return (
         <div className='flex flex-col md:flex-row md:min-h-screen'>
             <div className='p-7 min-w-[30%] flex-4 flex-wrap border-b-2 md:border-b-0 md:border-r-2'>
@@ -119,33 +119,33 @@ export default function SearchPage() {
                     <div className="flex flex-wrap gap-2 items-center">
                         
                         <fieldset id="type" name='type' className='flex flex-wrap gap-2' >
-                            <div className="flex gap-2">
-                                <input type="radio" name="type" id="all" className='w-5' checked={formData.type === 'all'} onChange={(e) => handleChange(e, 'radio')} />
+                            <div className="flex gap-2 items-center">
+                                <input type="radio" name="type" id="all" className='w-5 h-5' checked={formData.type === 'all'} onChange={(e) => handleChange(e, 'radio')} />
                                 <label htmlFor="all">Rent & sale</label>
                             </div>
-                            <div className='flex gap-2'>
-                                <input type="radio" name='type' id='rent' className='w-5' checked={formData.type === 'rent'} onChange={(e) => handleChange(e, 'radio')} />
+                            <div className='flex gap-2 items-center'>
+                                <input type="radio" name='type' id='rent' className='w-5 h-5' checked={formData.type === 'rent'} onChange={(e) => handleChange(e, 'radio')} />
                                 <label htmlFor="rent">Rent</label>
                             </div>
-                            <div className='flex gap-2'>
-                                <input type="radio" name='type' id='sale' className='w-5' checked={formData.type === 'sale'} onChange={(e) => handleChange(e, 'radio')} />
+                            <div className='flex gap-2 items-center'>
+                                <input type="radio" name='type' id='sale' className='w-5 h-5' checked={formData.type === 'sale'} onChange={(e) => handleChange(e, 'radio')} />
                                 <label htmlFor="sale">Sale</label>
                             </div>
                         </fieldset>
                        
-                        <div className="flex gap-2">
-                            <input type="checkbox" name="offer" id="offer" className='w-5' checked={formData.offer} onChange={handleChange} />
+                        <div className="flex gap-2 items-center">
+                            <input type="checkbox" name="offer" id="offer" className='w-5 h-5' checked={formData.offer} onChange={handleChange} />
                             <label htmlFor="offer">Offer</label>
                         </div>
                     </div>
                     <div className="flex flex-wrap gap-2 items-center">
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 items-center">
                             <label htmlFor="type">Amenities:</label>
-                            <input type="checkbox" name="parking" id="parking" className='w-5' checked={formData.parking} onChange={handleChange}  />
+                            <input type="checkbox" name="parking" id="parking" className='w-5 h-5' checked={formData.parking} onChange={handleChange}  />
                             <label htmlFor="parking">Parking</label>
                         </div>
-                        <div className="flex gap-2">
-                            <input type="checkbox" name="furnished" id="furnished" className='w-5' checked={formData.furnished} onChange={handleChange}  />
+                        <div className="flex gap-2 items-center">
+                            <input type="checkbox" name="furnished" id="furnished" className='w-5 h-5' checked={formData.furnished} onChange={handleChange}  />
                             <label htmlFor="furnished">Furnished</label>
                         </div>
                     </div>

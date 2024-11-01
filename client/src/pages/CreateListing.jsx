@@ -113,26 +113,26 @@ export default function CreateListing() {
                     <div className='flex gap-6 flex-wrap'>
 
                         <fieldset id="type" name='type' className='flex gap-2' >
-                            <div className='flex gap-2'>
-                                <input type="radio" name='type' id='sale' className='w-5' checked={formData.type === 'sale'} onChange={(e) => handleChange(e, 'radio', 'type')} />
+                            <div className='flex gap-2 items-center'>
+                                <input type="radio" name='type' id='sale' className='w-5 h-5' checked={formData.type === 'sale'} onChange={(e) => handleChange(e, 'radio', 'type')} />
                                 <label htmlFor="sale">Sale</label>
                             </div>
-                            <div className='flex gap-2'>
-                                <input type="radio" name='type' id='rent' className='w-5' checked={formData.type === 'rent'} onChange={(e) => handleChange(e, 'radio', 'type')} />
+                            <div className='flex gap-2 items-center'>
+                                <input type="radio" name='type' id='rent' className='w-5 h-5' checked={formData.type === 'rent'} onChange={(e) => handleChange(e, 'radio', 'type')} />
                                 <label htmlFor="rent">Rent</label>
                             </div>
                         </fieldset>
 
-                        <div className='flex gap-2'>
-                            <input type="checkbox" name='parking' id='parking' className='w-5' checked={formData.parking} onChange={(e) => handleChange(e, 'checkbox')} />
+                        <div className='flex gap-2 items-center'>
+                            <input type="checkbox" name='parking' id='parking' className='w-5 h-5' checked={formData.parking} onChange={(e) => handleChange(e, 'checkbox')} />
                             <label htmlFor="parking">Parking Spot</label>
                         </div>
-                        <div className='flex gap-2'>
-                            <input type="checkbox" name='furnished' id='furnished' className='w-5' checked={formData.furnished} onChange={(e) => handleChange(e, 'checkbox')}  />
+                        <div className='flex gap-2 items-center'>
+                            <input type="checkbox" name='furnished' id='furnished' className='w-5 h-5' checked={formData.furnished} onChange={(e) => handleChange(e, 'checkbox')}  />
                             <label htmlFor="furnished">Furnished</label>
                         </div>
-                        <div className='flex gap-2'>
-                            <input type="checkbox" name='offer' id='offer' className='w-5' checked={formData.offer} onChange={(e) => handleChange(e, 'checkbox')} />
+                        <div className='flex gap-2 items-center'>
+                            <input type="checkbox" name='offer' id='offer' className='w-5 h-5' checked={formData.offer} onChange={(e) => handleChange(e, 'checkbox')} />
                             <label htmlFor="offer">Offer</label>
                         </div>
                     </div>

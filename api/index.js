@@ -38,8 +38,8 @@ mongoose
   .then(() => {
     console.log("Connected to DB Estate");
     app.listen(
-      process.env.PORT,
-      console.log(`Server is running on port ${process.env.PORT}`)
+      process.env.PORT || 5000,
+      console.log(`Server is running on port ${process.env.PORT || 5000}`)
     );
   })
   .catch((err) => console.log('Error connect to DB ', err));
