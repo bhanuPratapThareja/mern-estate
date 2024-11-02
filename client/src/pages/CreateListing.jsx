@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useLocation, useParams } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { createListing } from '../store'
@@ -23,14 +23,13 @@ const INITIAL_FORM = {
 export default function CreateListing() {
     const dispatch = useDispatch()
     const location = useLocation()
-    const params = useParams()
     const [files, setFiles] = useState([])
     const [formData, setFormData] = useState(INITIAL_FORM)
     const [imageUploadError, setImageUploadError] = useState('')
     const [uploading, setUploading] = useState(false)
     const [mode, setMode] = useState('create')
 
-    const { uploadImage, custJSX } = useImageUpload() 
+    const { uploadImage } = useImageUpload() 
     const { creating, error } = useSelector(state => state.listings)
 
     useEffect(() => {

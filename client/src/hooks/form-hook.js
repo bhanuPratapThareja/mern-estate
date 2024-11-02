@@ -52,6 +52,14 @@ export const useForm = (initialFormState) => {
         }
     }
 
+    function updateFormHandler(formData) {
+        for(let key in formData) {
+            const name = key
+            const value = formData[key]
+            dispatch({ type: CHANGE, payload: { name, value }})
+        }
+    }
 
-    return [formState, changeHandler, blurHandler, formValidateHandler]
+
+    return [formState, changeHandler, blurHandler, formValidateHandler, updateFormHandler]
 }

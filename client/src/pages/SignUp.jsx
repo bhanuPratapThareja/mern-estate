@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import axios from 'axios'
 
 import OAuth from '../components/OAuth';
 import { useForm } from '../hooks/form-hook'
 import { VALIDATORS } from '../utils/types';
+import { signUpUser } from '../store'
 
 const INITIAL_FORM_STATE = {
   inputs: {
@@ -47,14 +47,14 @@ const INITIAL_FORM_STATE = {
 }
 
 export default function SignUp() {
+  const dispatch = useDispatch()
   const navigate = useNavigate()
-  const [loading, setLoading] = useState(false)
+  const { loading, error } = useSelector(state => state.user)
   const [formState, changeHandler, blurHandler, formValidateHandler] = useForm(INITIAL_FORM_STATE) 
 
 
   const handleSubmit = async e => {
     e.preventDefault()
-    setLoading(true)
 
     formValidateHandler()
     if(!formState.isFormValid) {
@@ -67,18 +67,14 @@ export default function SignUp() {
       password: formState.inputs.password.value
     }
     
-    try {
-      await axios.post('/api/auth/signup', data)
-      navigate('/sign-in')
-    } catch (error) {
-      console.log('sign up err: ', error)
-    } finally {
-      setLoading(false)
-    }
+    dispatch(signUpUser(data))
+      .then(() => {
+        navigate('/sign-in')
+      })
   }
 
   const { username, email, password } = formState.inputs
-// console.log(email)
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl text-center font-semibold my-7">Sign Up</h1>

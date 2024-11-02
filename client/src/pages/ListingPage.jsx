@@ -13,11 +13,6 @@ export default function ListingPage() {
   const dispatch = useDispatch();
   const [contact, setContact] = useState(false)
 
-  // const { listings: { selectedListing: listing, loading, error} } = useSelector(
-  //   (state) => state
-  // );
-  // const { currentUser } = useSelector(state => state.user)
-
   const { listing, loading, error, currentUser} = useSelector(state => {
     const { listings: { selectedListing, loading, error }, user: { currentUser} } = state
     return { listing: selectedListing, loading, error, currentUser }

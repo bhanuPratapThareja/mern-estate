@@ -1,6 +1,11 @@
 import { createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import axios from 'axios'
 
+export const signUpUser = createAsyncThunk('user/signup', async user => {
+    const response = await axios.post('/api/auth/signup', user)
+    return response.data
+})
+
 export const signInUser = createAsyncThunk('user/signin', async user => {
     const response = await axios.post('/api/auth/signin', user)
     return response.data

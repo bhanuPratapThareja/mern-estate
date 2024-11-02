@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from "react-router-dom";
 
@@ -30,14 +31,20 @@ const INITIAL_FORM_STATE = {
       validations: [VALIDATORS.REQUIRED]
     }
   },
-  formError: null
+  isFormValid: null
 }
 
 export default function SignIn() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const { loading } = useSelector(state => state.user)
-  const [formState, changeHandler, blurHandler, formValidateHandler] = useForm(INITIAL_FORM_STATE)
+  const { loading, signedUpUser } = useSelector(state => state.user)
+  const [formState, changeHandler, blurHandler, formValidateHandler, updateFormHandler] = useForm(INITIAL_FORM_STATE)
+
+  useEffect(() => {
+    if(signedUpUser) {
+      updateFormHandler(signedUpUser)
+    }
+  }, [])
 
   const handleSubmit = async e => {
     e.preventDefault()
