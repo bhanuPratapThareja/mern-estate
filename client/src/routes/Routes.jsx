@@ -12,6 +12,7 @@ import CreateListing from '../pages/CreateListing'
 import ListingPage from '../pages/ListingPage'
 import SearchPage from '../pages/SearchPage'
 import PageNotFound from '../pages/PageNotFound'
+import RedirectPage from '../pages/RedirectPage'
 
 export const router = createBrowserRouter([
     {
@@ -45,6 +46,10 @@ export const router = createBrowserRouter([
             {
                 path: '/search',
                 element: <SearchPage />
+            },
+            {
+                path: '/redirect',
+                element: <RedirectPage />
             },
             {
                 element: <PrivateRoutes />,
