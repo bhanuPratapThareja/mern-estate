@@ -106,7 +106,6 @@ const listingSlice = createSlice({
       })
 
       .addCase(signoutUser.fulfilled, (state) => {
-          console.log('signoutUser state: ', state)
           state.listings = [];
           state.creating = false;
           state.error = null;

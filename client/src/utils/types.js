@@ -5,6 +5,6 @@ export const VALIDATORS = {
     REQUIRED: 'required',
     EMAIL: 'email',
     MIN_LENGTH: 'minLength',
-    MAX_LENGTH: 'minLength',
+    MAX_LENGTH: 'maxLength',
     ALPHA_NUMERIC: 'alphaNumeric'
 }

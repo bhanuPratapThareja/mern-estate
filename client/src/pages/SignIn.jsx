@@ -10,22 +10,24 @@ const INITIAL_FORM_STATE = {
   inputs: {
     email: {
       name: 'email',
+      type: 'email',
       placeholder: 'Email',
       displayName: 'Email',
       value: '',
       error: '',
       touched: false,
-      validations: [VALIDATORS.REQUIRED, VALIDATORS.EMAIL, '/^\S+@\S+\.\+$/.test(value)']
+      validations: [VALIDATORS.REQUIRED, VALIDATORS.EMAIL]
     },
     password: {
       name: 'password',
+      type: 'password',
       placeholder: 'Password',
       displayName: 'Password',
       value: '',
       error: '',
       touched: false,
       minLength: 8,
-      validations: [VALIDATORS.REQUIRED, VALIDATORS.MIN_LENGTH, VALIDATORS.ALPHA_NUMERIC]
+      validations: [VALIDATORS.REQUIRED]
     }
   },
   formError: null
@@ -35,10 +37,16 @@ export default function SignIn() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { loading } = useSelector(state => state.user)
-  const [formState, changeHandler, blurHandler] = useForm(INITIAL_FORM_STATE)
+  const [formState, changeHandler, blurHandler, formValidateHandler] = useForm(INITIAL_FORM_STATE)
 
   const handleSubmit = async e => {
     e.preventDefault()
+
+    formValidateHandler()
+    if(!formState.isFormValid) {
+      return
+    }
+
     const data = {
       email: formState.inputs.email.value,
       password: formState.inputs.password.value
@@ -64,6 +72,8 @@ export default function SignIn() {
           onChange={changeHandler}
           onBlur={blurHandler}
         />
+        {email.error && <p className='text-sm text-red-700 font-semibold ml-1'>{email.error}</p>}
+
         <input
            type="password"
            className="border p-3 rounded-lg"
@@ -75,6 +85,8 @@ export default function SignIn() {
            onChange={changeHandler}
            onBlur={blurHandler}
         />
+         {password.error && <p className='text-sm text-red-700 font-semibold ml-1'>{password.error}</p>}
+
         <button type='submit' className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-70">
           {loading ? 'Loading...' : 'Sign In'}
         </button>

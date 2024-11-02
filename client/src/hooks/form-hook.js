@@ -1,10 +1,10 @@
 import { useReducer } from "react";
 
 import { CHANGE, BLUR } from "../utils/types";
-import { validateInput } from "../utils/form-validations";
+import { validateInput, validateForm } from "../utils/form-validations";
 
 const reducer = (state, action) => {
-    const { name, value, checked, type, id, touched, validations } = action.payload
+    const { name, value, validations  } = action.payload
     const newState = { ...state }
     const newInput = newState.inputs[name]
 
@@ -12,13 +12,14 @@ const reducer = (state, action) => {
         case CHANGE:
             newInput.value = value
             if(newInput.touched) {
-                newInput.error = validateInput(newInput)
+                newInput.error = validateInput(newInput)           
             }
             return newState
         case BLUR:
             newInput.touched = true
             if(validations && validations.length) {
                 newInput.error = validateInput(newInput)
+                newState.isFormValid = validateForm(newState)
             }
             return newState
         default:
@@ -36,11 +37,21 @@ export const useForm = (initialFormState) => {
     }
 
     function blurHandler(e) {
-        // const { name, value } = e.target
-        // const { touched, validations } = formState.inputs[name]
-        // const payload = { name, value, touched, validations }
-        // dispatch({ type: BLUR, payload })
+        const { name, value } = e.target
+        const { touched, validations } = formState.inputs[name]
+        const payload = { name, value, touched, validations }
+        dispatch({ type: BLUR, payload })
     }
 
-    return [formState, changeHandler, blurHandler]
+    function formValidateHandler() {
+        for(let key in formState.inputs) {
+            const input = formState.inputs[key]
+            const { name, value, touched, validations } = input
+            const payload = { name, value, touched, validations }
+            dispatch({ type: BLUR, payload })
+        }
+    }
+
+
+    return [formState, changeHandler, blurHandler, formValidateHandler]
 }

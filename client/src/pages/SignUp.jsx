@@ -10,15 +10,19 @@ const INITIAL_FORM_STATE = {
   inputs: {
     username: {
       name: 'username',
+      type: 'text',
       placeholder: 'User Name',
       displayName: 'User Name',
       value: '',
       error: '',
       touched: false,
-      validations: [VALIDATORS.REQUIRED]
+      minLength: 4,
+      maxLength: 20,
+      validations: [VALIDATORS.REQUIRED, VALIDATORS.MIN_LENGTH, VALIDATORS.MAX_LENGTH]
     },
     email: {
       name: 'email',
+      type: 'email',
       placeholder: 'Email',
       displayName: 'Email ID',
       value: '',
@@ -28,34 +32,40 @@ const INITIAL_FORM_STATE = {
     },
     password: {
       name: 'password',
+      type: 'password',
       placeholder: 'Password',
       displayName: 'Password',
       value: '',
       error: '',
       touched: false,
       minLength: 8,
-      validations: [VALIDATORS.REQUIRED, VALIDATORS.MIN_LENGTH, VALIDATORS.ALPHA_NUMERIC]
+      maxLength: 16,
+      validations: [VALIDATORS.REQUIRED, VALIDATORS.ALPHA_NUMERIC, VALIDATORS.MIN_LENGTH, VALIDATORS.MAX_LENGTH]
     }
   },
-  formError: null,
+  isFormValid: false,
 }
 
 export default function SignUp() {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
-  const [formState, changeHandler, blurHandler] = useForm(INITIAL_FORM_STATE) 
+  const [formState, changeHandler, blurHandler, formValidateHandler] = useForm(INITIAL_FORM_STATE) 
+
 
   const handleSubmit = async e => {
     e.preventDefault()
     setLoading(true)
+
+    formValidateHandler()
+    if(!formState.isFormValid) {
+      return
+    }
 
     const data = {
       username: formState.inputs.username.value,
       email: formState.inputs.email.value,
       password: formState.inputs.password.value
     }
-
-    console.log(data)
     
     try {
       await axios.post('/api/auth/signup', data)
