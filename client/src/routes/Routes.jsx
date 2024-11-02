@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 
 import RootLayout from '../layouts/RootLayout'
 import PrivateRoutes from '../routes/PrivateRoutes'
@@ -11,12 +11,17 @@ import Profile from '../pages/Profile'
 import CreateListing from '../pages/CreateListing'
 import ListingPage from '../pages/ListingPage'
 import SearchPage from '../pages/SearchPage'
+import PageNotFound from '../pages/PageNotFound'
 
 export const router = createBrowserRouter([
     {
         path: '/',
         element: <RootLayout />,
         children: [
+            {
+                path: '/home',
+                element: <Navigate to='/' />
+            },
             {
                 path: '/',
                 element: <Home />
@@ -58,6 +63,10 @@ export const router = createBrowserRouter([
                     },
                 ]
             },
+            {
+                path: '*',
+                element: <PageNotFound />
+            }
         ]
     }
 ])

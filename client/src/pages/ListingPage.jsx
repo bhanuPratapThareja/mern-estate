@@ -23,14 +23,16 @@ export default function ListingPage() {
   }, []);
 
   if (!listing) {
-    <p>No Listing Selected</p>;
+    <p className="border-2 border-green-500">No Listing Selected</p>;
   }
 
   return (
     <main>
       {loading && <p className="text-center my-7 text-2xl">Loading</p>}
       {error && (
-        <p className="text-center my-7 text-2xl">Something went wrong!</p>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <p className="text-4xl font-semibold text-slate-700">Something went wrong!</p>
+        </div>
       )}
       {listing && (
         <div className="flex flex-col items-center">
