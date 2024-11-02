@@ -23,6 +23,8 @@ export default function ProfileAuth() {
     
     const onSignout = () => {
         dispatch(signoutUser())
+          .unwrap()
+          .then(() => navigate('/sign-in'))
     }
 
     return (
