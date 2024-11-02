@@ -4,6 +4,7 @@ import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth'
 import { app } from '../firebase'
 import axios from 'axios'
 
+import Button from '../shared/Button'
 import { userSliceActions } from '../store'
 
 export default function OAuth() {
@@ -26,12 +27,11 @@ export default function OAuth() {
     }
 
   return (
-    <button
-      type="button"
-      className="bg-red-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-70"
+    <Button
+      type="button" 
+      text="Continue With Google"
+      className="bg-red-700" 
       onClick={handleGoogleClick}
-    >
-      Continue With Google
-    </button>
+    />
   );
 }

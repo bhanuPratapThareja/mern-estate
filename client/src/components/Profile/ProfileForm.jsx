@@ -1,13 +1,15 @@
 import { useRef, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from "react-redux"
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
+import Button from '../../shared/Button'
 import { updateUser  } from '../../store'
 import { useImageUpload } from '../../hooks/image-upload-hook'
 
 const INITIAL_USER_STATE = { username: '', email: '', password: '', avatar: '' }
 
 export default function ProfileForm() {
+    const navigate = useNavigate()
     const fileRef = useRef()
     const [file, setFile] = useState(null)
     const [formData, setFormData] = useState(INITIAL_USER_STATE)
@@ -46,17 +48,19 @@ export default function ProfileForm() {
     return (
         <form className="flex flex-col gap-4">
             <input 
-            type="file" 
-            ref={fileRef} 
-            hidden 
-            accept='image/*' 
-            onChange={e => setFile(e.target.files[0])}
+              type="file" 
+              name="avatar"
+              ref={fileRef} 
+              hidden 
+              accept='image/*'
+              value={''}
+              onChange={e => setFile(e.target.files[0])}
             />
             <img 
-            src={formData.avatar || currentUser.avatar} 
-            alt="avatar"
-            onClick={() => fileRef.current.click()}
-            className="rounded-full h-24 w-24 object-cover cursor-pointer my-2 self-center" 
+              src={formData.avatar || currentUser.avatar} 
+              alt="avatar"
+              onClick={() => fileRef.current.click()}
+              className="rounded-full h-24 w-24 object-cover cursor-pointer my-2 self-center" 
             />
             <p className='self-center'>
             {imagerUploadError ? 
@@ -72,13 +76,8 @@ export default function ProfileForm() {
             <input type="email" value={formData.email} name='email' placeholder="Email" onChange={handleChange} className="border p-3 rounded-lg" />
             <input type="password" value={formData.password} name='password' placeholder="Password" onChange={handleChange} className="border p-3 rounded-lg" />
 
-            <button onClick={onHandleUpdate} className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-75">
-            {updating ? 'Updating': 'Update'}
-            </button>
-            
-            <Link to="/create-listing" className="bg-green-700 text-white text-center rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-75">
-                Create Listing
-            </Link>
+            <Button type="button" text={updating ? 'Updating': 'Update'} className="bg-slate-700" onClick={onHandleUpdate} />
+            <Button type="button" text="Create Listing" className="bg-green-700" onClick={() => navigate('/create-listing')} />
 
             <p className='text-red-700'>{error ? error.message : ''}</p>
             <p className='text-green-700'>{updateSuccess ? 'User is updated successfully!' : ''}</p>

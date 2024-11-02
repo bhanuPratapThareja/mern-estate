@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
+import Button from '../shared/Button'
 import { createListing } from '../store'
 import { useImageUpload } from '../hooks/image-upload-hook'
 
@@ -49,7 +50,6 @@ export default function CreateListing() {
             }
             Promise.all(promises)
                 .then(urls => {
-                    console.log('urlsL ', urls)
                     setFormData({ ...formData, imageUrls: [...formData.imageUrls, ...urls] })
                 })
                 .catch(err => {
@@ -90,7 +90,6 @@ export default function CreateListing() {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        console.log(formData)
         dispatch(createListing({ listing: formData, mode }))
             .unwrap()
             .then((res) => {
@@ -174,17 +173,22 @@ export default function CreateListing() {
                         </button>
                     </div>
                      <p className='text-red-700 text-sm'>{imageUploadError && imageUploadError}</p>
-                    {custJSX}
+
                      {formData.imageUrls.length > 0 && formData.imageUrls.map((url, i) => (
                         <div className='flex justify-between p-3 border-2 items-center' key={url}>
                             <img src={url} alt="listing image" className='w-20 h-20 object-contain rounded-lg' />
                             <button type='button' onClick={() => onRemoveImage(i)} className='p-3 text-red-700 rounded-lg uppercase hover:opacity-75'>Delete</button>
                         </div>
                      ))}
-
+{/* 
                     <button type='submit' className='p-3 bg-slate-700 rounded-lg text-white uppercase disabled:opacity-70 hover:opacity-95'>
                         {mode === 'edit' ? 'Edit Listing' : creating ? 'Creating...' : 'Create Listing'}
-                    </button>
+                    </button> */}
+                    <Button 
+                        type="submit" 
+                        text={mode === 'edit' ? 'Edit Listing!x' : creating ? 'Creating...' : 'Create Listing!'} 
+                        className="bg-slate-700"
+                    />
                     {error && <p className='text-red-700 text-sm'>{error.message}</p>}
                 </div>
             </form>
