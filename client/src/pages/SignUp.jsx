@@ -51,7 +51,7 @@ export default function SignUp() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { loading, error } = useSelector(state => state.user)
-  const [formState, changeHandler, blurHandler, formValidateHandler,, formResetHandler] = useForm(INITIAL_FORM_STATE) 
+  const { formState, changeHandler, blurHandler, formValidateHandler, formResetHandler } = useForm(INITIAL_FORM_STATE) 
 
   useEffect(() => {
     formResetHandler()

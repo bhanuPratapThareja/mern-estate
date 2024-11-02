@@ -19,22 +19,31 @@ const validateAlphaNumeric = (value) => {
 
 export const validateInput = (input) => {
   let error = "";
-  for (let validation of input.validations) {
+  const validations = input.validations
+
+  if(!validations) {
+    return ""
+  }
+  
+  for (let validation of validations) {
     if (!input.value && validation === VALIDATORS.REQUIRED) {
       // console.log("REQUIRED");
       error = `${input.displayName} is required`;
+      break
+    }
+
+    if (input.value && validation === VALIDATORS.EMAIL) {
+      // console.log("EMAIL");
+      if (!validateEmail(input.value)) {
+        error = `${input.displayName} is not valid`;
+        console.log(error)
+        break
+      }
     }
 
     if (input.value && TEXT_INPUTS.includes(input.type)) {
-      if (validation === VALIDATORS.EMAIL) {
-        // console.log("EMAIL");
-        if (!validateEmail(input.value)) {
-          error = `${input.displayName} is not valid`;
-        }
-      }
-
       if (validation === VALIDATORS.ALPHA_NUMERIC) {
-        // console.log("ALPHA_NUMERIC");
+        console.log("ALPHA_NUMERIC");
         if (!validateAlphaNumeric(input.value)) {
           // console.log("ALPHA_NUMERIC_INNER");
           error = `${input.displayName} must be Alpha Numeric`;
@@ -64,11 +73,23 @@ export const validateInput = (input) => {
 
 export const validateForm = (formState) => {
   let isValid = true
+  let areThereValidations = []
+  
   for (const key in formState.inputs) {
-   if(formState.inputs[key].error) {
-      isValid = false
-      break;
-   }
+    const { validations } = formState.inputs[key]
+    areThereValidations.push(...validations)
+  }
+
+  if(!areThereValidations.length) {
+    return true
+  }
+
+  for (const key in formState.inputs) {
+    const { validations, error } = formState.inputs[key]
+    if(validations && validations.length && error) {
+        isValid = false
+        break;
+    }
   }
   return isValid
 }
@@ -76,9 +97,10 @@ export const validateForm = (formState) => {
 export const resetForm = formState => {
   const resetState = { ...formState }
   for(let key in formState.inputs) {
-    formState.inputs[key].value = ''
-    formState.inputs[key].error = ''
-    formState.inputs[key].touched = false
+    resetState.inputs[key].value = ''
+    resetState.inputs[key].error = ''
+    resetState.inputs[key].touched = false
   }
+  resetState.isFormValid = false
   return resetState
 }

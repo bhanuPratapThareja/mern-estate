@@ -5,82 +5,177 @@ import { useNavigate } from 'react-router-dom'
 import Button from '../../shared/Button'
 import { updateUser  } from '../../store'
 import { useImageUpload } from '../../hooks/image-upload-hook'
+import { useForm } from '../../hooks/form-hook'
+import { VALIDATORS } from '../../utils/types'
 
-const INITIAL_USER_STATE = { username: '', email: '', password: '', avatar: '' }
+const INITIAL_PROFILE_STATE = { 
+  inputs: {
+    username: {
+      name: 'username',
+      type: 'text',
+      placeholder: 'User Name',
+      displayName: 'User Name',
+      value: '',
+      error: '',
+      touched: false,
+      minLength: 4,
+      maxLength: 20,
+      validations: [VALIDATORS.MIN_LENGTH, VALIDATORS.MAX_LENGTH]
+    },
+    email: {
+      name: 'email',
+      type: 'email',
+      placeholder: 'Email',
+      displayName: 'Email ID',
+      value: '',
+      error: '',
+      touched: false,
+      validations: [VALIDATORS.EMAIL]
+    },
+    password: {
+      name: 'password',
+      type: 'password',
+      placeholder: 'Password',
+      displayName: 'Password',
+      value: '',
+      error: '',
+      touched: false,
+      minLength: 8,
+      maxLength: 16,
+      validations: [VALIDATORS.ALPHA_NUMERIC, VALIDATORS.MIN_LENGTH, VALIDATORS.MAX_LENGTH]
+    },
+    avatar: {
+      name: 'avatar',
+      type: 'avatar',
+      placeholder: 'Avatar',
+      displayName: 'Profile Image',
+      value: '',
+      error: '',
+      touched: false,
+      validations: []
+    }
+  },
+  isFormValid: false
+}
 
 export default function ProfileForm() {
+    const dispatch = useDispatch()
     const navigate = useNavigate()
     const fileRef = useRef()
     const [file, setFile] = useState(null)
-    const [formData, setFormData] = useState(INITIAL_USER_STATE)
-    const { currentUser, updating, error } = useSelector(state => state.user)
-    const { imageUploadProgress, imagerUploadError, imageUrl, uploadImage } = useImageUpload()
     const [updateSuccess, setUpdateSuccess] = useState(false)
-    const dispatch = useDispatch()
+    const { currentUser, updating, error } = useSelector(state => state.user)
+    
+    const { imageUploadProgress, imagerUploadError, imageUrl, uploadImage } = useImageUpload()
+    const {
+      formState, changeHandler, blurHandler, formValidateHandler, formUpdateHandler, formResetHandler
+     } = useForm(INITIAL_PROFILE_STATE)
 
     useEffect(() => {
-        if(file) {
-          uploadImage(file)
-        }
+      if(file) uploadImage(file)
     }, [file])
     
     useEffect(() => {
-    if(imageUrl) {
-        setFormData({ ...formData, avatar: imageUrl })
-    }
+      if(imageUrl) formUpdateHandler({ avatar: imageUrl })
     }, [imageUrl])
 
     const onHandleUpdate = e => {
-        e.preventDefault()
-        setUpdateSuccess(false)
-        dispatch(updateUser({ formData, id: currentUser.id }))
-          .unwrap()
-          .then(() => {
-            setFormData(INITIAL_USER_STATE)
-            setUpdateSuccess(true)
-          })
+      e.preventDefault()
+      formValidateHandler()
+
+      if(!formState.isFormValid) {
+        return
       }
+
+      const data = {
+        username: formState.inputs.username.value,
+        email: formState.inputs.email.value,
+        password: formState.inputs.password.value,
+        avatar: formState.inputs.avatar.value
+      }
+
+      dispatch(updateUser({ data, id: currentUser.id }))
+        .unwrap()
+        .then(() => {
+          formResetHandler()
+          setUpdateSuccess(true)
+        })
+    }
     
-      const handleChange = e => {
-        setFormData({ ...formData, [e.target.name]: e.target.value })
-      }
+    const handleChange = e => {
+      setUpdateSuccess(false)
+      changeHandler(e)
+    }
+
+    const { username, email, password, avatar } = formState.inputs
 
     return (
-        <form className="flex flex-col gap-4">
-            <input 
-              type="file" 
-              name="avatar"
-              ref={fileRef} 
-              hidden 
-              accept='image/*'
-              value={''}
-              onChange={e => setFile(e.target.files[0])}
-            />
-            <img 
-              src={formData.avatar || currentUser.avatar} 
-              alt="avatar"
-              onClick={() => fileRef.current.click()}
-              className="rounded-full h-24 w-24 object-cover cursor-pointer my-2 self-center" 
-            />
-            <p className='self-center'>
-            {imagerUploadError ? 
-                <span className='text-red-700'>Error Image Upload (image must be less than 2mb)</span> : 
-                imageUploadProgress > 0 && imageUploadProgress < 100 ? 
-                <span className='text-slate-700'>{`Uploading ${imageUploadProgress}%`}</span> :
-                imageUploadProgress === 100 ? 
-                    <span className='text-green-700'>Image Uploaded Successfully!</span> :
-                    null
-            }  
-            </p>      
-            <input type="text" value={formData.username} name='username' placeholder="User Name" onChange={handleChange} className="border p-3 rounded-lg" />
-            <input type="email" value={formData.email} name='email' placeholder="Email" onChange={handleChange} className="border p-3 rounded-lg" />
-            <input type="password" value={formData.password} name='password' placeholder="Password" onChange={handleChange} className="border p-3 rounded-lg" />
+      <form onSubmit={onHandleUpdate} noValidate className="flex flex-col gap-4">
+        <input 
+          type="file" 
+          name="avatar"
+          ref={fileRef} 
+          hidden 
+          accept='image/*'
+          value={''}
+          onChange={e => setFile(e.target.files[0])}
+        />
+        <img 
+          src={avatar.value || currentUser.avatar} 
+          alt="avatar"
+          onClick={() => fileRef.current.click()}
+          className="rounded-full h-24 w-24 object-cover cursor-pointer my-2 self-center" 
+        />
+        <p className='self-center'>
+        {imagerUploadError ? 
+            <span className='text-red-700'>Error Image Upload (image must be less than 2mb)</span> : 
+            imageUploadProgress > 0 && imageUploadProgress < 100 ? 
+            <span className='text-slate-700'>{`Uploading ${imageUploadProgress}%`}</span> :
+            imageUploadProgress === 100 ? 
+                <span className='text-green-700'>Image Uploaded Successfully!</span> :
+                null
+        }  
+        </p>      
+        <input 
+          type={username.type} 
+          value={username.value} 
+          name={username.name} 
+          id={username.name}
+          placeholder={username.placeholder} 
+          onChange={handleChange} 
+          onBlur={blurHandler}
+          className="border p-3 rounded-lg" 
+        />
+        {username.error && <p className='text-sm text-red-700 font-semibold ml-1'>{username.error}</p>}
 
-            <Button type="button" text={updating ? 'Updating': 'Update'} className="bg-slate-700" onClick={onHandleUpdate} />
-            <Button type="button" text="Create Listing" className="bg-green-700" onClick={() => navigate('/create-listing')} />
+        <input 
+          type={email.type} 
+          value={email.value} 
+          name={email.name} 
+          placeholder={email.placeholder}
+          id={email.name}
+          onChange={handleChange} 
+          onBlur={blurHandler}
+          className="border p-3 rounded-lg" 
+        />
+          {email.error && <p className='text-sm text-red-700 font-semibold ml-1'>{email.error}</p>}
 
-            <p className='text-red-700'>{error ? error.message : ''}</p>
-            <p className='text-green-700'>{updateSuccess ? 'User is updated successfully!' : ''}</p>
-        </form>
+        <input 
+          type={password.type} 
+          value={password.value} 
+          name={password.name} 
+          placeholder={password.placeholder} 
+          onChange={handleChange} 
+          onBlur={blurHandler}
+          className="border p-3 rounded-lg" 
+        />
+          {password.error && <p className='text-sm text-red-700 font-semibold ml-1'>{password.error}</p>}
+
+        <Button type="submit" disabled={!username.value && !email.value && !password.value && !avatar.value} text={updating ? 'Updating': 'Update'} className="bg-slate-700" />
+        <Button type="button" text="Create Listing" className="bg-green-700" onClick={() => navigate('/create-listing')} />
+
+        <p className='text-red-700'>{error ? error.message : ''}</p>
+        <p className='text-green-700'>{updateSuccess ? 'User is updated successfully!' : ''}</p>
+      </form>
     )
 }

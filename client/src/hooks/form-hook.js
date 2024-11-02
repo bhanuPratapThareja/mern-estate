@@ -17,10 +17,9 @@ const reducer = (state, action) => {
             return newState
         case BLUR:
             newInput.touched = true
-            if(validations && validations.length) {
-                newInput.error = validateInput(newInput)
-                newState.isFormValid = validateForm(newState)
-            }
+            newInput.error = validateInput(newInput)
+            console.log(newInput)
+            newState.isFormValid = validateForm(newState)
             return newState
         case 'RESET':
             const resetState = resetForm(newState)
@@ -55,7 +54,7 @@ export const useForm = (initialFormState) => {
         }
     }
 
-    function updateFormHandler(formData) {
+    function formUpdateHandler(formData) {
         for(let key in formData) {
             const name = key
             const value = formData[key]
@@ -67,12 +66,12 @@ export const useForm = (initialFormState) => {
         dispatch({ type: 'RESET', payload: {} })
     }
 
-    return [
-        formState, 
+    return {
+        formState,
         changeHandler, 
         blurHandler, 
         formValidateHandler, 
-        updateFormHandler,
+        formUpdateHandler,
         formResetHandler
-    ]
+    }
 }
