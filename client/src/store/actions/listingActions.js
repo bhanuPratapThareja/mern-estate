@@ -5,15 +5,12 @@ export const createListing = createAsyncThunk('listing/create', async ({ listing
     const url = mode === 'create' ? '/api/listing/create' : '/api/listing/update/' + listing.id
     
     if(!listing.imageUrls.length) {
-        console.log('h1')
         throw new Error('You must upload atleast one image')
     }
     if(listing.regularPrice < listing.discountPrice) {
-        console.log('h2')
         throw new Error('Discount price must be lower than regular price')
     }
     const response = await axios.post(url, listing)
-    console.log('edit response: ', response)
     return response.data
 })
 

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from "react-router-dom";
 
 import OAuth from '../components/OAuth';
+import Button from '../shared/Button'
 import { signInUser } from '../store';
 import { useForm } from '../hooks/form-hook';
 import { VALIDATORS } from '../utils/types';
@@ -98,10 +99,7 @@ export default function SignIn() {
         />
          {password.error && <p className='text-sm text-red-700 font-semibold ml-1'>{password.error}</p>}
 
-        <button type='submit' className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-70">
-          {loading ? 'Loading...' : 'Sign In'}
-        </button>
-        
+        <Button type="submit" text={loading ? 'Loading...' : 'Sign In'} className="bg-slate-700" />
         <OAuth />
       </form>
 

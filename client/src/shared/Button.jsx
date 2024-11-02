@@ -1,7 +1,14 @@
-import React from 'react'
+export default function Button({ type, text, className, onClick }) {
 
-export default function Button() {
+  const classes = 'text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-75'
+
   return (
-    <div>Button</div>
+    <button 
+      type={type} 
+      className={`${classes} ${className}`}
+      onClick={onClick}
+    >
+      {text}
+    </button>
   )
 }
