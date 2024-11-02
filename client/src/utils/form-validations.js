@@ -72,3 +72,13 @@ export const validateForm = (formState) => {
   }
   return isValid
 }
+
+export const resetForm = formState => {
+  const resetState = { ...formState }
+  for(let key in formState.inputs) {
+    formState.inputs[key].value = ''
+    formState.inputs[key].error = ''
+    formState.inputs[key].touched = false
+  }
+  return resetState
+}

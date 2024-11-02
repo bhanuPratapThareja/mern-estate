@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -50,8 +51,11 @@ export default function SignUp() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { loading, error } = useSelector(state => state.user)
-  const [formState, changeHandler, blurHandler, formValidateHandler] = useForm(INITIAL_FORM_STATE) 
+  const [formState, changeHandler, blurHandler, formValidateHandler,, formResetHandler] = useForm(INITIAL_FORM_STATE) 
 
+  useEffect(() => {
+    formResetHandler()
+  }, [])
 
   const handleSubmit = async e => {
     e.preventDefault()
@@ -69,6 +73,7 @@ export default function SignUp() {
     
     dispatch(signUpUser(data))
       .then(() => {
+        formResetHandler()
         navigate('/sign-in')
       })
   }
@@ -78,7 +83,8 @@ export default function SignUp() {
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl text-center font-semibold my-7">Sign Up</h1>
-      <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
+      
+      <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
         <input
           type="text"
           className="border p-3 rounded-lg"

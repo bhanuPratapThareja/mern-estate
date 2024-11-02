@@ -1,7 +1,7 @@
 import { useReducer } from "react";
 
 import { CHANGE, BLUR } from "../utils/types";
-import { validateInput, validateForm } from "../utils/form-validations";
+import { validateInput, validateForm, resetForm } from "../utils/form-validations";
 
 const reducer = (state, action) => {
     const { name, value, validations  } = action.payload
@@ -22,6 +22,9 @@ const reducer = (state, action) => {
                 newState.isFormValid = validateForm(newState)
             }
             return newState
+        case 'RESET':
+            const resetState = resetForm(newState)
+            return resetState
         default:
             return state
     }
@@ -60,6 +63,16 @@ export const useForm = (initialFormState) => {
         }
     }
 
+    function formResetHandler() {
+        dispatch({ type: 'RESET', payload: {} })
+    }
 
-    return [formState, changeHandler, blurHandler, formValidateHandler, updateFormHandler]
+    return [
+        formState, 
+        changeHandler, 
+        blurHandler, 
+        formValidateHandler, 
+        updateFormHandler,
+        formResetHandler
+    ]
 }
