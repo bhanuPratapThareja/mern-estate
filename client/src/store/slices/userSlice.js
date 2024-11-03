@@ -33,11 +33,9 @@ const userSlice = createSlice({
             .addCase(authUser.fulfilled, (state, action) => {
                 state.loading = false
                 state.currentUser = action.payload.user
-                console.log('action.meta.arg: ', action.meta.arg)
                 if(action.meta.arg.mode === SIGN_UP) {
                     state.signedUpUser = { email: action.meta.arg.user.email }
                 }
-                console.log(state, action)
             })
             .addCase(authUser.rejected, (state, action) => {
                 state.loading = false

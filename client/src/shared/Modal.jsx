@@ -9,7 +9,8 @@ const Modal = forwardRef((props, ref) => {
 
     useImperativeHandle(ref, () => {
         return {
-            showModal: onOpenModal
+            showModal: onOpenModal,
+            closeModal: onCancel
         }
     }, [])
 
