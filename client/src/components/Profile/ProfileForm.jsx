@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom'
 
 import Button from '../../shared/Button'
 import Alert from '../../shared/Alert'
+import FormError from '../../shared/FormError'
+import Progress from '../../shared/Progress'
 import { updateUser  } from '../../store'
 import { useImageUpload } from '../../hooks/image-upload-hook'
 import { useForm } from '../../hooks/form-hook'
@@ -133,16 +135,15 @@ export default function ProfileForm() {
           onClick={() => fileRef.current.click()}
           className="rounded-full h-24 w-24 object-cover cursor-pointer my-2 self-center" 
         />
-        <div className='hidden' ref={imgHelperDivRef}></div>
-        <div className='self-center'>
-        {imagerUploadError ? 
-            <Alert type="error" message={imagerUploadError} /> : 
-            imageUploadProgress > 0 && imageUploadProgress < 100 ? 
-            <Alert type="info" message={`Uploading ${imageUploadProgress}%`} />:
-            imageUploadProgress === 100 ? 
-                <Alert type="success" message="Image Uploaded Successfully!" /> :
-                null
-        }  
+        <div className='text-center'>
+          {imagerUploadError ? 
+              <Alert type="error" message={imagerUploadError} /> : 
+              imageUploadProgress > 0 && imageUploadProgress < 100 ? 
+                <Progress progress={imageUploadProgress} /> :
+                imageUploadProgress === 100 ? 
+                  <Alert type="success" message="Image Uploaded Successfully!" /> :
+                  null
+          }  
         </div>      
         <input 
           type={username.type} 
@@ -154,8 +155,8 @@ export default function ProfileForm() {
           onBlur={blurHandler}
           className="border p-3 rounded-lg" 
         />
-        {username.error && <p className='text-sm text-red-700 font-semibold ml-1'>{username.error}</p>}
-
+    
+        {username.error && <FormError message={username.error} /> }
         <input 
           type={email.type} 
           value={email.value} 
@@ -166,7 +167,7 @@ export default function ProfileForm() {
           onBlur={blurHandler}
           className="border p-3 rounded-lg" 
         />
-          {email.error && <p className='text-sm text-red-700 font-semibold ml-1'>{email.error}</p>}
+          {email.error && <FormError message={email.error} /> }
 
         <input 
           type={password.type} 
@@ -177,7 +178,7 @@ export default function ProfileForm() {
           onBlur={blurHandler}
           className="border p-3 rounded-lg" 
         />
-          {password.error && <p className='text-sm text-red-700 font-semibold ml-1'>{password.error}</p>}
+          {password.error && <FormError message={password.error} /> }
 
         <Button type="submit" disabled={!username.value && !email.value && !password.value && !avatar.value} text={updating ? 'Updating': 'Update'} className="bg-slate-700" />
         <Button type="button" text="Create Listing" className="bg-green-700" onClick={() => navigate('/create-listing')} />

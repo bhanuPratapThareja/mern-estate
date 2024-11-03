@@ -23,11 +23,9 @@ export const useImageUpload = () => {
 
             uploadTask.on('state_changed', (snapshot) => {
                 const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-                console.log('progress: ', progress)
                 setImageUploadProgress(Math.round(progress))
             }, err => {
                 console.log('hook upload avatar err: ', err)
-                console.log('err:: ', err)
                 setImageUploadError(err)
                 reject(err)
             }, () => {
@@ -36,7 +34,7 @@ export const useImageUpload = () => {
                     resolve(downloadUrl)
                 })
                 .catch(err => {
-                    console.log('errrr::: ', err)
+                    console.log('getDownloadURL err ', err)
                     setImageUploadError(err)
                     reject(err)
                 })
