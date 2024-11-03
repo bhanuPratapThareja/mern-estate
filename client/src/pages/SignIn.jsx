@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import OAuth from '../components/OAuth';
 import Button from '../shared/Button'
+import FormError from '../shared/FormError';
 import { signInUser } from '../store';
 import { useForm } from '../hooks/form-hook';
 import { VALIDATORS } from '../utils/types';
@@ -84,7 +85,7 @@ export default function SignIn() {
           onChange={changeHandler}
           onBlur={blurHandler}
         />
-        {email.error && <p className='text-sm text-red-700 font-semibold ml-1'>{email.error}</p>}
+        {email.error && <FormError message={email.error} /> }
 
         <input
            type="password"
@@ -97,7 +98,7 @@ export default function SignIn() {
            onChange={changeHandler}
            onBlur={blurHandler}
         />
-         {password.error && <p className='text-sm text-red-700 font-semibold ml-1'>{password.error}</p>}
+         {password.error && <FormError message={password.error} /> }
 
         <Button type="submit" text={loading ? 'Loading...' : 'Sign In'} className="bg-slate-700" />
         <OAuth />
@@ -109,7 +110,6 @@ export default function SignIn() {
           <span className="text-blue-700">Sign up</span>
         </Link>
       </div>
-      {/* {error && <p className='text-red-500 mt-5'>{error}</p>} */}
     </div>
   );
 }

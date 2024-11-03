@@ -4,12 +4,16 @@ import { app } from '../firebase'
 
 export const useImageUpload = () => {
     const [imageUploadProgress, setImageUploadProgress] = useState(0)
-    const [imagerUploadError, setImageUploadError] = useState(false)
-    const [imageUrl, setImageUrl] = useState('')
+    const [imagerUploadError, setImageUploadError] = useState('')
 
     const uploadImage = (imageFile) => {
         const promise = new Promise((resolve, reject) => {
-            setImageUrl('')
+            if(imageFile.size / 1024 / 1024 > 2) {
+                const error = 'Error Image Upload (image must be less than 2mb)'
+                setImageUploadError(error)
+                reject(error)
+                return promise
+            }
             setImageUploadProgress(0)
             setImageUploadError(false)
             const storage = getStorage(app)
@@ -23,15 +27,16 @@ export const useImageUpload = () => {
                 setImageUploadProgress(Math.round(progress))
             }, err => {
                 console.log('hook upload avatar err: ', err)
+                console.log('err:: ', err)
                 setImageUploadError(err)
                 reject(err)
             }, () => {
             getDownloadURL(uploadTask.snapshot.ref)
                 .then(downloadUrl => {
-                    setImageUrl(downloadUrl)
                     resolve(downloadUrl)
                 })
                 .catch(err => {
+                    console.log('errrr::: ', err)
                     setImageUploadError(err)
                     reject(err)
                 })
@@ -40,5 +45,5 @@ export const useImageUpload = () => {
         return promise
     }
 
-    return { imageUploadProgress, imagerUploadError, imageUrl, uploadImage }
+    return [imageUploadProgress, imagerUploadError, uploadImage]
 }

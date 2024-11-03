@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 import OAuth from '../components/OAuth';
+import FormError from '../shared/FormError';
 import { useForm } from '../hooks/form-hook'
 import { VALIDATORS } from '../utils/types';
 import { signUpUser } from '../store'
@@ -95,7 +96,7 @@ export default function SignUp() {
           onChange={changeHandler}
           onBlur={blurHandler}
         />
-        {username.error && <p className='text-sm text-red-700 font-semibold ml-1'>{username.error}</p>}
+        {username.error && <FormError message={username.error} /> }
 
        <input
           type="email"
@@ -107,7 +108,7 @@ export default function SignUp() {
           onChange={changeHandler}
           onBlur={blurHandler}
         />
-        {email.error && <p className='text-sm text-red-700 font-semibold ml-1'>{email.error}</p>}
+        {email.error && <FormError message={email.error} /> }
 
         <input
            type="password"
@@ -120,7 +121,7 @@ export default function SignUp() {
            onChange={changeHandler}
            onBlur={blurHandler}
         />
-        {password.error && <p className='text-sm text-red-700 font-semibold ml-1'>{password.error}</p>}
+        {password.error && <FormError message={password.error} /> }
 
         <button type='submit' disabled={loading} className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-70">
           {loading ? 'Loading...' : 'Sign Up'}
@@ -135,7 +136,6 @@ export default function SignUp() {
           <span className="text-blue-700">Sign In</span>
         </Link>
       </div>
-      {/* {error && <p className='text-red-500 mt-5'>{error}</p>} */}
     </div>
   );
 }

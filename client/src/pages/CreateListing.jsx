@@ -30,7 +30,7 @@ export default function CreateListing() {
     const [uploading, setUploading] = useState(false)
     const [mode, setMode] = useState('create')
 
-    const { uploadImage } = useImageUpload() 
+    const [,,uploadImage] = useImageUpload()
     const { creating, error } = useSelector(state => state.listings)
 
     useEffect(() => {

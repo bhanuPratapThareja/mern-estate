@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { useNavigate } from 'react-router-dom'
 
 import Button from '../../shared/Button'
+import Alert from '../../shared/Alert'
 import { updateUser  } from '../../store'
 import { useImageUpload } from '../../hooks/image-upload-hook'
 import { useForm } from '../../hooks/form-hook'
@@ -46,7 +47,7 @@ const INITIAL_PROFILE_STATE = {
     },
     avatar: {
       name: 'avatar',
-      type: 'avatar',
+      type: 'image',
       placeholder: 'Avatar',
       displayName: 'Profile Image',
       value: '',
@@ -62,22 +63,27 @@ export default function ProfileForm() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const fileRef = useRef()
+    const imgHelperDivRef = useRef()
+
     const [file, setFile] = useState(null)
     const [updateSuccess, setUpdateSuccess] = useState(false)
     const { currentUser, updating, error } = useSelector(state => state.user)
     
-    const { imageUploadProgress, imagerUploadError, imageUrl, uploadImage } = useImageUpload()
+    const [imageUploadProgress, imagerUploadError, uploadImage] = useImageUpload()
     const {
       formState, changeHandler, blurHandler, formValidateHandler, formUpdateHandler, formResetHandler
      } = useForm(INITIAL_PROFILE_STATE)
 
     useEffect(() => {
-      if(file) uploadImage(file)
+      if(file) {
+        uploadImage(file)
+          .then((imageUrl) => {
+            formUpdateHandler({ avatar: imageUrl })
+            formValidateHandler()
+          })
+          .catch(() => {})
+      }
     }, [file])
-    
-    useEffect(() => {
-      if(imageUrl) formUpdateHandler({ avatar: imageUrl })
-    }, [imageUrl])
 
     const onHandleUpdate = e => {
       e.preventDefault()
@@ -118,6 +124,7 @@ export default function ProfileForm() {
           hidden 
           accept='image/*'
           value={''}
+          onBlur={() => console.log('img blur')}
           onChange={e => setFile(e.target.files[0])}
         />
         <img 
@@ -126,16 +133,17 @@ export default function ProfileForm() {
           onClick={() => fileRef.current.click()}
           className="rounded-full h-24 w-24 object-cover cursor-pointer my-2 self-center" 
         />
-        <p className='self-center'>
+        <div className='hidden' ref={imgHelperDivRef}></div>
+        <div className='self-center'>
         {imagerUploadError ? 
-            <span className='text-red-700'>Error Image Upload (image must be less than 2mb)</span> : 
+            <Alert type="error" message={imagerUploadError} /> : 
             imageUploadProgress > 0 && imageUploadProgress < 100 ? 
-            <span className='text-slate-700'>{`Uploading ${imageUploadProgress}%`}</span> :
+            <Alert type="info" message={`Uploading ${imageUploadProgress}%`} />:
             imageUploadProgress === 100 ? 
-                <span className='text-green-700'>Image Uploaded Successfully!</span> :
+                <Alert type="success" message="Image Uploaded Successfully!" /> :
                 null
         }  
-        </p>      
+        </div>      
         <input 
           type={username.type} 
           value={username.value} 
@@ -174,8 +182,9 @@ export default function ProfileForm() {
         <Button type="submit" disabled={!username.value && !email.value && !password.value && !avatar.value} text={updating ? 'Updating': 'Update'} className="bg-slate-700" />
         <Button type="button" text="Create Listing" className="bg-green-700" onClick={() => navigate('/create-listing')} />
 
-        <p className='text-red-700'>{error ? error.message : ''}</p>
-        <p className='text-green-700'>{updateSuccess ? 'User is updated successfully!' : ''}</p>
+
+        {error && <Alert type="error" message={error.message} />}
+        {updateSuccess && <Alert type="success" message="User is updated successfully!!" />}
       </form>
     )
 }

@@ -1,5 +1,6 @@
 export const CHANGE = 'CHANGE'
 export const BLUR = 'BLUR'
+export const RESET = 'RESET'
 
 export const VALIDATORS = {
     REQUIRED: 'required',

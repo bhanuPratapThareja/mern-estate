@@ -1,10 +1,10 @@
 import { useReducer } from "react";
 
-import { CHANGE, BLUR } from "../utils/types";
+import { CHANGE, BLUR, RESET } from "../utils/types";
 import { validateInput, validateForm, resetForm } from "../utils/form-validations";
 
 const reducer = (state, action) => {
-    const { name, value, validations  } = action.payload
+    const { name, value } = action.payload
     const newState = { ...state }
     const newInput = newState.inputs[name]
 
@@ -18,10 +18,9 @@ const reducer = (state, action) => {
         case BLUR:
             newInput.touched = true
             newInput.error = validateInput(newInput)
-            console.log(newInput)
             newState.isFormValid = validateForm(newState)
             return newState
-        case 'RESET':
+        case RESET:
             const resetState = resetForm(newState)
             return resetState
         default:
@@ -63,7 +62,7 @@ export const useForm = (initialFormState) => {
     }
 
     function formResetHandler() {
-        dispatch({ type: 'RESET', payload: {} })
+        dispatch({ type: RESET, payload: {} })
     }
 
     return {

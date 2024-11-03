@@ -28,7 +28,7 @@ export default function ProfileAuth() {
     }
 
     return (
-        <div className="flex justify-between">
+        <div className="flex justify-between my-2">
             <span onClick={onDeleteUser} className="text-red-700 cursor-pointer font-semibold">Delete Account</span>
             <span onClick={onSignout} className="text-red-700 cursor-pointer font-semibold">Sign out</span>
         </div>
