@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 
@@ -9,6 +9,7 @@ import FormError from '../shared/FormError';
 import { authUser } from '../store';
 import { useForm } from '../hooks/form-hook';
 import { SIGN_IN, SIGN_UP, VALIDATORS } from '../utils/types';
+import Modal from '../shared/Modal';
 
 const INITIAL_FORM_STATE = {
     inputs: {
@@ -96,6 +97,7 @@ export default function Auth() {
         })
         .catch(err => console.log('auth error: ', err))
     }
+
 
     const { username, email, password } = formState.inputs
 
