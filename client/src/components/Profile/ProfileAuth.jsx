@@ -13,7 +13,7 @@ export default function ProfileAuth() {
         dispatch(deleteUser(currentUser.id))
           .unwrap()
           .then(res => {
-            navigate('/sign-up')
+            navigate('/auth')
             setTimeout(() => {
               dispatch(userSliceActions.removeUserState())
             }, 0);
@@ -24,7 +24,7 @@ export default function ProfileAuth() {
     const onSignout = () => {
         dispatch(signoutUser())
           .unwrap()
-          .then(() => navigate('/sign-in'))
+          .then(() => navigate('/auth'))
     }
 
     return (

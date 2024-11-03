@@ -4,8 +4,7 @@ import RootLayout from '../layouts/RootLayout'
 import PrivateRoutes from '../routes/PrivateRoutes'
 
 import Home from '../pages/Home'
-import Signin from '../pages/SignIn'
-import SignUp from '../pages/SignUp'
+import Auth from '../pages/Auth'
 import About from '../pages/About'
 import Profile from '../pages/Profile'
 import CreateListing from '../pages/CreateListing'
@@ -27,12 +26,8 @@ export const router = createBrowserRouter([
                 element: <Home />
             },
             {
-                path: '/sign-in',
-                element: <Signin />
-            },
-            {
-                path: '/sign-up',
-                element: <SignUp />
+                path: '/auth',
+                element: <Auth />
             },
             {
                 path: '/about',

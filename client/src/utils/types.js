@@ -1,6 +1,10 @@
-export const CHANGE = 'CHANGE'
-export const BLUR = 'BLUR'
-export const RESET = 'RESET'
+export const SIGN_IN = 'signin'
+export const SIGN_UP = 'signup'
+export const SIGN_OUT = 'signout'
+
+export const CHANGE = 'change'
+export const BLUR = 'blue'
+export const RESET = 'reset'
 
 export const VALIDATORS = {
     REQUIRED: 'required',

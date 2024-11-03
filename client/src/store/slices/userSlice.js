@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { signUpUser, signInUser, updateUser, deleteUser } from "../actions/userActions";
+import { updateUser, deleteUser, authUser } from "../actions/userActions";
 import { signout } from "../actions/userActions";
+import { SIGN_UP } from '../../utils/types'
 
 const userSlice = createSlice({
     name: 'user',
@@ -23,30 +24,22 @@ const userSlice = createSlice({
     },
     extraReducers(builder) {
         builder
-            // signup
-            .addCase(signUpUser.pending, (state) => {
-                state.loading = true
-                state.error = null
-            })
-            .addCase(signUpUser.fulfilled, (state, action) => {
-                state.loading = false
-                state.signedUpUser = { email: action.meta.arg.email }
-            })
-            .addCase(signUpUser.rejected, (state, action) => {
-                state.loading = false
-                state.error = action.error
-            })
 
-            // singin
-            .addCase(signInUser.pending, (state) => {
+            // auth
+            .addCase(authUser.pending, (state) => {
                 state.loading = true
                 state.error = null
             })
-            .addCase(signInUser.fulfilled, (state, action) => {
+            .addCase(authUser.fulfilled, (state, action) => {
                 state.loading = false
                 state.currentUser = action.payload.user
+                console.log('action.meta.arg: ', action.meta.arg)
+                if(action.meta.arg.mode === SIGN_UP) {
+                    state.signedUpUser = { email: action.meta.arg.user.email }
+                }
+                console.log(state, action)
             })
-            .addCase(signInUser.rejected, (state, action) => {
+            .addCase(authUser.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.error
             })
