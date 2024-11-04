@@ -20,7 +20,12 @@ export const signup = async (req, res, next) => {
   }
 
   const hashedPassword = bcryptjs.hashSync(password, 10);
-  const newUser = new User({ username, email, password: hashedPassword });
+  const newUser = new User({ 
+    username, 
+    email, 
+    password: hashedPassword,
+    provider: 'email'
+  });
 
   try {
     await newUser.save();
@@ -37,12 +42,8 @@ export const signup = async (req, res, next) => {
 export const signin = async (req, res, next) => {
   const { email, password } = req.body;
 
-  console.log(email, password)
-
   try {
     const existingUser = await User.findOne({ email });
-
-    console.log('existingUser: ', existingUser)
     
     if (!existingUser) {
       return next(errorHandler(404, "User not found!"));
@@ -55,7 +56,7 @@ export const signin = async (req, res, next) => {
     
     if (!passwordsMatch) {
       return next(errorHandler(401, "Invalid credentials!"));
-    }
+    }  
 
     const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET);
     const { password: pass, __v, _id, ...userInfo } = existingUser.toObject({ getters: true })
@@ -87,14 +88,15 @@ export const google = async (req, res, next) => {
       const hashedPassword = bcryptjs.hashSync(generatedPassword, 10)
 
       const newUser = new User({
-        username: req.body.displayName.split(' ').join('') + '###' + uuidv4(),
+        username: req.body.displayName,
         email: req.body.email,
         password: hashedPassword,
-        avatar: req.body.photoURL
+        avatar: req.body.photoURL,
+        provider: 'google'
       })
 
       try {
-        await newUser.save()
+        await newUser.save()      
         const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
         const { password: pass, ...userInfo } = newUser.toObject({ getters: true })
 
