@@ -1,4 +1,5 @@
-import { useSelector, useDispatch } from "react-redux"
+import { useEffect } from "react"
+import { useSelector, useDispatch, } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
 import Listing from "../listings/Listing"
@@ -9,6 +10,10 @@ export default function ProfileListings() {
     const { listings, fetchError } = useSelector(state => state.listings)
     const dispatch = useDispatch()
     const navigate = useNavigate()
+
+    useEffect(() => {
+        dispatch(fetchListings(currentUser.id))
+    }, [])
 
     const handleFetchListings = () => {
         dispatch(fetchListings(currentUser.id))
@@ -26,7 +31,7 @@ export default function ProfileListings() {
         <>
             <button onClick={handleFetchListings} className='text-green-700 w-full'>Show Listings</button>
             {fetchError && <p className='text-red-700'>Error showing listings</p>}
-            
+
             {listings.length ? <div className='flex flex-col gap-4'>
                 <h1 className='text-center mt-7 text-2xl font-semibold'>Your Listings</h1>
 

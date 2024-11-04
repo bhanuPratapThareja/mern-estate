@@ -12,11 +12,11 @@ const INITIAL_FORM = {
     description: '',
     address: '',
     type: 'rent',
-    bedrooms: 1,
-    bathrooms: 1,
-    regularPrice: 50,
-    discountPrice: 0,
-    offer: true,
+    bedrooms: 2,
+    bathrooms: 2,
+    regularPrice: 100000,
+    discountPrice: 90000,
+    offer: false,
     parking: false,
     furnished: false
 }

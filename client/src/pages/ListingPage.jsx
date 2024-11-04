@@ -45,7 +45,7 @@ export default function ListingPage() {
             <div className="">
                 <p className="text-2xl text-slate-700 font-semibold">{listing.name} - 
                 $
-                {listing.discountPrice
+                {listing.offer && listing.discountPrice
                     ? listing.discountPrice.toLocaleString("en-US")
                     : listing.regularPrice.toLocaleString("en-US")}
                 {listing.type === "rent" && " / month"}

@@ -6,13 +6,14 @@ import ListingCard from '../components/listings/ListingCard'
 export default function Home() {
   const { searchedListings } = useSelector(state => state.listings)
 
-  // console.log('searchedListings home: ', searchedListings)
+  console.log('searchedListings home: ', searchedListings)
 
   let offerListings = [];
   let saleListings = [];
   let rentListings = [];
-
-  if(searchedListings.length) {
+console.log(1)
+  if(searchedListings && searchedListings.length) {
+    console.log(2)
     for(let i = 0; i < searchedListings.length; i++) {
       const el = searchedListings[i]
       if(el.offer) {

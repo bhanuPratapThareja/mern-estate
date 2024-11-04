@@ -31,8 +31,22 @@ export const deleteUser = async (req, res, next) => {
         return res.status(403).send(new Error('User not authorized! Login ID mismatch!'))
     }
 
+    let user;
+
     try {
+        user = await User.findById(req.user.id)
+        if(!user) {
+            const error = errorHandler(404, 'Could not find user for provided id')
+            return next(error)
+        }
+    } catch (error) {
+        return next(error)
+    }
+
+    try {
+        console.log('user to delete: ', user.listings)
         await User.findByIdAndDelete(req.params.id)
+        await Listing.deleteMany({ _id: { $in: user.listings } })
         res.clearCookie('access_token')
         res.status(200).json('User has been deleted!')
     } catch (error) {

@@ -50,7 +50,7 @@ const ListingSchema = new mongoose.Schema({
         required: true
     },
     userRef: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Types.ObjectId,
         ref: 'User',
         required: true
     }

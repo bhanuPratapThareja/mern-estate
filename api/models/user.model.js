@@ -22,6 +22,11 @@ const UserSchema = new mongoose.Schema(
         "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
     },
     gender: { type: String, enum: ["male", "female"] },
+    listings: [{
+      type: mongoose.Types.ObjectId,
+      ref: 'Listing',
+      required: true
+    }]
   },
   { timestamps: true }
 );

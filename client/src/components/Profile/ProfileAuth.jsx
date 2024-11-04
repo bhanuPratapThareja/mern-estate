@@ -13,6 +13,7 @@ export default function ProfileAuth() {
         dispatch(deleteUser(currentUser.id))
           .unwrap()
           .then(res => {
+            console.log(res)
             navigate('/auth')
             setTimeout(() => {
               dispatch(userSliceActions.removeUserState())

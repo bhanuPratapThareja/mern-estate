@@ -1,10 +1,29 @@
 import Listing from "../models/listing.model.js"
+import User from "../models/user.model.js"
 import { errorHandler } from "../utils/error.js"
 
 export const createListing = async (req, res, next) => {
     req.body.userRef = req.user.id
+
+    let user;
+    try {
+        user = await User.findById(req.user.id)
+    } catch (error) {
+        return next(error)
+    }
+
+    if(!user) {
+        const error = errorHandler(404, 'Could not find user for provided id')
+        return next(error)
+    }
+
+    // const listing = new Listing({
+    // }) listing.save()
+
+    
     try {
         const listing = await Listing.create(req.body)
+        await User.findByIdAndUpdate(req.user.id, { $push: { listings: listing } })
         return res.status(201).json({ listing: listing.toObject({ getters: true })})
     } catch (error) {
         next(error)
@@ -54,6 +73,7 @@ export const deleteListing = async (req, res, next) => {
 
     try {
         await Listing.findByIdAndDelete(req.params.id)
+        await User.findByIdAndUpdate(req.user.id, { $pull: { listings: listing.id } })
         res.status(200).json({ message: 'Listing deleted', id: req.params.id })
     } catch (error) {
         next(error)
