@@ -3,6 +3,9 @@ export const SIGN_UP = 'signup'
 export const SIGN_OUT = 'signout'
 export const DELETE = 'delete'
 
+export const SUCCESS = 'success'
+export const ERROR = 'error'
+
 export const CHANGE = 'change'
 export const BLUR = 'blue'
 export const RESET = 'reset'

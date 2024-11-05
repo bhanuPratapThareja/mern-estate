@@ -11,16 +11,16 @@ export default function ProfileAuth() {
 
     const onDeleteUser = () => {
         dispatch(deleteUser({ userId: currentUser.id, mode: DELETE }))
-          // .unwrap()
-          // .then(() => {
-          //   navigate('/auth')
-          // })
+          .unwrap()
+          .then(() => {
+            navigate('/auth')
+          })
     }
     
     const onSignout = () => {
         dispatch(signoutUser({ mode: SIGN_OUT}))
-          // .unwrap()
-          // .then(() => navigate('/auth'))
+          .unwrap()
+          .then(() => navigate('/auth'))
     }
 
     return (

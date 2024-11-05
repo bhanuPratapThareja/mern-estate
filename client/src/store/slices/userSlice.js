@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { updateUser, deleteUser, authUser } from "../actions/userActions";
 import { signout } from "../actions/userActions";
-import { SIGN_UP, DELETE, SIGN_IN } from '../../utils/types'
+import { SIGN_UP, DELETE, SIGN_IN, SUCCESS } from '../../utils/types'
 
 const userSlice = createSlice({
     name: 'user',
@@ -11,7 +11,8 @@ const userSlice = createSlice({
         currentUser: null,
         error: null,
         loading: false,
-        updating: false
+        updating: false,
+        updateResponse: null
     },
     reducers: {
         addSignedInUser(state, action) {

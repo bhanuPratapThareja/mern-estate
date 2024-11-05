@@ -6,10 +6,11 @@ import Button from '../../shared/Button'
 import Alert from '../../shared/Alert'
 import FormError from '../../shared/FormError'
 import Progress from '../../shared/Progress'
+import Toast from '../../shared/Toast'
 import { updateUser  } from '../../store'
 import { useImageUpload } from '../../hooks/image-upload-hook'
 import { useForm } from '../../hooks/form-hook'
-import { VALIDATORS } from '../../utils/types'
+import { SUCCESS, VALIDATORS } from '../../utils/types'
 
 const INITIAL_PROFILE_STATE = { 
   inputs: {
@@ -65,12 +66,12 @@ export default function ProfileForm() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const fileRef = useRef()
-    const imgHelperDivRef = useRef()
-
+    const toastRef = useRef()
     const [file, setFile] = useState(null)
-    const [updateSuccess, setUpdateSuccess] = useState(false)
+    const [updateResponse, setUpdateResponse] = useState({ type: '', message: '' })
     const { currentUser, updating, error } = useSelector(state => state.user)
     
+   
     const [imageUploadProgress, imagerUploadError, uploadImage] = useImageUpload()
     const {
       formState, changeHandler, blurHandler, formValidateHandler, formUpdateHandler, formResetHandler
@@ -101,91 +102,102 @@ export default function ProfileForm() {
         password: formState.inputs.password.value,
         avatar: formState.inputs.avatar.value
       }
-
-      dispatch(updateUser({ data, id: currentUser.id }))
+      toastRef.current.removeNotification()
+        dispatch(updateUser({ data, id: currentUser.id }))
         .unwrap()
-        .then(() => {
+        .then((res) => {
+          setUpdateResponse({ type: SUCCESS, message: res.message })
           formResetHandler()
-          setUpdateSuccess(true)
+        })
+        .finally(() => {
+          setTimeout(toastRef.current.notifyUser, 500);
         })
     }
     
     const handleChange = e => {
-      setUpdateSuccess(false)
+      // setUpdateSuccess(false)
       changeHandler(e)
     }
 
     const { username, email, password, avatar } = formState.inputs
 
     return (
-      <form onSubmit={onHandleUpdate} noValidate className="flex flex-col gap-4">
-        <input 
-          type="file" 
-          name="avatar"
-          ref={fileRef} 
-          hidden 
-          accept='image/*'
-          value={''}
-          onBlur={() => console.log('img blur')}
-          onChange={e => setFile(e.target.files[0])}
+      <>
+        <Toast
+          ref={toastRef}
+          heading={updateResponse.message}
+          type={updateResponse.type}
         />
-        <img 
-          src={avatar.value || currentUser.avatar} 
-          alt="avatar"
-          onClick={() => fileRef.current.click()}
-          className="rounded-full h-24 w-24 object-cover cursor-pointer my-2 self-center" 
-        />
-        <div className='text-center'>
-          {imagerUploadError ? 
-              <Alert type="error" message={imagerUploadError} /> : 
-              imageUploadProgress > 0 && imageUploadProgress < 100 ? 
-                <Progress progress={imageUploadProgress} /> :
-                imageUploadProgress === 100 ? 
-                  <Alert type="success" message="Image Uploaded Successfully!" /> :
-                  null
-          }  
-        </div>      
-        <input 
-          type={username.type} 
-          value={username.value} 
-          name={username.name} 
-          id={username.name}
-          placeholder={username.placeholder} 
-          onChange={handleChange} 
-          onBlur={blurHandler}
-          className="border p-3 rounded-lg" 
-        />
-    
-        {username.error && <FormError message={username.error} /> }
-        <input 
-          type={email.type} 
-          value={email.value} 
-          name={email.name} 
-          placeholder={email.placeholder}
-          id={email.name}
-          onChange={handleChange} 
-          onBlur={blurHandler}
-          className="border p-3 rounded-lg" 
-        />
-          {email.error && <FormError message={email.error} /> }
 
-        <input 
-          type={password.type} 
-          value={password.value} 
-          name={password.name} 
-          placeholder={password.placeholder} 
-          onChange={handleChange} 
-          onBlur={blurHandler}
-          className="border p-3 rounded-lg" 
-        />
-          {password.error && <FormError message={password.error} /> }
+        <form onSubmit={onHandleUpdate} noValidate className="flex flex-col gap-4">
+          <input 
+            type="file" 
+            name="avatar"
+            ref={fileRef} 
+            hidden 
+            accept='image/*'
+            value={''}
+            onBlur={() => console.log('img blur')}
+            onChange={e => setFile(e.target.files[0])}
+          />
+          <img 
+            src={avatar.value || currentUser.avatar} 
+            alt="avatar"
+            onClick={() => fileRef.current.click()}
+            className="rounded-full h-24 w-24 object-cover cursor-pointer my-2 self-center" 
+          />
+          <div className='text-center'>
+            {imagerUploadError ? 
+                <Alert type="error" message={imagerUploadError} /> : 
+                imageUploadProgress > 0 && imageUploadProgress < 100 ? 
+                  <Progress progress={imageUploadProgress} /> :
+                  imageUploadProgress === 100 ? 
+                    <Alert type="success" message="Image Uploaded Successfully!" /> :
+                    null
+            }  
+          </div>      
+          <input 
+            type={username.type} 
+            value={username.value} 
+            name={username.name} 
+            id={username.name}
+            placeholder={username.placeholder} 
+            onChange={handleChange} 
+            onBlur={blurHandler}
+            className="border p-3 rounded-lg" 
+          />
+      
+          {username.error && <FormError message={username.error} /> }
+          <input 
+            type={email.type} 
+            value={email.value} 
+            name={email.name} 
+            placeholder={email.placeholder}
+            id={email.name}
+            onChange={handleChange} 
+            onBlur={blurHandler}
+            className="border p-3 rounded-lg" 
+          />
+            {email.error && <FormError message={email.error} /> }
 
-        <Button type="submit" disabled={!username.value && !email.value && !password.value && !avatar.value} text={updating ? 'Updating': 'Update'} className="bg-slate-700" />
-        <Button type="button" text="Create Listing" className="bg-green-700" onClick={() => navigate('/create-listing')} />
+          <input 
+            type={password.type} 
+            value={password.value} 
+            name={password.name} 
+            placeholder={password.placeholder} 
+            onChange={handleChange} 
+            onBlur={blurHandler}
+            className="border p-3 rounded-lg" 
+          />
+            {password.error && <FormError message={password.error} /> }
+
+          <Button type="submit" disabled={!username.value && !email.value && !password.value && !avatar.value} text={updating ? 'Updating': 'Update'} className="bg-slate-700" />
+          <Button type="button" text="Create Listing" className="bg-green-700" onClick={() => navigate('/create-listing')} />
 
 
-        {error && <Alert type="error" message={error.message} />}
-        {updateSuccess && <Alert type="success" message="User is updated successfully!!" />}
-      </form>
+          {error && <Alert type="error" message={error.message} />}
+          {/* {updateSuccess && <Alert type="success" message="User is updated successfully!!" />} */}
+        </form>
+      </>
     )
 }
