@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { updateUser, deleteUser, authUser } from "../actions/userActions";
 import { signout } from "../actions/userActions";
-import { SIGN_UP } from '../../utils/types'
+import { SIGN_UP, DELETE, SIGN_IN } from '../../utils/types'
 
 const userSlice = createSlice({
     name: 'user',
@@ -33,6 +33,9 @@ const userSlice = createSlice({
             .addCase(authUser.fulfilled, (state, action) => {
                 state.loading = false
                 state.currentUser = action.payload.user
+                if(action.meta.arg.mode === SIGN_IN) {
+                    state.signedUpUser = { email: action.payload.user.email }
+                }
                 if(action.meta.arg.mode === SIGN_UP) {
                     state.signedUpUser = { email: action.meta.arg.user.email }
                 }
@@ -64,6 +67,9 @@ const userSlice = createSlice({
             .addCase(deleteUser.fulfilled, (state, action) => {
                 state.loading = false
                 state.currentUser = null
+                if(action.meta.arg.mode === DELETE) {
+                    state.signedUpUser = null
+                }
             })
             .addCase(deleteUser.rejected, (state, action) => {
                 state.loading = false

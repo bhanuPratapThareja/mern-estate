@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { useNavigate } from 'react-router-dom'
 
 import { deleteUser, signoutUser } from '../../store'
-import { userSliceActions } from '../../store'
+import { SIGN_OUT, DELETE } from "../../utils/types";
 
 export default function ProfileAuth() {
     const { currentUser  } = useSelector(state => state.user)
@@ -10,22 +10,17 @@ export default function ProfileAuth() {
     const dispatch = useDispatch()
 
     const onDeleteUser = () => {
-        dispatch(deleteUser(currentUser.id))
-          .unwrap()
-          .then(res => {
-            console.log(res)
-            navigate('/auth')
-            setTimeout(() => {
-              dispatch(userSliceActions.removeUserState())
-            }, 0);
-          })
-          .catch(err => console.log('del err: ', err))
+        dispatch(deleteUser({ userId: currentUser.id, mode: DELETE }))
+          // .unwrap()
+          // .then(() => {
+          //   navigate('/auth')
+          // })
     }
     
     const onSignout = () => {
-        dispatch(signoutUser())
-          .unwrap()
-          .then(() => navigate('/auth'))
+        dispatch(signoutUser({ mode: SIGN_OUT}))
+          // .unwrap()
+          // .then(() => navigate('/auth'))
     }
 
     return (
