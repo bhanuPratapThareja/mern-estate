@@ -68,7 +68,7 @@ export default function ProfileForm() {
     const fileRef = useRef()
     const toastRef = useRef()
     const [file, setFile] = useState(null)
-    const [updateResponse, setUpdateResponse] = useState({ type: '', message: '' })
+    const [toastData, setToastData] = useState({})
     const { currentUser, updating, error } = useSelector(state => state.user)
     
    
@@ -106,7 +106,8 @@ export default function ProfileForm() {
         dispatch(updateUser({ data, id: currentUser.id }))
         .unwrap()
         .then((res) => {
-          setUpdateResponse({ type: SUCCESS, message: res.message })
+          console.log(res)
+          setToastData({ type: SUCCESS, header: res.status, body: res.message })
           formResetHandler()
         })
         .finally(() => {
@@ -125,8 +126,9 @@ export default function ProfileForm() {
       <>
         <Toast
           ref={toastRef}
-          heading={updateResponse.message}
-          type={updateResponse.type}
+          type={toastData.type}
+          header={toastData.header}
+          body={toastData.body}
         />
 
         <form onSubmit={onHandleUpdate} noValidate className="flex flex-col gap-4">

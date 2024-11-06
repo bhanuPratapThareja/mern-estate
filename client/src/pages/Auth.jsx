@@ -1,29 +1,18 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 
 import OAuth from '../components/OAuth';
 import Button from '../shared/Button'
 import FormError from '../shared/FormError';
+import Toast from '../shared/Toast'
 
 import { authUser } from '../store';
 import { useForm } from '../hooks/form-hook';
-import { SIGN_IN, SIGN_UP, VALIDATORS } from '../utils/types';
+import { ERROR, SIGN_IN, SIGN_UP, VALIDATORS } from '../utils/types';
 
 const INITIAL_FORM_STATE = {
     inputs: {
-      username: {
-        name: 'username',
-        type: 'text',
-        placeholder: 'User Name',
-        displayName: 'User Name',
-        value: '',
-        error: '',
-        touched: false,
-        minLength: 4,
-        maxLength: 20,
-        validations: [VALIDATORS.REQUIRED, VALIDATORS.MIN_LENGTH, VALIDATORS.MAX_LENGTH]
-      },
       email: {
         name: 'email',
         type: 'email',
@@ -44,25 +33,60 @@ const INITIAL_FORM_STATE = {
         touched: false,
         minLength: 8,
         maxLength: 16,
-        validations: [VALIDATORS.REQUIRED, VALIDATORS.ALPHA_NUMERIC, VALIDATORS.MIN_LENGTH, VALIDATORS.MAX_LENGTH]
+        validations: []
       }
     },
     isFormValid: false,
 }
 
+const userName = {
+  name: 'username',
+  type: 'text',
+  placeholder: 'User Name',
+  displayName: 'User Name',
+  value: '',
+  error: '',
+  touched: false,
+  minLength: 4,
+  maxLength: 20,
+  validations: [VALIDATORS.REQUIRED, VALIDATORS.MIN_LENGTH, VALIDATORS.MAX_LENGTH]
+}
+
 export default function Auth() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const toastRef = useRef()
     const [mode, setMode] = useState(SIGN_IN)
+    const [toastData, setToastData] = useState({ type: '', header:'', body:'' })
+
     const { loading, error, signedUpUser } = useSelector(state => state.user)
     const { formState, changeHandler, blurHandler, formValidateHandler, formUpdateHandler, formResetHandler } = useForm(INITIAL_FORM_STATE)
 
     useEffect(() => {
-        formResetHandler()
-        if(mode === SIGN_IN && signedUpUser) {
-          formUpdateHandler(signedUpUser)
+        if(mode === SIGN_UP) {
+          const signUpFormState = { ...formState }
+          signUpFormState.inputs.username = userName
+          for(let key in signUpFormState.inputs) {
+            formUpdateHandler({ [key]: signUpFormState.inputs[key].value })
+          }
+          formUpdateHandler({ email: '' })
         }
-    }, [mode])
+
+        if(mode === SIGN_IN && formState) {
+          formResetHandler()
+          const signInFormState = JSON.parse(JSON.stringify(formState))
+          delete signInFormState.inputs.username
+          for(let key in signInFormState.inputs) {
+            if(key === 'password') continue;
+            formUpdateHandler({ [key]: signInFormState.inputs[key].value })
+          }
+        }
+        
+        if(mode === SIGN_IN && signedUpUser) {
+          formUpdateHandler({ email: signedUpUser.email })
+        }
+
+      }, [mode])
 
     const handleAuthMode = () => {
       const authMode = mode === SIGN_IN ? SIGN_UP : SIGN_IN
@@ -86,20 +110,27 @@ export default function Auth() {
 
       dispatch(authUser({ user, mode }))
         .then((res) => {
-          formResetHandler()
           if(res.error) {
-            console.log('res.error: ', res.error)
-            // handle error
-            return
-          }
-          mode === SIGN_IN ? navigate('/') : setMode(SIGN_IN)
+            const err = error ? error : res.payload.response.data
+            setToastData({ type: ERROR, header: err.status, body: err.message })
+            toastRef.current.notifyUser()
+          } else {
+            mode === SIGN_IN ? navigate('/') : setMode(SIGN_IN)
+          } 
         })
-        .catch(err => console.log('auth error: ', err))
+        .catch(err => console.log('catch: ', err))
     }
-
     const { username, email, password } = formState.inputs
 
     return (
+      <> 
+        <Toast 
+          ref={toastRef}
+          type={toastData.type}
+          header={toastData.header}
+          body={toastData.body}
+        />
+     
         <div className="p-3 max-w-lg mx-auto">
             <h1 className="text-3xl text-center font-semibold my-7">Sign {mode === SIGN_IN ? 'In' : 'Up' }</h1>
             
@@ -108,14 +139,14 @@ export default function Auth() {
                   <input
                   type="text"
                   className="border p-3 rounded-lg"
-                  placeholder={username.placeholder}
-                  id={username.name}
-                  name={username.name}
-                  value={username.value}
+                  placeholder={username?.placeholder}
+                  id={username?.name}
+                  name={username?.name}
+                  value={username?.value || ''}
                   onChange={changeHandler}
                   onBlur={blurHandler}
                   />
-                  {username.error && <FormError message={username.error} /> }
+                  {username?.error && <FormError message={username?.error} /> }
                 </>}
             <input
                 type="email"
@@ -151,5 +182,6 @@ export default function Auth() {
                 <button onClick={handleAuthMode} className='text-blue-700 font-semibold underline'>{mode === SIGN_IN ? 'Sign Up' : 'Sign In'}</button>
             </div>
         </div>
+      </>
     )
 }

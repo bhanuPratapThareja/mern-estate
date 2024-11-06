@@ -12,7 +12,6 @@ const userSlice = createSlice({
         error: null,
         loading: false,
         updating: false,
-        updateResponse: null
     },
     reducers: {
         addSignedInUser(state, action) {
@@ -26,13 +25,18 @@ const userSlice = createSlice({
     extraReducers(builder) {
         builder
 
+
             // auth
             .addCase(authUser.pending, (state) => {
                 state.loading = true
                 state.error = null
+                state.updating = false
+                state.currentUser = null
             })
             .addCase(authUser.fulfilled, (state, action) => {
                 state.loading = false
+                state.error = null
+                state.updating = false
                 state.currentUser = action.payload.user
                 if(action.meta.arg.mode === SIGN_IN) {
                     state.signedUpUser = { email: action.payload.user.email }
@@ -43,8 +47,15 @@ const userSlice = createSlice({
             })
             .addCase(authUser.rejected, (state, action) => {
                 state.loading = false
-                state.error = action.error
+                state.error = action.payload.response.data
+                state.updating = false
+                state.currentUser = null
             })
+
+
+
+
+
 
             // update
             .addCase(updateUser.pending, (state) => {

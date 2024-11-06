@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 
-import ListingCard from "../components/listings/ListingCard"
+import ListingCard from "./Listings/ListingCard"
 import { searchListings } from "../store"
 import { listingSliceActions } from "../store"
 

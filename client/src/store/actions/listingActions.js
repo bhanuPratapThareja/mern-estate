@@ -1,7 +1,7 @@
 import { createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import axios from 'axios'
 
-export const createListing = createAsyncThunk('listing/create', async ({ listing, mode }) => {
+export const createListing = createAsyncThunk('listing/create', async ({ listing, mode }, { rejectWithValue }) => {
     const url = mode === 'create' ? '/api/listing/create' : '/api/listing/update/' + listing.id
 
     if(!listing.offer) {
@@ -15,8 +15,13 @@ export const createListing = createAsyncThunk('listing/create', async ({ listing
     if(!listing.imageUrls.length) {
         throw new Error('You must upload atleast one image')
     }
-    const response = await axios.post(url, listing)
-    return response.data
+
+    try {
+        const response = await axios.post(url, listing)
+        return response.data   
+    } catch (error) {
+        return rejectWithValue(error)
+    }
 })
 
 export const fetchListings = createAsyncThunk('listings/fetch', async id => {

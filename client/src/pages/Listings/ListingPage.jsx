@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import SwipePhotos from "../components/SwipePhotos";
+import SwipePhotos from "../../components/SwipePhotos";
 import 'swiper/css/bundle'
 import { FaBath, FaBed, FaChair, FaMapMarkerAlt, FaParking } from "react-icons/fa";
 
-import { getListing } from "../store/actions/listingActions";
-import Contact from "../components/Contact";
+import { getListing } from "../../store/actions/listingActions";
+import Contact from "../../components/Contact";
 
 export default function ListingPage() {
   const params = useParams();

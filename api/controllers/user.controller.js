@@ -18,7 +18,7 @@ export const updateUser = async (req, res, next) => {
             $set: req.body
         }, { new: true })
         const { password: pass, ...userInfo } = updateUser.toObject({ getters: true })
-        res.status(200).json({ user: userInfo, message: 'User update successfully!' })
+        res.status(200).json({ user: userInfo, status: 200, message: 'User is updated successfully!' })
     } catch (error) {
         console.log('update err: ', error)
         next(error)

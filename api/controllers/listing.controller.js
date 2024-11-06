@@ -24,7 +24,7 @@ export const createListing = async (req, res, next) => {
     try {
         const listing = await Listing.create(req.body)
         await User.findByIdAndUpdate(req.user.id, { $push: { listings: listing } })
-        return res.status(201).json({ listing: listing.toObject({ getters: true })})
+        return res.status(201).json({ status: 201, message: 'Listing crearted successfully!',  listing: listing.toObject({ getters: true })})
     } catch (error) {
         next(error)
     }
@@ -38,8 +38,7 @@ export const updateListing = async (req, res, next) => {
             return next(errorHandler(404, 'Listing not found'))
         }
     } catch (error) {
-        console.log('error1 ', error)
-        return next(error)
+        return next(errorHandler(500, 'Improper data format sent'))
     }
 
     if(req.user.id !== listing.userRef.toString()) {
@@ -49,7 +48,7 @@ export const updateListing = async (req, res, next) => {
     try {
         const updatedListing = await Listing.findByIdAndUpdate(req.params.id, req.body, { new: true })
         const { _id, __v,  createdAt, updatedAt, ...rest } = updatedListing.toObject({ getters: true })
-        res.status(200).json({ listing: rest })
+        res.status(200).json({ status: 200, message: 'Listing updated successfully!', listing: rest })
     } catch (error) {
         console.log('error: ', error)
         next(error)

@@ -28,9 +28,13 @@ app.use('*', (req, res) => {
 })
 
 app.use((err, req, res, next) => {
-  const statusCode = err.statusCode || 500
-  const message = err.message || 'Internal Server Error'
-  return res.status(statusCode).json({ statusCode, message })
+  console.log('err: ', err)
+  if(res.headerSent) {
+    return next(err)
+  }
+  const status = err.status || 500
+  const message = err.message || 'An unknown error occured!'
+  return res.status(status).json({ status, message })
 });
 
 mongoose

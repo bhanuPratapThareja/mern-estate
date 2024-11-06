@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
+import HttpError from "../utils/http-error.js";
 
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
@@ -32,6 +33,7 @@ export const signup = async (req, res, next) => {
     res
       .status(201)
       .json({
+        status: 201,
         message: "User Created Successfully!",
       });
   } catch (error) {
@@ -46,7 +48,7 @@ export const signin = async (req, res, next) => {
     const existingUser = await User.findOne({ email });
     
     if (!existingUser) {
-      return next(errorHandler(404, "User not found!"));
+      return next(new HttpError('Could not find a user with the provided email Id.', 404))
     }
 
     const passwordsMatch = bcryptjs.compareSync(
@@ -55,7 +57,7 @@ export const signin = async (req, res, next) => {
     );
     
     if (!passwordsMatch) {
-      return next(errorHandler(401, "Invalid credentials!"));
+      return next(new HttpError('Please check your email Id and password', 401))
     }  
 
     const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET);

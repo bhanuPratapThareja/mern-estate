@@ -1,9 +1,12 @@
+import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
-import ListingCard from '../components/listings/ListingCard'
+import ListingCard from './Listings/ListingCard'
+import Modal from '../shared/Modal';
 
 export default function Home() {
+  const modalRef = useRef()
   const { searchedListings } = useSelector(state => state.listings)
 
   let offerListings = [];
@@ -11,7 +14,6 @@ export default function Home() {
   let rentListings = [];
 
   if(searchedListings && searchedListings.length) {
-    console.log(2)
     for(let i = 0; i < searchedListings.length; i++) {
       const el = searchedListings[i]
       if(el.offer) {
@@ -33,6 +35,14 @@ export default function Home() {
         rentListings.push(el)
       }
     }
+  }
+
+  const onOpenModal = () => {
+    modalRef.current.showModal()
+  }
+
+  const getValueFromModal = value => {
+    console.log('value:: ', value)
   }
 
   return (
@@ -58,6 +68,17 @@ export default function Home() {
           return <SwipePhotos images={listing.imageUrls} />
         }
       })} */}
+
+      <div className='border-2 flex max-w-xl mx-auto justify-center'>
+        <button onClick={onOpenModal} className="bg-sky-800 border-2 text-white w-1/2 p-3 rounded-md font-semibold text-md">open modal</button>
+      </div>
+
+      <Modal
+        ref={modalRef}
+        onPressOk={getValueFromModal}
+        header="Modal Header"
+        body="Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia saepe soluta eius omnis quisquam nobis, nam blanditiis animi placeat. Dolorem itaque quidem perferendis sed necessitatibus saepe aperiam porro repellat officiis?"
+      />
       
 
       {/* listing results */}

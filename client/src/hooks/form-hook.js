@@ -22,6 +22,7 @@ const reducer = (state, action) => {
             return newState
         case RESET:
             const resetState = resetForm(newState)
+            console.log('resetState: ', resetState)
             return resetState
         default:
             return state

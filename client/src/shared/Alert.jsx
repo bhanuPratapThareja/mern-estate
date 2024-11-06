@@ -20,7 +20,7 @@ export default function Alert({ type, message }) {
 
   return (
     <div 
-      className={`w-full border-2 rounded-md p-3 my-2 ${classes}`}>
+      className={`w-full rounded-md mt-1 ${classes}`}>
        <p className={`text-sm font-semibold`}>{message}</p>
     </div>
   )

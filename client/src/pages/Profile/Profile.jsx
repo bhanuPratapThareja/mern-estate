@@ -1,14 +1,10 @@
-import { useRef } from 'react'
 import { useSelector } from 'react-redux'
 
-import ProfileForm from '../components/Profile/ProfileForm'
-import ProfileAuth from "../components/Profile/ProfileAuth"
-import ProfileListings from '../components/Profile/ProfileListings'
-import Toast from '../shared/Toast'
-import { ERROR, SUCCESS } from '../utils/types'
+import ProfileForm from './ProfileForm'
+import ProfileAuth from "./ProfileAuth"
+import ProfileListings from './ProfileListings'
 
 export default function () {
-  const toastRef = useRef()
   const { currentUser } = useSelector(state => state.user)
 
   return (

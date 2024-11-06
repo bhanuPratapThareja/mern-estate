@@ -39,9 +39,9 @@ const listingSlice = createSlice({
         }
       })
       .addCase(createListing.rejected, (state, action) => {
-        console.log(action.error);
+        console.log(action);
         state.creating = false;
-        state.error = action.error;
+        state.error = action.payload ? null : action.error
       })
 
       // get listings

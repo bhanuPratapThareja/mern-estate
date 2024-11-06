@@ -1,9 +1,13 @@
 import { createAsyncThunk, createAction } from "@reduxjs/toolkit";
 import axios from 'axios'
 
-export const authUser = createAsyncThunk('user/auth', async ({ user, mode }) => {
-    const response = await axios.post(`/api/auth/${mode}`, user)
-    return response.data
+export const authUser = createAsyncThunk('user/auth', async ({ user, mode }, { rejectWithValue }) => {
+    try {
+        const response = await axios.post(`/api/auth/${mode}`, user)
+        return response.data
+    } catch (error) {
+        throw rejectWithValue(error)
+    }
 })
 
 export const updateUser = createAsyncThunk('user/update', async (userData) => {
