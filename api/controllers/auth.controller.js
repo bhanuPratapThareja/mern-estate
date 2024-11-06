@@ -11,8 +11,7 @@ export const signup = async (req, res, next) => {
 
   let existingUser;
   try {
-    existingUser = await User.findOne({ username });
-    existingUser = await User.findOne({ email });
+    existingUser = await User.findOne({ $or: [{ username }, { email }] });
     if (existingUser) {
       return next(errorHandler(409, "User Name or Email ID already exists!"));
     }

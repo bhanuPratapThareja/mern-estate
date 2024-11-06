@@ -20,7 +20,7 @@ export const createListing = createAsyncThunk('listing/create', async ({ listing
         const response = await axios.post(url, listing)
         return response.data   
     } catch (error) {
-        return rejectWithValue(error)
+        throw rejectWithValue(error)
     }
 })
 
@@ -29,9 +29,13 @@ export const fetchListings = createAsyncThunk('listings/fetch', async id => {
     return response.data
 })
 
-export const deleteListing = createAsyncThunk('listing/delete', async id => {
-    const response = await axios.delete('/api/listing/delete/' + id)
-    return response.data
+export const deleteListing = createAsyncThunk('listing/delete', async (id, { rejectWithValue }) => {
+    try {
+        const response = await axios.delete('/api/listing/delete/' + id)
+        return response.data
+    } catch (error) {
+        throw rejectWithValue(error)
+    }
 })
 
 export const getListing = createAsyncThunk('listing/get', async id => {

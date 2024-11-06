@@ -99,14 +99,13 @@ export default function CreateListing() {
             .unwrap()
             .then((res) => {
                 console.log('res: ', res)
-                console.log(res)
                 setFormData(INITIAL_FORM)
                 setToastData({ type: SUCCESS, header: res.status, body: res.message })
                 toastRef.current.notifyUser()
-                // navigate(`/listing/${res.listing.id}`)
             })
             .catch((err) => {
-                const { status, message } = err.response.data 
+                console.log('catch: ', err)
+                const { status, message } = err?.response?.data || err
                 setToastData({ type: ERROR, header: status, body: message })
                 toastRef.current.notifyUser()
             })
@@ -210,7 +209,7 @@ export default function CreateListing() {
                             text={mode === 'edit' ? 'Edit Listing' : (mode === 'edit' && creating) ? 'Editing...' :  mode === 'create' ? 'Creating Listing' : 'Creating...'} 
                             className="bg-slate-700"
                         />
-                        {error && <p className='text-red-700 text-sm font-semibold'>{error.message}</p>}
+                        {/* {error && <p className='text-red-700 text-sm font-semibold'>{error.message}</p>} */}
                     </div>
                 </form>
             </main>

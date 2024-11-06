@@ -95,7 +95,7 @@ export const validateForm = (formState) => {
 }
 
 export const resetForm = formState => {
-  const resetState = { ...formState }
+  const resetState = JSON.parse(JSON.stringify(formState))
   for(let key in formState.inputs) {
     resetState.inputs[key].value = ''
     resetState.inputs[key].error = ''

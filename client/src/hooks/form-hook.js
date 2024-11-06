@@ -4,26 +4,27 @@ import { CHANGE, BLUR, RESET } from "../utils/types";
 import { validateInput, validateForm, resetForm } from "../utils/form-validations";
 
 const reducer = (state, action) => {
-    const { name, value } = action.payload
-    const newState = { ...state }
+    const { name, value, resetState } = action.payload
+    const newState = JSON.parse(JSON.stringify(state))
     const newInput = newState.inputs[name]
 
     switch(action.type) {
         case CHANGE:
+            // console.log(1)
             newInput.value = value
             if(newInput.touched) {
                 newInput.error = validateInput(newInput)           
             }
             return newState
         case BLUR:
+            // console.log(2)
             newInput.touched = true
             newInput.error = validateInput(newInput)
             newState.isFormValid = validateForm(newState)
             return newState
         case RESET:
-            const resetState = resetForm(newState)
-            console.log('resetState: ', resetState)
-            return resetState
+            // console.log(3)
+            return { ...resetState }
         default:
             return state
     }
@@ -62,8 +63,8 @@ export const useForm = (initialFormState) => {
         }
     }
 
-    function formResetHandler() {
-        dispatch({ type: RESET, payload: {} })
+    function formResetHandler(resetState) {
+        dispatch({ type: RESET, payload: { resetState } })
     }
 
     return {

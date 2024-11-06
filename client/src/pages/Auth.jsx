@@ -9,7 +9,7 @@ import Toast from '../shared/Toast'
 
 import { authUser } from '../store';
 import { useForm } from '../hooks/form-hook';
-import { ERROR, SIGN_IN, SIGN_UP, VALIDATORS } from '../utils/types';
+import { ERROR, SIGN_IN, SIGN_UP, SUCCESS, VALIDATORS } from '../utils/types';
 
 const INITIAL_FORM_STATE = {
     inputs: {
@@ -56,7 +56,7 @@ export default function Auth() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const toastRef = useRef()
-    const [mode, setMode] = useState(SIGN_IN)
+    const [mode, setMode] = useState(SIGN_UP)
     const [toastData, setToastData] = useState({ type: '', header:'', body:'' })
 
     const { loading, error, signedUpUser } = useSelector(state => state.user)
@@ -64,22 +64,22 @@ export default function Auth() {
 
     useEffect(() => {
         if(mode === SIGN_UP) {
-          const signUpFormState = { ...formState }
+          const signUpFormState = INITIAL_FORM_STATE
           signUpFormState.inputs.username = userName
-          for(let key in signUpFormState.inputs) {
-            formUpdateHandler({ [key]: signUpFormState.inputs[key].value })
-          }
-          formUpdateHandler({ email: '' })
+          formResetHandler(signUpFormState)
+          // for(let key in signUpFormState.inputs) {
+          //   formUpdateHandler({ [key]: signUpFormState.inputs[key].value })
+          // }
         }
 
-        if(mode === SIGN_IN && formState) {
-          formResetHandler()
-          const signInFormState = JSON.parse(JSON.stringify(formState))
+        if(mode === SIGN_IN) {
+          const signInFormState = INITIAL_FORM_STATE
           delete signInFormState.inputs.username
-          for(let key in signInFormState.inputs) {
-            if(key === 'password') continue;
-            formUpdateHandler({ [key]: signInFormState.inputs[key].value })
-          }
+          formResetHandler(signInFormState)
+          // for(let key in signInFormState.inputs) {
+          //   if(key === 'password') continue;
+          //   formUpdateHandler({ [key]: signInFormState.inputs[key].value })
+          // }
         }
         
         if(mode === SIGN_IN && signedUpUser) {
@@ -109,16 +109,23 @@ export default function Auth() {
       }
 
       dispatch(authUser({ user, mode }))
+        .unwrap()
         .then((res) => {
-          if(res.error) {
-            const err = error ? error : res.payload.response.data
-            setToastData({ type: ERROR, header: err.status, body: err.message })
-            toastRef.current.notifyUser()
+          console.log('res: ', res)
+          if(mode === SIGN_IN) {
+            navigate('/')
           } else {
-            mode === SIGN_IN ? navigate('/') : setMode(SIGN_IN)
-          } 
+            setMode(SIGN_IN)
+            setToastData({ type: SUCCESS, header: res.payload.status, body: res.payload.message })
+            toastRef.current.notifyUser()
+          }
+      
         })
-        .catch(err => console.log('catch: ', err))
+        .catch(err => {
+          console.log('catch: ', err)
+          setToastData({ type: ERROR, header: err.response.data.status, body: err.response.data.message })
+          toastRef.current.notifyUser()
+        })
     }
     const { username, email, password } = formState.inputs
 
@@ -135,7 +142,7 @@ export default function Auth() {
             <h1 className="text-3xl text-center font-semibold my-7">Sign {mode === SIGN_IN ? 'In' : 'Up' }</h1>
             
             <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
-              {mode !== SIGN_IN && <>
+              {mode !== SIGN_IN  && <>
                   <input
                   type="text"
                   className="border p-3 rounded-lg"

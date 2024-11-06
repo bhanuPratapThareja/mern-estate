@@ -9,6 +9,7 @@ export const ERROR = 'error'
 export const CHANGE = 'change'
 export const BLUR = 'blue'
 export const RESET = 'reset'
+export const UPDATE = 'update'
 
 export const VALIDATORS = {
     REQUIRED: 'required',

@@ -4,8 +4,8 @@ import { errorHandler } from "../utils/error.js"
 
 export const createListing = async (req, res, next) => {
     req.body.userRef = req.user.id
-
     let user;
+
     try {
         user = await User.findById(req.user.id)
     } catch (error) {
@@ -73,7 +73,7 @@ export const deleteListing = async (req, res, next) => {
     try {
         await Listing.findByIdAndDelete(req.params.id)
         await User.findByIdAndUpdate(req.user.id, { $pull: { listings: listing.id } })
-        res.status(200).json({ message: 'Listing deleted', id: req.params.id })
+        res.status(200).json({ status: 200, message: 'Listing deleted', id: req.params.id })
     } catch (error) {
         next(error)
     }

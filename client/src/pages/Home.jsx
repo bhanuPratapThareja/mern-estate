@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import ListingCard from './Listings/ListingCard'
-import Modal from '../shared/Modal';
 
 export default function Home() {
   const modalRef = useRef()
@@ -41,10 +40,6 @@ export default function Home() {
     modalRef.current.showModal()
   }
 
-  const getValueFromModal = value => {
-    console.log('value:: ', value)
-  }
-
   return (
     <div>
       {/* top */}
@@ -68,18 +63,6 @@ export default function Home() {
           return <SwipePhotos images={listing.imageUrls} />
         }
       })} */}
-
-      <div className='border-2 flex max-w-xl mx-auto justify-center'>
-        <button onClick={onOpenModal} className="bg-sky-800 border-2 text-white w-1/2 p-3 rounded-md font-semibold text-md">open modal</button>
-      </div>
-
-      <Modal
-        ref={modalRef}
-        onPressOk={getValueFromModal}
-        header="Modal Header"
-        body="Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia saepe soluta eius omnis quisquam nobis, nam blanditiis animi placeat. Dolorem itaque quidem perferendis sed necessitatibus saepe aperiam porro repellat officiis?"
-      />
-      
 
       {/* listing results */}
       <div className="max-w-6xl mx-auto p-3 my-4 flex flex-col gap-8">

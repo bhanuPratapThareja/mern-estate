@@ -10,7 +10,7 @@ import Toast from '../../shared/Toast'
 import { updateUser  } from '../../store'
 import { useImageUpload } from '../../hooks/image-upload-hook'
 import { useForm } from '../../hooks/form-hook'
-import { SUCCESS, VALIDATORS } from '../../utils/types'
+import { ERROR, SUCCESS, VALIDATORS } from '../../utils/types'
 
 const INITIAL_PROFILE_STATE = { 
   inputs: {
@@ -70,12 +70,13 @@ export default function ProfileForm() {
     const [file, setFile] = useState(null)
     const [toastData, setToastData] = useState({})
     const { currentUser, updating, error } = useSelector(state => state.user)
-    
    
     const [imageUploadProgress, imagerUploadError, uploadImage] = useImageUpload()
     const {
       formState, changeHandler, blurHandler, formValidateHandler, formUpdateHandler, formResetHandler
      } = useForm(INITIAL_PROFILE_STATE)
+
+    //  console.log('formState: ', formState)
 
     useEffect(() => {
       if(file) {
@@ -102,21 +103,20 @@ export default function ProfileForm() {
         password: formState.inputs.password.value,
         avatar: formState.inputs.avatar.value
       }
-      toastRef.current.removeNotification()
-        dispatch(updateUser({ data, id: currentUser.id }))
+      
+      dispatch(updateUser({ data, id: currentUser.id }))
         .unwrap()
         .then((res) => {
-          console.log(res)
           setToastData({ type: SUCCESS, header: res.status, body: res.message })
-          formResetHandler()
+          formResetHandler(INITIAL_PROFILE_STATE)
         })
-        .finally(() => {
-          setTimeout(toastRef.current.notifyUser, 500);
+        .catch(err => {
+          setToastData({ type: ERROR, header: err.response.data.status, body: err.response.data.message })
         })
+        .finally(() => toastRef.current.notifyUser())
     }
     
     const handleChange = e => {
-      // setUpdateSuccess(false)
       changeHandler(e)
     }
 

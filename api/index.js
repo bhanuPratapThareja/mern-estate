@@ -28,7 +28,7 @@ app.use('*', (req, res) => {
 })
 
 app.use((err, req, res, next) => {
-  console.log('err: ', err)
+  console.log('error handler: ', err)
   if(res.headerSent) {
     return next(err)
   }

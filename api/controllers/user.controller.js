@@ -2,11 +2,14 @@ import bcryptjs from 'bcryptjs'
 import User from '../models/user.model.js'
 import Listing from '../models/listing.model.js'
 import { errorHandler } from "../utils/error.js"
+import HttpError from '../utils/http-error.js'
 
 export const updateUser = async (req, res, next) => {
+    console.log('req.user.id: ', req.user.id)
+    console.log('req.params.id: ', req.params.id)
+
     if(req.user.id !== req.params.id) {
-        const error = errorHandler(401, 'Login Id mismatch!')
-        return res.status(403).send(new Error('User not authorized! Login ID mismatch!'))
+        return next(new HttpError('User is unauthorized!', 401))
     }
 
     if(req.body.password) {

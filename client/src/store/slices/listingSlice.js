@@ -22,6 +22,7 @@ const listingSlice = createSlice({
   },
   extraReducers(builder) {
     builder
+
       .addCase(createListing.pending, (state) => {
         state.creating = true;
         state.error = null;
@@ -41,7 +42,7 @@ const listingSlice = createSlice({
       .addCase(createListing.rejected, (state, action) => {
         console.log(action);
         state.creating = false;
-        state.error = action.payload ? null : action.error
+        state.error = action.error
       })
 
       // get listings
@@ -85,6 +86,9 @@ const listingSlice = createSlice({
 
       .addCase(deleteListing.fulfilled, (state, action) => {
         state.listings = state.listings.filter(listing => listing.id !== action.meta.arg)
+      })
+      .addCase(deleteListing.rejected, (state, action) => {
+        state.error = action.error
       })
 
       // searchmlistings
