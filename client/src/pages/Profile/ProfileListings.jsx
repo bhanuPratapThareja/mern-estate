@@ -3,9 +3,8 @@ import { useSelector, useDispatch, } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
 import Modal from '../../shared/Modal'
-import Toast from '../../shared/Toast'
 import Listing from "../Listings/Listing"
-import { deleteListing, fetchListings } from '../../store'
+import { deleteListing, fetchListings, toastActions } from '../../store'
 import { SUCCESS, ERROR } from "../../utils/types"
 
 export default function ProfileListings() {
@@ -14,8 +13,6 @@ export default function ProfileListings() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const modalRef = useRef()
-    const toastRef = useRef()
-    const [toastData, setToastData] = useState({})
     const [activeListing, setActiveListing] = useState()
 
     useEffect(() => {
@@ -37,14 +34,11 @@ export default function ProfileListings() {
         dispatch(deleteListing(activeListing.id))
             .unwrap()
             .then((res) => {
-                setToastData({ type: SUCCESS, header: res.status, body: res.message })
+                dispatch(toastActions.showToast({ type: SUCCESS, header: res.status, body: res.message }))
             })
             .catch((err) => {
-                setToastData({ type: ERROR, header: err.response.data.status, body: err.response.data.message })
+                dispatch(toastActions.showToast({ type: ERROR, header: err.response.data.status, body: err.response.data.message }))
             })
-            .finally(() => {
-                toastRef.current.notifyUser()
-            }) 
     }
 
     const editListingHandler = listing => {
@@ -53,12 +47,6 @@ export default function ProfileListings() {
 
     return (
         <>
-            <Toast 
-                ref={toastRef}
-                type={toastData.type}
-                header={toastData.header}
-                body={toastData.body}
-            />
 
             <Modal
                 ref={modalRef}

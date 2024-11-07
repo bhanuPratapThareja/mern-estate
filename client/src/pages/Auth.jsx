@@ -1,15 +1,15 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 
 import OAuth from '../components/OAuth';
 import Button from '../shared/Button'
 import FormError from '../shared/FormError';
-import Toast from '../shared/Toast'
 
 import { authUser } from '../store';
 import { useForm } from '../hooks/form-hook';
 import { ERROR, SIGN_IN, SIGN_UP, SUCCESS, VALIDATORS } from '../utils/types';
+import { toastActions } from '../store';
 
 const INITIAL_FORM_STATE = {
     inputs: {
@@ -55,9 +55,7 @@ const userName = {
 export default function Auth() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const toastRef = useRef()
-    const [mode, setMode] = useState(SIGN_UP)
-    const [toastData, setToastData] = useState({ type: '', header:'', body:'' })
+    const [mode, setMode] = useState(SIGN_IN)
 
     const { loading, error, signedUpUser } = useSelector(state => state.user)
     const { formState, changeHandler, blurHandler, formValidateHandler, formUpdateHandler, formResetHandler } = useForm(INITIAL_FORM_STATE)
@@ -111,33 +109,23 @@ export default function Auth() {
       dispatch(authUser({ user, mode }))
         .unwrap()
         .then((res) => {
-          console.log('res: ', res)
+          console.log('success: ', res)
           if(mode === SIGN_IN) {
             navigate('/')
           } else {
             setMode(SIGN_IN)
-            setToastData({ type: SUCCESS, header: res.payload.status, body: res.payload.message })
-            toastRef.current.notifyUser()
+            dispatch(toastActions.showToast({ type: SUCCESS, header: res.status, body: res.message }))
           }
       
         })
         .catch(err => {
           console.log('catch: ', err)
-          setToastData({ type: ERROR, header: err.response.data.status, body: err.response.data.message })
-          toastRef.current.notifyUser()
+          dispatch(toastActions.showToast({ type: ERROR, header: err.response.data.status, body: err.response.data.message }))
         })
     }
     const { username, email, password } = formState.inputs
 
     return (
-      <> 
-        <Toast 
-          ref={toastRef}
-          type={toastData.type}
-          header={toastData.header}
-          body={toastData.body}
-        />
-     
         <div className="p-3 max-w-lg mx-auto">
             <h1 className="text-3xl text-center font-semibold my-7">Sign {mode === SIGN_IN ? 'In' : 'Up' }</h1>
             
@@ -145,13 +133,13 @@ export default function Auth() {
               {mode !== SIGN_IN  && <>
                   <input
                   type="text"
-                  className="border p-3 rounded-lg"
-                  placeholder={username?.placeholder}
-                  id={username?.name}
-                  name={username?.name}
-                  value={username?.value || ''}
-                  onChange={changeHandler}
-                  onBlur={blurHandler}
+                    className="border p-3 rounded-lg"
+                    placeholder={username?.placeholder}
+                    id={username?.name}
+                    name={username?.name}
+                    value={username?.value || ''}
+                    onChange={changeHandler}
+                    onBlur={blurHandler}
                   />
                   {username?.error && <FormError message={username?.error} /> }
                 </>}
@@ -189,6 +177,5 @@ export default function Auth() {
                 <button onClick={handleAuthMode} className='text-blue-700 font-semibold underline'>{mode === SIGN_IN ? 'Sign Up' : 'Sign In'}</button>
             </div>
         </div>
-      </>
     )
 }

@@ -1,11 +1,9 @@
-import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import ListingCard from './Listings/ListingCard'
 
 export default function Home() {
-  const modalRef = useRef()
   const { searchedListings } = useSelector(state => state.listings)
 
   let offerListings = [];
@@ -34,10 +32,6 @@ export default function Home() {
         rentListings.push(el)
       }
     }
-  }
-
-  const onOpenModal = () => {
-    modalRef.current.showModal()
   }
 
   return (
