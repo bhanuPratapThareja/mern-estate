@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { useSelector, useDispatch, } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
-import Modal from '../../shared/Modal'
 import Listing from "../Listings/Listing"
 import { deleteListing, fetchListings, toastSliceActions, modalSliceActions } from '../../store'
 import { SUCCESS, ERROR } from "../../utils/types"
@@ -14,7 +13,6 @@ export default function ProfileListings() {
     const { confirm } = useSelector(state => state.modal)
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const modalRef = useRef()
     const [activeListing, setActiveListing] = useState(null)
 
     useEffect(() => {
@@ -27,7 +25,6 @@ export default function ProfileListings() {
 
     const deleteListingHandler = listing => {
         setActiveListing(listing)
-        // modalRef.current.showModal()
         count = 0;
         dispatch(modalSliceActions.showModal({
             header: `Delete Listing ${listing.name}`,
@@ -54,10 +51,8 @@ export default function ProfileListings() {
             })
     }
 
-    if(confirm && setActiveListing) {
-        setTimeout(() => {
-            onDeleteListing()
-        }, 500);
+    if(confirm && activeListing) {
+        setTimeout(onDeleteListing, 500);
     }
 
 
@@ -67,14 +62,6 @@ export default function ProfileListings() {
 
     return (
         <>
-
-            {/* <Modal
-                ref={modalRef}
-                onPressOk={onDeleteListing}
-                header={`Delete Listing`}
-                body="Are you sure you want to delete this listing?"
-            /> */}
-
             <button onClick={handleFetchListings} className='text-green-700 w-full'>Show Listings</button>
             {fetchError && <p className='text-red-700'>Error showing listings</p>}
 

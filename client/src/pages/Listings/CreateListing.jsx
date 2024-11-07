@@ -104,6 +104,9 @@ export default function CreateListing() {
                 dispatch(toastSliceActions.showToast({ type: ERROR, header: status, body: message }))
             })
     }
+
+    console.log('mode: ', mode)
+    console.log('creating: ', creating)
     
     return (
         <main className='p-3 max-w-5xl mx-auto'>
@@ -193,7 +196,7 @@ export default function CreateListing() {
                     </button> */}
                     <Button 
                         type="submit" 
-                        text={mode === 'edit' ? 'Edit Listing' : (mode === 'edit' && creating) ? 'Editing...' :  mode === 'create' ? 'Create Listing' : 'Creating...'} 
+                        text={mode === 'edit' ? 'Edit Listing' : (mode === 'edit' && creating) ? 'Editing...' :  (mode === 'create' && creating) ? 'Creating...' :  'Create Listing'} 
                         className="bg-slate-700"
                     />
                     {/* {error && <p className='text-red-700 text-sm font-semibold'>{error.message}</p>} */}
