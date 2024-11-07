@@ -4,16 +4,18 @@ import { useNavigate } from "react-router-dom"
 
 import Modal from '../../shared/Modal'
 import Listing from "../Listings/Listing"
-import { deleteListing, fetchListings, toastActions } from '../../store'
+import { deleteListing, fetchListings, toastSliceActions, modalSliceActions } from '../../store'
 import { SUCCESS, ERROR } from "../../utils/types"
 
+let count = 0;
 export default function ProfileListings() {
     const { currentUser  } = useSelector(state => state.user)
     const { listings, fetchError } = useSelector(state => state.listings)
+    const { confirm } = useSelector(state => state.modal)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const modalRef = useRef()
-    const [activeListing, setActiveListing] = useState()
+    const [activeListing, setActiveListing] = useState(null)
 
     useEffect(() => {
         dispatch(fetchListings(currentUser.id))
@@ -25,21 +27,39 @@ export default function ProfileListings() {
 
     const deleteListingHandler = listing => {
         setActiveListing(listing)
-        modalRef.current.showModal()
+        // modalRef.current.showModal()
+        count = 0;
+        dispatch(modalSliceActions.showModal({
+            header: `Delete Listing ${listing.name}`,
+            body: "Are you sure you want to delete this listing?"
+        }))
     }
 
     const onDeleteListing = () => {
         console.log('activeListing: ', activeListing)
-
+        if(count) {
+            return
+        }
+        count++;
         dispatch(deleteListing(activeListing.id))
             .unwrap()
             .then((res) => {
-                dispatch(toastActions.showToast({ type: SUCCESS, header: res.status, body: res.message }))
+                dispatch(toastSliceActions.showToast({ type: SUCCESS, header: res.status, body: res.message }))
             })
             .catch((err) => {
-                dispatch(toastActions.showToast({ type: ERROR, header: err.response.data.status, body: err.response.data.message }))
+                dispatch(toastSliceActions.showToast({ type: ERROR, header: err.response.data.status, body: err.response.data.message }))
+            })
+            .finally(() => {
+                setActiveListing(null);
             })
     }
+
+    if(confirm && setActiveListing) {
+        setTimeout(() => {
+            onDeleteListing()
+        }, 500);
+    }
+
 
     const editListingHandler = listing => {
         navigate(`/edit-listing/${listing.id}`, { state: { listing } })
@@ -48,12 +68,12 @@ export default function ProfileListings() {
     return (
         <>
 
-            <Modal
+            {/* <Modal
                 ref={modalRef}
                 onPressOk={onDeleteListing}
                 header={`Delete Listing`}
                 body="Are you sure you want to delete this listing?"
-            />
+            /> */}
 
             <button onClick={handleFetchListings} className='text-green-700 w-full'>Show Listings</button>
             {fetchError && <p className='text-red-700'>Error showing listings</p>}

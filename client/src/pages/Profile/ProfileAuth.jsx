@@ -1,19 +1,19 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { useSelector, useDispatch } from "react-redux"
 import { useNavigate } from 'react-router-dom'
 
-import Modal from '../../shared/Modal'
 import { deleteUser, signoutUser } from '../../store'
 import { SIGN_OUT, DELETE } from "../../utils/types";
+import { modalSliceActions } from '../../store'
 
 export default function ProfileAuth() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const modalRef = useRef()
-  const [modalData, setModalData] = useState({})
+  const [mode, setMode] = useState('')
   const { currentUser  } = useSelector(state => state.user)
+  const { confirm } = useSelector(state => state.modal)
     
-    const onDelete = () => {
+  const onDelete = () => {
         dispatch(deleteUser({ userId: currentUser.id, mode: DELETE }))
           .unwrap()
           .then(() => {
@@ -28,39 +28,34 @@ export default function ProfileAuth() {
     }
 
     const profileAuthHandler = mode => {
-      let modalBody;
+      setMode(mode)
+      let header; let body;
       if(mode === SIGN_OUT) {
-        modalBody = 'Are you sure you want to sign out?'
+        header = 'Sign Out'
+        body = 'Are you sure you want to sign out?'
       } else {
-        modalBody = 'Are you sure you want to delete your account? This cannot be undone.'
+        header = 'Delete'
+        body = 'Are you sure you want to delete your account? This cannot be undone.'
       }
-      setModalData({ mode, body: modalBody })
-      modalRef.current.showModal()
+      dispatch(modalSliceActions.showModal({ header, body }))
     }
 
     const onPressOk = () => {
-      if(modalData.mode === SIGN_OUT) {
-        console.log('you are being signedout')
+      if(mode === SIGN_OUT) {
         onSignout()
-      } else if(modalData.mode === DELETE) {
-        console.log('you are being deleted')
+      } else if(mode === DELETE) {
         onDelete()
       }
     }
 
+    if(confirm) {
+      setTimeout(onPressOk, 500);
+    }
+
     return (
-        <>
-          <Modal
-            ref={modalRef}
-            header={modalData.mode === SIGN_OUT ? 'Sign Out' : 'Delete'}
-            body={modalData.body}
-            onPressOk={onPressOk}
-          />
-          
-          <div className="flex justify-between my-2">
-              <span onClick={() => profileAuthHandler(DELETE)} className="text-red-700 cursor-pointer font-semibold">Delete Account</span>
-              <span onClick={() => profileAuthHandler(SIGN_OUT)} className="text-red-700 cursor-pointer font-semibold">Sign out</span>
-          </div>
-        </>
+      <div className="flex justify-between my-2">
+          <span onClick={() => profileAuthHandler(DELETE)} className="text-red-700 cursor-pointer font-semibold">Delete Account</span>
+          <span onClick={() => profileAuthHandler(SIGN_OUT)} className="text-red-700 cursor-pointer font-semibold">Sign out</span>
+      </div>
     )
 }

@@ -6,7 +6,7 @@ import Button from '../../shared/Button'
 import Alert from '../../shared/Alert'
 import FormError from '../../shared/FormError'
 import Progress from '../../shared/Progress'
-import { toastActions, updateUser  } from '../../store'
+import { toastSliceActions, updateUser  } from '../../store'
 import { useImageUpload } from '../../hooks/image-upload-hook'
 import { useForm } from '../../hooks/form-hook'
 import { ERROR, SUCCESS, VALIDATORS } from '../../utils/types'
@@ -105,7 +105,7 @@ export default function ProfileForm() {
         .unwrap()
         .then((res) => {
           // setToastData({ type: SUCCESS, header: res.status, body: res.message })
-          dispatch(toastActions.showToast({ type: SUCCESS, header: res.status, body: res.message }))
+          dispatch(toastSliceActions.showToast({ type: SUCCESS, header: res.status, body: res.message }))
           formResetHandler(INITIAL_PROFILE_STATE)
         })
         .catch(err => {

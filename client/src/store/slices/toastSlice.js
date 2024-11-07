@@ -24,5 +24,5 @@ const toastSlice = createSlice({
     }
 })
 
-export const toastActions = toastSlice.actions
+export const toastSliceActions = toastSlice.actions
 export default toastSlice.reducer

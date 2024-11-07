@@ -9,7 +9,7 @@ import FormError from '../shared/FormError';
 import { authUser } from '../store';
 import { useForm } from '../hooks/form-hook';
 import { ERROR, SIGN_IN, SIGN_UP, SUCCESS, VALIDATORS } from '../utils/types';
-import { toastActions } from '../store';
+import { toastSliceActions } from '../store';
 
 const INITIAL_FORM_STATE = {
     inputs: {
@@ -114,13 +114,13 @@ export default function Auth() {
             navigate('/')
           } else {
             setMode(SIGN_IN)
-            dispatch(toastActions.showToast({ type: SUCCESS, header: res.status, body: res.message }))
+            dispatch(toastSliceActions.showToast({ type: SUCCESS, header: res.status, body: res.message }))
           }
       
         })
         .catch(err => {
           console.log('catch: ', err)
-          dispatch(toastActions.showToast({ type: ERROR, header: err.response.data.status, body: err.response.data.message }))
+          dispatch(toastSliceActions.showToast({ type: ERROR, header: err.response.data.status, body: err.response.data.message }))
         })
     }
     const { username, email, password } = formState.inputs

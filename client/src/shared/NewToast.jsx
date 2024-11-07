@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { createPortal } from 'react-dom';
 
 import { SUCCESS } from "../utils/types";
-import { toastActions } from "../store";
+import { toastSliceActions } from "../store";
 
 export default function NewToast() {
     const dispatch = useDispatch()
@@ -51,7 +51,7 @@ export default function NewToast() {
         setApplyTransition(false)
         setTimeout(() => {
             setShowToast(false)
-            dispatch(toastActions.hideToast())
+            dispatch(toastSliceActions.hideToast())
         }, 600)
     }
 

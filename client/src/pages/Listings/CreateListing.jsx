@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Button from '../../shared/Button'
-import { createListing,   } from '../../store'
+import { createListing, toastSliceActions } from '../../store'
 import { useImageUpload } from '../../hooks/image-upload-hook'
 import { SUCCESS, ERROR } from '../../utils/types'
 
@@ -96,12 +96,12 @@ export default function CreateListing() {
             .then((res) => {
                 console.log('res: ', res)
                 setFormData(INITIAL_FORM)
-                dispatch(toastActions.showToast({ type: SUCCESS, header: res.status, body: res.message }))
+                dispatch(toastSliceActions.showToast({ type: SUCCESS, header: res.status, body: res.message }))
             })
             .catch((err) => {
                 console.log('catch: ', err)
                 const { status, message } = err?.response?.data || err
-                dispatch(toastActions.showToast({ type: ERROR, header: status, body: message }))
+                dispatch(toastSliceActions.showToast({ type: ERROR, header: status, body: message }))
             })
     }
     
@@ -193,7 +193,7 @@ export default function CreateListing() {
                     </button> */}
                     <Button 
                         type="submit" 
-                        text={mode === 'edit' ? 'Edit Listing' : (mode === 'edit' && creating) ? 'Editing...' :  mode === 'create' ? 'Creating Listing' : 'Creating...'} 
+                        text={mode === 'edit' ? 'Edit Listing' : (mode === 'edit' && creating) ? 'Editing...' :  mode === 'create' ? 'Create Listing' : 'Creating...'} 
                         className="bg-slate-700"
                     />
                     {/* {error && <p className='text-red-700 text-sm font-semibold'>{error.message}</p>} */}
