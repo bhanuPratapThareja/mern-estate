@@ -12,6 +12,7 @@ import { verifyUserToken } from "../middlewares/verifyUser.js";
 
 const router = Router();
 
+
 router.post("/create", verifyUserToken,
   [
     // body('name').notEmpty().withMessage('Bola na abhi... Add name for the listing'),
@@ -65,23 +66,23 @@ router.post("/create", verifyUserToken,
   createListing
 );
 
-router.delete("/delete/:listingId", verifyUserToken, deleteListing);
 
 router.put("/update/:listingId", verifyUserToken,
-  [
-    check("name")
+    [
+        check("name")
         .notEmpty()
         .withMessage("Add name for the listing"),
-    check("description")
+        check("description")
         .notEmpty()
         .withMessage("Add description for the listing"),
-    check("address")
+        check("address")
         .notEmpty()
         .withMessage("Add address for the listing"),
-  ],
-  updateListing
+    ],
+    updateListing
 );
 
+router.delete("/delete/:listingId", verifyUserToken, deleteListing);
 router.get("/fetch/:id", getListing);
 router.get("/search", searchListings);
 
