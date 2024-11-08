@@ -1,12 +1,22 @@
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
+import { validationResult } from "express-validator";
 
 import User from "../models/user.model.js";
-import { errorHandler } from "../utils/error.js";
 import HttpError from "../utils/http-error.js";
+import { errorHandler, getError } from "../utils/error.js";
 
 export const signup = async (req, res, next) => {
+  const errors = validationResult(req);
+  console.log('errors: ', errors)
+
+  if(!errors.isEmpty()) {
+    const error = getError(errors)
+    console.log('got error: ', error)
+    return next(new HttpError(error.msg, 422))
+  }
+
   const { username, email, password } = req.body;
 
   let existingUser;
@@ -41,6 +51,15 @@ export const signup = async (req, res, next) => {
 };
 
 export const signin = async (req, res, next) => {
+  const errors = validationResult(req);
+  console.log('errors: ', errors)
+
+  if(!errors.isEmpty()) {
+    const error = getError(errors)
+    console.log('got error: ', error)
+    return next(new HttpError(error.msg, 422))
+  }
+
   const { email, password } = req.body;
 
   try {
@@ -56,11 +75,11 @@ export const signin = async (req, res, next) => {
     );
     
     if (!passwordsMatch) {
-      return next(new HttpError('Please check your email Id and password', 401))
+      return next(new HttpError('Incorrect password', 401))
     }  
 
     const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET);
-    const { password: pass, __v, _id, ...userInfo } = existingUser.toObject({ getters: true })
+    const { password: pass, ...userInfo } = existingUser.toObject({ getters: true })
 
     res
       .cookie("access_token", token)

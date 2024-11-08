@@ -1,13 +1,12 @@
 import bcryptjs from 'bcryptjs'
+import { validationResult } from 'express-validator'
+
 import User from '../models/user.model.js'
 import Listing from '../models/listing.model.js'
-import { errorHandler } from "../utils/error.js"
+import { errorHandler, getError } from "../utils/error.js"
 import HttpError from '../utils/http-error.js'
 
-export const updateUser = async (req, res, next) => {
-    console.log('req.user.id: ', req.user.id)
-    console.log('req.params.id: ', req.params.id)
-
+const updateUser = async (req, res, next) => {
     if(req.user.id !== req.params.id) {
         return next(new HttpError('User is unauthorized!', 401))
     }
@@ -28,10 +27,9 @@ export const updateUser = async (req, res, next) => {
     }
 }
 
-export const deleteUser = async (req, res, next) => {
+const deleteUser = async (req, res, next) => {
     if(req.user.id !== req.params.id) {
-        const error = errorHandler(401, 'Login Id mismatch!')
-        return res.status(403).send(new Error('User not authorized! Login ID mismatch!'))
+        return next(errorHandler(401, 'Login Id mismatch!'))
     }
 
     let user;
@@ -47,7 +45,6 @@ export const deleteUser = async (req, res, next) => {
     }
 
     try {
-        console.log('user to delete: ', user.listings)
         await User.findByIdAndDelete(req.params.id)
         await Listing.deleteMany({ _id: { $in: user.listings } })
         res.clearCookie('access_token')
@@ -57,15 +54,15 @@ export const deleteUser = async (req, res, next) => {
     }
 }
 
-export const getUserListings = async (req, res, next) => {
+const getUserListings = async (req, res, next) => {
     if(req.user.id !== req.params.id) {
-        return next(errorHandler(403, 'Invalid User. You can only view you own listings.'))
+        return next(errorHandler(401, 'Login Id mismatch!'))
     }
 
     try {
         const listings = await Listing.find({ userRef: req.params.id })
         const listingsWithIds = listings.map(listing => {
-            const { __v, _id, createdAt, updatedAt, ...rest } = listing.toObject({ getters: true })
+            const { __v, _id, ...rest } = listing.toObject({ getters: true })
             return rest
         })
         res.status(200).json(listingsWithIds)
@@ -74,7 +71,11 @@ export const getUserListings = async (req, res, next) => {
     }
 }
 
-export const getUser = async (req, res, next) => {
+const getUser = async (req, res, next) => {
+    if(req.user.id !== req.params.id) {
+        return next(errorHandler(403, 'Unable to fetch user. Unauthorized!'))
+    }
+    
     try {
         const user = await User.findById(req.params.id)
         if(!user) {
@@ -85,4 +86,11 @@ export const getUser = async (req, res, next) => {
     } catch (error) {
         
     }
+}
+
+export {
+    updateUser,
+    deleteUser,
+    getUserListings,
+    getUser
 }

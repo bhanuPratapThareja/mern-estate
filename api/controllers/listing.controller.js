@@ -1,8 +1,21 @@
+import { validationResult, matchedData } from "express-validator"
+
 import Listing from "../models/listing.model.js"
 import User from "../models/user.model.js"
-import { errorHandler } from "../utils/error.js"
+import { errorHandler, getError } from "../utils/error.js"
+import HttpError from "../utils/http-error.js"
 
 export const createListing = async (req, res, next) => {
+    const errors = validationResult(req)
+    if(!errors.isEmpty()) {
+        const error = getError(errors)
+        return next(new HttpError(error.msg, 422))
+    }
+
+    // if(req.body.regularPrice <= req.body.discountPrice) {
+    //     return next(new HttpError('Discount price must be lower than regular price', 422))
+    // }
+
     req.body.userRef = req.user.id
     let user;
 
@@ -17,28 +30,40 @@ export const createListing = async (req, res, next) => {
         return next(error)
     }
 
-    // const listing = new Listing({
-    // }) listing.save()
+    // const data = matchedData(req)
+    // console.log('matched data: ', data)
 
+    const listing = new Listing(req.body) 
     
     try {
-        const listing = await Listing.create(req.body)
+        // const listing = await Listing.create(req.body)
+        await listing.save()
         await User.findByIdAndUpdate(req.user.id, { $push: { listings: listing } })
-        return res.status(201).json({ status: 201, message: 'Listing crearted successfully!',  listing: listing.toObject({ getters: true })})
+        return res.status(201).json({ 
+            status: 201, 
+            message: 'Listing crearted successfully!', 
+            listing: listing.toObject({ getters: true })})
     } catch (error) {
         next(error)
     }
 }
 
 export const updateListing = async (req, res, next) => {
+    const errors = validationResult(req)
+    if(!errors.isEmpty()) {
+        const error = getError(errors)
+        return next(new HttpError(error.msg, 422))
+    }
+
     let listing;
+
     try {
-        listing = await Listing.findById(req.params.id)
+        listing = await Listing.findById(req.params.listingId)
         if(!listing) {
             return next(errorHandler(404, 'Listing not found'))
         }
     } catch (error) {
-        return next(errorHandler(500, 'Improper data format sent'))
+        return next(error)
     }
 
     if(req.user.id !== listing.userRef.toString()) {
@@ -46,9 +71,9 @@ export const updateListing = async (req, res, next) => {
     }
 
     try {
-        const updatedListing = await Listing.findByIdAndUpdate(req.params.id, req.body, { new: true })
-        const { _id, __v,  createdAt, updatedAt, ...rest } = updatedListing.toObject({ getters: true })
-        res.status(200).json({ status: 200, message: 'Listing updated successfully!', listing: rest })
+        const updatedListing = await Listing.findByIdAndUpdate(req.params.listingId, req.body, { new: true })
+        const normalizedListing = updatedListing.toObject({ getters: true })
+        res.status(200).json({ status: 200, message: 'Listing updated successfully!', listing: normalizedListing })
     } catch (error) {
         console.log('error: ', error)
         next(error)
@@ -58,7 +83,7 @@ export const updateListing = async (req, res, next) => {
 export const deleteListing = async (req, res, next) => {
     let listing;
     try {
-        listing = await Listing.findById(req.params.id)
+        listing = await Listing.findById(req.params.listingId)
         if(!listing) {
             return next(errorHandler(404, 'Listing not found'))
         }
@@ -119,22 +144,22 @@ export const searchListings = async (req, res, next) => {
             type = { $in: ['sale', 'rent'] }
         }
 
-            const listings = await Listing.find({
-                name: { $regex: searchTerm, $options: 'i' },
-                offer,
-                furnished,
-                parking,
-                type
-            })
-            .sort({
-                [sort]: order
-            })
-            .limit(limit)
-            .skip(startIndex)
-            const nomarlizedListings = listings.map(listing => {
-                return listing.toObject({ getters: true })
-            })
-            return res.status(200).json(nomarlizedListings)
+        const listings = await Listing.find({
+            name: { $regex: searchTerm, $options: 'i' },
+            offer,
+            furnished,
+            parking,
+            type
+        })
+        .sort({
+            [sort]: order
+        })
+        .limit(limit)
+        .skip(startIndex)
+        const nomarlizedListings = listings.map(listing => {
+            return listing.toObject({ getters: true })
+        })
+        return res.status(200).json(nomarlizedListings)
     } catch (error) {
         next(error)
     }

@@ -3,43 +3,39 @@ import axios from 'axios'
 
 export const createListing = createAsyncThunk('listing/create', async ({ listing, mode }, { rejectWithValue }) => {
     const url = mode === 'create' ? '/api/listing/create' : '/api/listing/update/' + listing.id
+    const method = mode === 'create' ? 'POST': 'PUT'
 
     if(!listing.offer) {
         listing.discountPrice = 0
     }
 
-    if(listing.regularPrice < listing.discountPrice) {
-        throw new Error('Discount price must be lower than regular price')
-    }
-
-    if(!listing.imageUrls.length) {
-        throw new Error('You must upload atleast one image')
-    }
-
     try {
-        const response = await axios.post(url, listing)
+        const response = await axios(url, {
+            method: method,
+            data: listing
+        })
         return response.data   
     } catch (error) {
         throw rejectWithValue(error)
     }
 })
 
-export const fetchListings = createAsyncThunk('listings/fetch', async id => {
-    const response = await axios.get('/api/user/listings/' + id)
+export const fetchListings = createAsyncThunk('listings/fetch', async userId => {
+    const response = await axios.get('/api/user/listings/' + userId)
     return response.data
 })
 
-export const deleteListing = createAsyncThunk('listing/delete', async (id, { rejectWithValue }) => {
+export const deleteListing = createAsyncThunk('listing/delete', async (listingId, { rejectWithValue }) => {
     try {
-        const response = await axios.delete('/api/listing/delete/' + id)
+        const response = await axios.delete('/api/listing/delete/' + listingId)
         return response.data
     } catch (error) {
         throw rejectWithValue(error)
     }
 })
 
-export const getListing = createAsyncThunk('listing/get', async id => {
-    const response = await axios.get('/api/listing/fetch/' + id)
+export const getListing = createAsyncThunk('listing/get', async listingId => {
+    const response = await axios.get('/api/listing/fetch/' + listingId)
     return response.data
 })
 

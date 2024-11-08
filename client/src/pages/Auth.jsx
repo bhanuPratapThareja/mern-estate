@@ -21,7 +21,7 @@ const INITIAL_FORM_STATE = {
         value: '',
         error: '',
         touched: false,
-        validations: [VALIDATORS.REQUIRED, VALIDATORS.EMAIL]
+        validations: []
       },
       password: {
         name: 'password',

@@ -3,3 +3,8 @@ export const errorHandler = (status, message) => {
     error.status = status
     return error
 }
+
+export const getError = errors => {
+   const error = errors.array()[0]
+   return error
+}

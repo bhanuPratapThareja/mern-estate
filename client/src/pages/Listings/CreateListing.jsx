@@ -104,9 +104,6 @@ export default function CreateListing() {
                 dispatch(toastSliceActions.showToast({ type: ERROR, header: status, body: message }))
             })
     }
-
-    console.log('mode: ', mode)
-    console.log('creating: ', creating)
     
     return (
         <main className='p-3 max-w-5xl mx-auto'>

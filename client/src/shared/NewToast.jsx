@@ -16,18 +16,15 @@ export default function NewToast() {
 
     useEffect(() => {
         if(show) {
-            console.log(1)
             showNotification()
             timeoutRef.current = setTimeout(() => {
                 hideNotification()
             }, 3000)
         } else {
-            console.log(2)
             hideNotification()
         }
 
         return () => {
-            console.log('return')
             clearTimeout(timeoutRef.current)
         }
 
@@ -44,7 +41,6 @@ export default function NewToast() {
 
     const hideNotification = () => {
         if(timeoutRef.current) {
-            console.log(timeoutRef.current)
             clearTimeout(timeoutRef.current)
         }
         // console.log(timeoutRef.current)
