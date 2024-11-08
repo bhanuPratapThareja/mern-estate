@@ -96,7 +96,7 @@ export const deleteListing = async (req, res, next) => {
     }
 
     try {
-        await Listing.findByIdAndDelete(req.params.id)
+        await Listing.findByIdAndDelete(req.params.listingId)
         await User.findByIdAndUpdate(req.user.id, { $pull: { listings: listing.id } })
         res.status(200).json({ status: 200, message: 'Listing deleted', id: req.params.id })
     } catch (error) {
