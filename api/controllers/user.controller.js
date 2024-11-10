@@ -1,9 +1,8 @@
 import bcryptjs from 'bcryptjs'
-import { validationResult } from 'express-validator'
 
 import User from '../models/user.model.js'
 import Listing from '../models/listing.model.js'
-import { errorHandler, getError } from "../utils/error.js"
+import { errorHandler } from "../utils/error.js"
 import HttpError from '../utils/http-error.js'
 
 const updateUser = async (req, res, next) => {
@@ -58,7 +57,7 @@ const getUserListings = async (req, res, next) => {
     if(req.user.id !== req.params.id) {
         return next(errorHandler(401, 'Login Id mismatch!'))
     }
-
+    
     try {
         const listings = await Listing.find({ userRef: req.params.id })
         const listingsWithIds = listings.map(listing => {

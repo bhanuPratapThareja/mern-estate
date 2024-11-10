@@ -9,7 +9,6 @@ import { errorHandler, getError } from "../utils/error.js";
 
 export const signup = async (req, res, next) => {
   const errors = validationResult(req);
-  console.log('errors: ', errors)
 
   if(!errors.isEmpty()) {
     const error = getError(errors)
@@ -52,11 +51,9 @@ export const signup = async (req, res, next) => {
 
 export const signin = async (req, res, next) => {
   const errors = validationResult(req);
-  console.log('errors: ', errors)
 
   if(!errors.isEmpty()) {
     const error = getError(errors)
-    console.log('got error: ', error)
     return next(new HttpError(error.msg, 422))
   }
 
@@ -86,7 +83,6 @@ export const signin = async (req, res, next) => {
       .status(200)
       .json({ user: userInfo });
   } catch (error) {
-    console.log('signin error: ', error)
     return next(error);
   }
 };
