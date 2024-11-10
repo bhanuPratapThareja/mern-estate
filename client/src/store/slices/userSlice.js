@@ -83,10 +83,8 @@ const userSlice = createSlice({
 
             // signout
             .addCase(signout, (state, action) => {
-                console.log('state:: ', state)
-                console.log('action::: ', action)
-                // state.currentUser = null
-                // state.error = null
+                state.currentUser = null
+                state.error = null
             })
     }
 })

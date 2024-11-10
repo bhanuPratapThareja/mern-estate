@@ -55,7 +55,7 @@ export default function NewToast() {
         createPortal(
         <>
             {showToast ? <div className={`fixed top-20 right-1 z-20 transition-all duration-500 ease-in-out 
-                ${!applyTransition ? 'translate-x-[100%] opacity-0' : 'translate-x-[0%] opacity-100'}`}
+                ${!applyTransition ? 'translate-x-[100%] ' : 'translate-x-[0%] opacity-100'}`}
             >
                 <div
                 className={`${backgroundColor} flex shadow-md justify-between w-full max-w-sm py-5 px-6 rounded-xl mb-4 gap-4`}

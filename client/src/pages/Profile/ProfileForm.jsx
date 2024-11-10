@@ -66,30 +66,51 @@ export default function ProfileForm() {
     const navigate = useNavigate()
     const fileRef = useRef()
     const [file, setFile] = useState(null)
+    const [previewUrl, setPreviewUrl] = useState()
     const { currentUser, updating, error } = useSelector(state => state.user)
    
-    const [imageUploadProgress, imagerUploadError, uploadImage] = useImageUpload()
+    const [imageUploadProgress, imagerUploadError, resetImageUploadProgress, uploadImage] = useImageUpload()
     const {
       formState, changeHandler, blurHandler, formValidateHandler, formUpdateHandler, formResetHandler
      } = useForm(INITIAL_PROFILE_STATE)
 
-    //  console.log('formState: ', formState)
-
     useEffect(() => {
       if(file) {
-        uploadImage(file)
-          .then((imageUrl) => {
-            formUpdateHandler({ avatar: imageUrl })
-            formValidateHandler()
-          })
-          .catch(() => {})
+        const fileReader = new FileReader()
+        fileReader.onload = () => {
+          setPreviewUrl(fileReader.result)
+        }
+        fileReader.readAsDataURL(file)
       }
     }, [file])
 
-    const onHandleUpdate = e => {
-      e.preventDefault()
-      formValidateHandler()
 
+    const onSubmitForm = e => {
+      e.preventDefault()
+
+      if(previewUrl) {
+        console.log(1)
+        resetImageUploadProgress()
+        uploadImage(file)
+          .then((imageUrl) => {
+            console.log(2)
+            formUpdateHandler({ avatar: imageUrl })
+            handleFormSubmit()
+          })
+          .catch((err) => {
+            console.log(3)
+            throw new Error(err)
+          })
+      } else {
+        console.log(4)
+        handleFormSubmit()
+      }
+    }
+
+    const handleFormSubmit = () => {
+      console.log(5)
+      console.log('file: ', file)
+      formValidateHandler()
       if(!formState.isFormValid) {
         return
       }
@@ -100,19 +121,25 @@ export default function ProfileForm() {
         password: formState.inputs.password.value,
         avatar: formState.inputs.avatar.value
       }
-      
+
       dispatch(updateUser({ data, id: currentUser.id }))
         .unwrap()
         .then((res) => {
-          // setToastData({ type: SUCCESS, header: res.status, body: res.message })
           dispatch(toastSliceActions.showToast({ type: SUCCESS, header: res.status, body: res.message }))
           formResetHandler(INITIAL_PROFILE_STATE)
         })
         .catch(err => {
           dispatch({ type: ERROR, header: err.response.data.status, body: err.response.data.message })
-          // setToastData({ type: ERROR, header: err.response.data.status, body: err.response.data.message })
         })
-        // .finally(() => toastRef.current.notifyUser())
+        .finally(() => {
+          const formData = new FormData()
+          console.log(formData)
+          formData.append('username', formState.inputs.username.value)
+          formData.append('email', formState.inputs.email.value)
+          formData.append('password', formState.inputs.password.value)
+          formData.append('image', file)
+          console.log(formData)
+        })
     }
     
     const handleChange = e => {
@@ -122,7 +149,7 @@ export default function ProfileForm() {
     const { username, email, password, avatar } = formState.inputs
 
     return (
-      <form onSubmit={onHandleUpdate} noValidate className="flex flex-col gap-4">
+      <form onSubmit={onSubmitForm} noValidate className="flex flex-col gap-4">
         <input 
           type="file" 
           name="avatar"
@@ -130,11 +157,11 @@ export default function ProfileForm() {
           hidden 
           accept='image/*'
           value={''}
-          onBlur={() => console.log('img blur')}
           onChange={e => setFile(e.target.files[0])}
         />
         <img 
-          src={avatar.value || currentUser.avatar} 
+          // src={avatar.value || currentUser.avatar} 
+          src={previewUrl || currentUser.avatar} 
           alt="avatar"
           onClick={() => fileRef.current.click()}
           className="rounded-full h-24 w-24 object-cover cursor-pointer my-2 self-center" 
@@ -184,11 +211,11 @@ export default function ProfileForm() {
         />
           {password.error && <FormError message={password.error} /> }
 
-        <Button type="submit" disabled={!username.value && !email.value && !password.value && !avatar.value} text={updating ? 'Updating': 'Update'} className="bg-slate-700" />
+        <Button type="submit" disabled={!username.value && !email.value && !password.value && !avatar.value && !previewUrl} text={updating ? 'Updating': 'Update'} className="bg-slate-700" />
         <Button type="button" text="Create Listing" className="bg-green-700" onClick={() => navigate('/create-listing')} />
 
 
-        {error && <Alert type="error" message={error.message} />}
+        {/* {error && <Alert type="error" message={error.message} />} */}
         {/* {updateSuccess && <Alert type="success" message="User is updated successfully!!" />} */}
       </form>
     )

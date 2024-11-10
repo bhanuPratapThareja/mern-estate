@@ -36,14 +36,13 @@ export const validateInput = (input) => {
       // console.log("EMAIL");
       if (!validateEmail(input.value)) {
         error = `${input.displayName} is not valid`;
-        console.log(error)
         break
       }
     }
 
     if (input.value && TEXT_INPUTS.includes(input.type)) {
       if (validation === VALIDATORS.ALPHA_NUMERIC) {
-        console.log("ALPHA_NUMERIC");
+        // console.log("ALPHA_NUMERIC");
         if (!validateAlphaNumeric(input.value)) {
           // console.log("ALPHA_NUMERIC_INNER");
           error = `${input.displayName} must be Alpha Numeric`;

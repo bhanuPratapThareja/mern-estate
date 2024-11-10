@@ -1,12 +1,29 @@
-import { useState } from 'react'
+import { useEffect } from 'react'
 import { Outlet } from "react-router-dom"
-import { useSelector } from "react-redux"
+import { useDispatch } from 'react-redux'
 
 import Header from "../components/Header"
 import NewToast from "../shared/NewToast"
 import NewModal from '../shared/NewModal'
 
+import { signout } from '../store'
+import { useAxiosInterceptors } from '../hooks/axios-interceptors-hook'
+
 export default function RootLayout() {
+  const dispatch = useDispatch()
+  const [isAuthTokenExpired, setupInterceptors, ejectInterceptors] = useAxiosInterceptors()
+
+  useEffect(() => {
+    if(isAuthTokenExpired) {
+      dispatch(signout())
+    } else {
+      setupInterceptors()
+      return () => {
+        ejectInterceptors()
+      }
+    }
+  }, [isAuthTokenExpired])
+
   return (
     <>
       <NewToast />

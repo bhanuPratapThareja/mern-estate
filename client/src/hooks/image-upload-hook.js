@@ -6,6 +6,10 @@ export const useImageUpload = () => {
     const [imageUploadProgress, setImageUploadProgress] = useState(0)
     const [imagerUploadError, setImageUploadError] = useState('')
 
+    const resetImageUploadProgress = () => {
+        setImageUploadProgress(0)
+    }
+
     const uploadImage = (imageFile) => {
         const promise = new Promise((resolve, reject) => {
             if(imageFile.size / 1024 / 1024 > 2) {
@@ -43,5 +47,5 @@ export const useImageUpload = () => {
         return promise
     }
 
-    return [imageUploadProgress, imagerUploadError, uploadImage]
+    return [imageUploadProgress, imagerUploadError, resetImageUploadProgress, uploadImage]
 }
