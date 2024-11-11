@@ -84,7 +84,6 @@ const userSlice = createSlice({
 
             // signout
             .addCase(signout, (state, action) => {
-                console.log('action:: ', action)
                 console.log('signing out from action after invalidating cookie')
                 state.currentUser = null
                 state.error = null
