@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { deleteUser, signoutUser } from '../../store'
 import { SIGN_OUT, DELETE } from "../../utils/types";
-import { modalSliceActions } from '../../store'
+import { modalSliceActions  } from '../../store'
 
 export default function ProfileAuth() {
   const dispatch = useDispatch()
@@ -24,7 +24,9 @@ export default function ProfileAuth() {
     const onSignout = () => {
         dispatch(signoutUser({ mode: SIGN_OUT}))
           .unwrap()
-          .then(() => navigate('/auth'))
+          .then(async () => {
+            navigate('/auth')
+          })
     }
 
     const profileAuthHandler = mode => {

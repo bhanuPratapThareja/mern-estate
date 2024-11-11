@@ -16,7 +16,10 @@ export default function ProfileListings() {
     const [activeListing, setActiveListing] = useState(null)
 
     useEffect(() => {
-        dispatch(fetchListings(currentUser.id))
+    //    setTimeout(() => {
+    //         dispatch(fetchListings(currentUser.id))
+    //    }, 0);
+       dispatch(fetchListings(currentUser.id))
     }, [])
 
     const handleFetchListings = () => {
@@ -65,7 +68,7 @@ export default function ProfileListings() {
             <button onClick={handleFetchListings} className='text-green-700 w-full'>Show Listings</button>
             {fetchError && <p className='text-red-700'>Error showing listings</p>}
 
-            {listings.length ? <div className='flex flex-col gap-4'>
+            {listings && listings.length ? <div className='flex flex-col gap-4'>
                 <h1 className='text-center mt-7 text-2xl font-semibold'>Your Listings</h1>
 
                 {listings.map(listing => 

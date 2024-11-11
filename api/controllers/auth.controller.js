@@ -6,6 +6,7 @@ import { validationResult } from "express-validator";
 import User from "../models/user.model.js";
 import HttpError from "../utils/http-error.js";
 import { errorHandler, getError } from "../utils/error.js";
+import { issueAccessToken, issueRefreshToken, verifyRefreshToken } from '../utils/tokens.js'
 
 export const signup = async (req, res, next) => {
   const errors = validationResult(req);
@@ -75,11 +76,12 @@ export const signin = async (req, res, next) => {
       return next(new HttpError('Incorrect password', 401))
     }  
 
-    const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET);
+    const access_token = issueAccessToken(existingUser)
+    const refresh_token = issueRefreshToken(existingUser)
     const { password: pass, ...userInfo } = existingUser.toObject({ getters: true })
 
     res
-      .cookie("access_token", token)
+      .cookie("access_token", access_token).cookie("refresh_token", refresh_token)
       .status(200)
       .json({ user: userInfo });
   } catch (error) {
@@ -92,7 +94,7 @@ export const google = async (req, res, next) => {
     const existingUser = await User.findOne({ email: req.body.email })
     
     if(existingUser) {
-      const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET);
+      const token = jwt.sign({ id: existingUser._id }, process.env.JWT_ACCESS_TOKEN_SECRET);
       const { password: pass, ...userInfo } = existingUser.toObject({ getters: true })
 
       res
@@ -113,7 +115,7 @@ export const google = async (req, res, next) => {
 
       try {
         await newUser.save()      
-        const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+        const token = issueAccessToken(newUser)
         const { password: pass, ...userInfo } = newUser.toObject({ getters: true })
 
         res
@@ -132,8 +134,25 @@ export const google = async (req, res, next) => {
 export const signout = async (req, res, next) => {
   try {
     res.clearCookie('access_token')
-    res.status(200).json('Logged out!')
+    res.clearCookie('refresh_token')
+    res.status(200).json({ status: 200, message: 'User is logged out'})
   } catch (error) {
     next(error)
   }
+}
+
+export const getNewAccessToken = async (req, res, next) => {
+    const refreshToken = req.cookies.refresh_token
+
+    try {
+      const user = await verifyRefreshToken(refreshToken)
+      const access_token = issueAccessToken(user)
+      console.log('access_token: ', access_token)
+      res
+        .cookie('access_token', access_token)
+        .status(200)
+        .json({ status: 200, message: 'ACCESS_TOKEN_REISSUED' })
+    } catch (error) {
+       return next(errorHandler(400, error))
+    }
 }

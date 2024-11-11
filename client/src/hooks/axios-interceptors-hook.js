@@ -1,39 +1,58 @@
 import { useState, useRef } from "react";
-import axios from "axios";
+import { axiosInstance } from '../utils/axios-instance.js' 
 
 export const useAxiosInterceptors = () => {
     const reqInterceptorRef = useRef(null)
     const resInterceptorRef = useRef(null)
-    const [isAuthTokenExpired, setAuthTokenExpired] = useState(false)
+    const [isRefreshTokenExpired, setRefreshTokenExpired] = useState(false)
 
     const setupInterceptors = () => {
         console.log('settin up interceptors')
        
-        reqInterceptorRef.current = axios.interceptors.request.use(function (config) {
-            // Do something before request is sent
+        reqInterceptorRef.current = axiosInstance.interceptors.request.use(function (config) {
+
             console.log('interceptor req config: ', config)
             return config;
         }, function (error) {
-            // Do something with request error
+
             console.log('interceptor req error: ', error)
             return Promise.reject(error);
         });
     
-        // Add a response interceptor
-        resInterceptorRef.current = axios.interceptors.response.use(function (response) {
-            // Any status code that lie within the range of 2xx cause this function to trigger
-            // Do something with response data
+
+        resInterceptorRef.current = axiosInstance.interceptors.response.use(function (response) {
+
             console.log('interceptor res success: ', response)
+
             return response;
-        }, function (error) {
-            // Any status codes that falls outside the range of 2xx cause this function to trigger
-            // Do something with response error
-            console.log('interceptor res error: ', error.response)
-            if(error.response.status === 400 && error.response.statusText === 'Bad Request') {
-                setTimeout(() => {
-                    console.log('logging out')
-                    setAuthTokenExpired(true)
-                }, 3000);
+        }, async function (error) {
+
+            console.log('interceptor res error: ', error)
+            if(error.response.data.status === 400 && 
+                (error.response.data.message === 'ACCESS_TOKEN_EXPIRED' || 
+                    error.response.data.message === 'NO_ACCESS_TOKEN')) 
+            {
+                    console.log(1)
+                    console.log('verify refresh token')
+
+                    try {
+                            const res = await axiosInstance.post('/api/auth/refresh-token')
+                            console.log('rft res: ', res)
+                            console.log('call pending request here')
+                            return axiosInstance(error.config)
+                        } catch (error) {
+                            console.log('refresh token error: ', error)
+                        }
+
+            }
+            if(error.response.data.status === 400 && 
+                (error.response.data.message === 'REFESH_TOKEN_EXPIRED' || 
+                    error.response.data.message === 'NO_REFESH_TOKEN')) 
+            {
+                
+                    console.log(2)
+                    console.log('set refresh token expired and log out')
+                    setRefreshTokenExpired(true)
             }
             return Promise.reject(error);
         });
@@ -41,10 +60,10 @@ export const useAxiosInterceptors = () => {
 
     const ejectInterceptors = () => {
         console.log('ejecting intercetors')
-        setAuthTokenExpired(false)
-        axios.interceptors.request.eject(reqInterceptorRef.current);
-        axios.interceptors.response.eject(resInterceptorRef.current);
+        setRefreshTokenExpired(false)
+        axiosInstance.interceptors.request.eject(reqInterceptorRef.current);
+        axiosInstance.interceptors.response.eject(resInterceptorRef.current);
     }
 
-    return [isAuthTokenExpired, setupInterceptors, ejectInterceptors]
+    return [isRefreshTokenExpired, setupInterceptors, ejectInterceptors]
 }

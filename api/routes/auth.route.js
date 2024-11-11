@@ -1,7 +1,7 @@
 import express from 'express'
 import { check, checkSchema, param, query, body } from 'express-validator'
 
-import { signup, signin, google, signout } from '../controllers/auth.controller.js'
+import { signup, signin, google, signout, getNewAccessToken } from '../controllers/auth.controller.js'
 import { singupValidationSchema, signinValidationchema } from '../validations/authValidation.schema.js'
 import { verifyUserToken } from '../middlewares/verifyUser.js'
 
@@ -38,5 +38,6 @@ router.post('/signin', checkSchema(signinValidationchema), signin)
 
 router.post('/google', google)
 router.post('/signout', signout)
+router.post('/refresh-token', getNewAccessToken)
 
 export default router

@@ -11,18 +11,21 @@ import { useAxiosInterceptors } from '../hooks/axios-interceptors-hook'
 
 export default function RootLayout() {
   const dispatch = useDispatch()
-  const [isAuthTokenExpired, setupInterceptors, ejectInterceptors] = useAxiosInterceptors()
+  const [isRefreshTokenExpired, setupInterceptors, ejectInterceptors] = useAxiosInterceptors()
 
   useEffect(() => {
-    if(isAuthTokenExpired) {
-      dispatch(signout())
-    } else {
       setupInterceptors()
       return () => {
         ejectInterceptors()
       }
+  }, [])
+
+  useEffect(() => {
+    console.log('isRefreshTokenExpired: ', isRefreshTokenExpired)
+    if(isRefreshTokenExpired) {
+      dispatch(signout())
     }
-  }, [isAuthTokenExpired])
+  }, [isRefreshTokenExpired])
 
   return (
     <>

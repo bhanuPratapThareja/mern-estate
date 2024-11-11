@@ -51,6 +51,7 @@ const listingSlice = createSlice({
         state.fetchError = null;
       })
       .addCase(fetchListings.fulfilled, (state, action) => {
+        console.log('show listingsLL action2: ', action)
         state.loading = false;
         state.listings = action.payload
       })
@@ -75,6 +76,7 @@ const listingSlice = createSlice({
       })
 
       .addCase(showListings, (state, action) => {
+        console.log('show listings action2: ', action)
         state.show = action.payload
       })
 
@@ -91,7 +93,7 @@ const listingSlice = createSlice({
         state.error = action.error
       })
 
-      // searchmlistings
+      // searchlistings
       .addCase(searchListings.pending, (state) => {
           state.loading = true
           state.error = null

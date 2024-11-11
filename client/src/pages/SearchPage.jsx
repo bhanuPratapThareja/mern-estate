@@ -101,7 +101,7 @@ export default function SearchPage() {
 
     return (
         <div className='flex flex-col md:flex-row md:min-h-screen'>
-            <div className='p-7 min-w-[30%] flex-4 flex-wrap border-b-2 md:border-b-0 md:border-r-2'>
+            <div className='p-7 flex-2 flex-wrap border-b-2 md:border-b-0 md:border-r-2'>
 
                 <form onSubmit={handleSearch} className='flex flex-col gap-8'>
                     <div className='flex items-center gap-2'>
@@ -163,17 +163,17 @@ export default function SearchPage() {
 
             </div>
             
-            <div className='p-7 min-w-[70%]'>
-                <h1 className='text-3xl font-semibold'>Listing Results:</h1>
+            <div className='p-7 flex-1  flex flex-col justify-center items-center'>
+                <h1 className='text-2xl font-semibold text-slate-600'>Listing Results</h1>
                 {loading && <p>Searching...</p>} 
                 {!loading && !searchedListings.length && (
                     <p className="text-xl text-slate-700">No listings found!</p>
                 )}
 
-                <div className="flex flex-row gap-4 flex-wrap mt-8">
-                {searchedListings.length > 0 && searchedListings.map((listing, index) => 
-                    <ListingCard key={listing.id} listing={listing} index={index} />
-                )}
+                <div className="flex flex-row gap-8 flex-wrap justify-center mt-8">
+                    {searchedListings.length > 0 && searchedListings.map((listing, index) => 
+                        <ListingCard key={listing.id} listing={listing} index={index} />
+                    )}
                 </div>
                 {searchedListingsLength > 8 && <button onClick={onShowMoreClick} className="text-green-700 hover:underline p-7 text-center w-full">
                     Show more

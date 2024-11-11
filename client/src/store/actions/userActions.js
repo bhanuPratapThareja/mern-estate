@@ -1,9 +1,11 @@
 import { createAsyncThunk, createAction } from "@reduxjs/toolkit";
-import axios from 'axios'
+import { axiosInstance } from "../../utils/axios-instance";
+
+import { invalidateTokenCookie } from "../../utils/cookies";
 
 export const authUser = createAsyncThunk('user/auth', async ({ user, mode }, { rejectWithValue }) => {
     try {
-        const response = await axios.post(`/api/auth/${mode}`, user)
+        const response = await axiosInstance.post(`/api/auth/${mode}`, user)
         return response.data
     } catch (error) {
         throw rejectWithValue(error)
@@ -19,7 +21,7 @@ export const updateUser = createAsyncThunk('user/update', async (userData, { rej
     }
 
     try {
-        const response = await axios.patch(`/api/user/update/${id}`, data)
+        const response = await axiosInstance.patch(`/api/user/update/${id}`, data)
         return response.data   
     } catch (error) {
         throw rejectWithValue(error)
@@ -27,12 +29,15 @@ export const updateUser = createAsyncThunk('user/update', async (userData, { rej
 })
 
 export const deleteUser = createAsyncThunk('user/delete', async ({ userId, mode }) => {
-    return await axios.delete(`/api/user/delete/${userId}`)
+    return await axiosInstance.delete(`/api/user/delete/${userId}`)
 })
 
-export const signoutUser = createAsyncThunk('user/delete', async({ mode }) => {
-    console.log(mode)
-    return await axios.post('/api/auth/signout')
+export const signoutUser = createAsyncThunk('user/delete', async () => {
+    return await axiosInstance.post('/api/auth/signout')
 })
 
-export const signout = createAction('user/signout')
+export const signout = createAction('user/signout', () => {
+    console.log('cookie invaidation in progress')
+    invalidateTokenCookie()
+    return { user: null }
+})
