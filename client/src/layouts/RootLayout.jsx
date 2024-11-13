@@ -31,11 +31,11 @@ export default function RootLayout() {
     <>
       <NewToast />
       <NewModal />
-      <div className="relative">
-          <div className="fixed h-[80px] w-[100%] z-10">
+      <div className="flex flex-col justify-between h-[100vh]">
+          <div className="">
             <Header />
           </div>
-          <div className="absolute top-[80px] w-[100%]">
+          <div className="pt-16">
             <Outlet />
           </div>
       </div>

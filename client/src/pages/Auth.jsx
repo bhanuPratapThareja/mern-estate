@@ -126,56 +126,69 @@ export default function Auth() {
     const { username, email, password } = formState.inputs
 
     return (
-        <div className="p-3 max-w-lg mx-auto">
-            <h1 className="text-3xl text-center font-semibold my-7">Sign {mode === SIGN_IN ? 'In' : 'Up' }</h1>
+      <div className='flex justify-center'>
+
             
-            <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
-              {mode !== SIGN_IN  && <>
-                  <input
-                  type="text"
+            <div className="flex flex-col p-4 mb-4 bg-white/50 backdrop-blur-sm rounded-lg
+                            w-[90%] 
+                            sm:w-[60%]
+                            md:absolute md:w-[40%] md:top-[50%] md:left-[50%] md:-translate-x-[50%] md:-translate-y-[50%]
+                            lg:w-[25%] lg:top-84 lg:translate-x-[70%]">
+               
+               
+                <h1 className="text-2xl text-slate-800 font-semibold pl-5 pt-2 self-start">Sign {mode === SIGN_IN ? 'In' : 'Up' }</h1>
+                
+                <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4 px-4 pt-4">
+                  {mode !== SIGN_IN  && <>
+                      <input
+                      type="text"
+                        className="border p-3 rounded-lg"
+                        placeholder={username?.placeholder}
+                        id={username?.name}
+                        name={username?.name}
+                        value={username?.value || ''}
+                        onChange={changeHandler}
+                        onBlur={blurHandler}
+                      />
+                      {username?.error && <FormError message={username?.error} /> }
+                    </>}
+                <input
+                    type="email"
                     className="border p-3 rounded-lg"
-                    placeholder={username?.placeholder}
-                    id={username?.name}
-                    name={username?.name}
-                    value={username?.value || ''}
+                    placeholder={email.placeholder}
+                    id={email.name}
+                    name={email.name}
+                    value={email.value}
                     onChange={changeHandler}
                     onBlur={blurHandler}
-                  />
-                  {username?.error && <FormError message={username?.error} /> }
-                </>}
-            <input
-                type="email"
-                className="border p-3 rounded-lg"
-                placeholder={email.placeholder}
-                id={email.name}
-                name={email.name}
-                value={email.value}
-                onChange={changeHandler}
-                onBlur={blurHandler}
-                />
-                {email.error && <FormError message={email.error} /> }
+                    />
+                    {email.error && <FormError message={email.error} /> }
 
-                <input
-                type="password"
-                className="border p-3 rounded-lg"
-                placeholder={password.placeholder}
-                id={password.name}
-                name={password.name}
-                value={password.value}
-                minLength={password.minLength}
-                onChange={changeHandler}
-                onBlur={blurHandler}
-                />
-                {password.error && <FormError message={password.error} /> }
-                
-                <Button type="submit" text={loading ? 'Loading...' : mode === SIGN_IN ? 'Sing In' : 'Sign Up'} className="bg-slate-700" />
-                <OAuth />
-            </form>
-      
-            <div className="flex gap-2 mt-5">
-                <p>{mode === SIGN_IN ? 'Dont have an account?' : 'Already have an account?'}</p>
-                <button onClick={handleAuthMode} className='text-blue-700 font-semibold underline'>{mode === SIGN_IN ? 'Sign Up' : 'Sign In'}</button>
+                    <input
+                    type="password"
+                    className="border p-3 rounded-lg"
+                    placeholder={password.placeholder}
+                    id={password.name}
+                    name={password.name}
+                    value={password.value}
+                    minLength={password.minLength}
+                    onChange={changeHandler}
+                    onBlur={blurHandler}
+                    />
+                    {password.error && <FormError message={password.error} /> }
+                    
+                    <Button type="submit" text={loading ? 'Please Wait' : mode === SIGN_IN ? 'Sign In' : 'Sign Up'} className="bg-slate-700" />
+                    <OAuth />
+
+                    <div className="flex gap-2 my-1">
+                      <p>{mode === SIGN_IN ? 'Dont have an account?' : 'Already have an account?'}</p>
+                      <button type='button' onClick={handleAuthMode} className='text-blue-700 font-semibold underline'>{mode === SIGN_IN ? 'Sign Up' : 'Sign In'}</button>
+                  </div>
+                </form>
+          
             </div>
-        </div>
+          
+          <div id="login-background"></div>
+      </div>
     )
 }
