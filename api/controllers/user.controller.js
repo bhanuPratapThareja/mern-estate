@@ -47,6 +47,7 @@ const deleteUser = async (req, res, next) => {
         await User.findByIdAndDelete(req.params.id)
         await Listing.deleteMany({ _id: { $in: user.listings } })
         res.clearCookie('access_token')
+        res.clearCookie('refresh_token')
         res.status(200).json({ statu: 200, message: 'User has been deleted!'})
     } catch (error) {
         next(error)

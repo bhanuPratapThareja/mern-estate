@@ -89,27 +89,21 @@ export default function ProfileForm() {
       e.preventDefault()
 
       if(previewUrl) {
-        console.log(1)
         resetImageUploadProgress()
         uploadImage(file)
           .then((imageUrl) => {
-            console.log(2)
             formUpdateHandler({ avatar: imageUrl })
             handleFormSubmit()
           })
           .catch((err) => {
-            console.log(3)
             throw new Error(err)
           })
       } else {
-        console.log(4)
         handleFormSubmit()
       }
     }
 
     const handleFormSubmit = () => {
-      console.log(5)
-      console.log('file: ', file)
       formValidateHandler()
       if(!formState.isFormValid) {
         return
@@ -131,15 +125,6 @@ export default function ProfileForm() {
         .catch(err => {
           dispatch({ type: ERROR, header: err.response.data.status, body: err.response.data.message })
         })
-        .finally(() => {
-          const formData = new FormData()
-          console.log(formData)
-          formData.append('username', formState.inputs.username.value)
-          formData.append('email', formState.inputs.email.value)
-          formData.append('password', formState.inputs.password.value)
-          formData.append('image', file)
-          console.log(formData)
-        })
     }
     
     const handleChange = e => {
@@ -160,7 +145,6 @@ export default function ProfileForm() {
           onChange={e => setFile(e.target.files[0])}
         />
         <img 
-          // src={avatar.value || currentUser.avatar} 
           src={previewUrl || currentUser.avatar} 
           alt="avatar"
           onClick={() => fileRef.current.click()}

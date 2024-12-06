@@ -36,12 +36,9 @@ export const verifyAccessToken = accessToken => {
 export const verifyRefreshToken = refreshToken => {
     return new Promise((resolve, reject) => {
         if(!refreshToken) {
-            console.log('no refreshToken: ')
             return reject('NO_REFESH_TOKEN')
         }
         jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN_SECRET, (err, user) => {
-            console.log('refreshToken err: ', err)
-            console.log('refreshToken user: ', user)
             if(err) {
                 return reject('REFESH_TOKEN_EXPIRED')
             }
