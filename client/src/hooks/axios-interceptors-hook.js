@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import axios from '../utils/axios.js' 
+import axios from 'axios' 
 
 export const useAxiosInterceptors = () => {
     const reqInterceptorRef = useRef(null)

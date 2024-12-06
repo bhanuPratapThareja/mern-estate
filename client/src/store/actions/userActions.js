@@ -1,6 +1,6 @@
 import { createAsyncThunk, createAction } from "@reduxjs/toolkit";
 
-import axios from "../../utils/axios";
+import axios from "axios";
 import { invalidateTokenCookie } from "../../utils/cookies";
 
 import { pauseFn } from '../../utils/pause'

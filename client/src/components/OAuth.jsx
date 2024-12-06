@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth'
 import { app } from '../firebase'
-import axios from "../utils/axios";
+import axios from "axios";
 
 import Button from '../shared/Button'
 import { userSliceActions } from '../store'

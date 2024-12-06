@@ -1,5 +1,5 @@
 import { createAsyncThunk, createAction } from "@reduxjs/toolkit";
-import axios from "../../utils/axios";
+import axios from "axios";
 
 export const createListing = createAsyncThunk('listing/create', async ({ listing, mode }, { rejectWithValue }) => {
     const url = mode === 'create' ? '/api/listing/create' : '/api/listing/update/' + listing.id
