@@ -1,16 +1,18 @@
+import { lazy } from 'react'
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 
 import RootLayout from '../layouts/RootLayout'
 import PrivateRoutes from '../routes/PrivateRoutes'
 
 import Home from '../pages/Home'
-import Auth from '../pages/Auth'
-import About from '../pages/About'
-import Profile from '../pages/Profile/Profile'
-import CreateListing from '../pages/Listings/CreateListing'
-import ListingPage from '../pages/Listings/ListingPage'
-import SearchPage from '../pages/SearchPage'
 import PageNotFound from '../pages/PageNotFound'
+
+const Auth = lazy(() => import('../pages/Auth'))
+const About = lazy(() => import('../pages/About'))
+const Profile = lazy(() => import('../pages/Profile/Profile'))
+const CreateListing = lazy(() => import('../pages/Listings/CreateListing'))
+const ListingPage = lazy(() => import('../pages/Listings/ListingPage'))
+const SearchPage = lazy(() => import('../pages/SearchPage'))
 
 export const router = createBrowserRouter([
     {

@@ -31,13 +31,9 @@ export default function RootLayout() {
     <>
       <NewToast />
       <NewModal />
-      <div className="h-[100vh]">
-          <div className="">
-            <Header />
-          </div>
-          <div className="pt-24">
-            <Outlet />
-          </div>
+      <Header />
+      <div className="pt-24">
+        <Outlet />
       </div>
     </>
   )
