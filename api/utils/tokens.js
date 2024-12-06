@@ -5,7 +5,7 @@ export const issueAccessToken = user => {
         id: user.id
     }, 
     process.env.JWT_ACCESS_TOKEN_SECRET,
-    { expiresIn: '10s'})
+    { expiresIn: '15m'})
     return token
 }
 
@@ -15,7 +15,7 @@ export const issueRefreshToken = user => {
         email: user.email 
     }, 
     process.env.JWT_REFRESH_TOKEN_SECRET,
-    { expiresIn: '10m'})
+    { expiresIn: '1d'})
     return token
 }
 

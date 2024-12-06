@@ -51,6 +51,9 @@ export const signup = async (req, res, next) => {
 };
 
 export const signin = async (req, res, next) => {
+
+  console.log('process.env.NODE_ENV:: ', process.env.NODE_ENV)
+
   const errors = validationResult(req);
 
   if(!errors.isEmpty()) {
@@ -81,9 +84,11 @@ export const signin = async (req, res, next) => {
     const { password: pass, ...userInfo } = existingUser.toObject({ getters: true })
 
     res
-      .cookie("access_token", access_token).cookie("refresh_token", refresh_token)
+      .cookie("access_token1", access_token, { httpOnly: true })
+      .cookie("access_token2", access_token, { httpOnly: true })
+      .cookie("refresh_token", refresh_token)
       .status(200)
-      .json({ user: userInfo });
+      .json({ user: userInfo, enviornment: process.env.NODE_ENV });
   } catch (error) {
     return next(error);
   }

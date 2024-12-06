@@ -26,20 +26,20 @@ export default function Header() {
   }, [location.search])
 
   return (
-    <header className="bg-white/20 backdrop-blur-sm shadow-md fixed w-full">
-      <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
+    <header className="bg-slate-400/50 backdrop-blur-sm shadow-md fixed w-full">
+      <div className="flex justify-between items-center max-w-6xl mx-auto p-2">
         <Link to="/">
           <h1 className="font-bold text-sm sm:text-lg flex flex-wrap">
-            <span className="text-blue-300">Mern</span>
+            <span className="text-slate-700">Mern</span>
             <span className="text-slate-900">Estate</span>
           </h1>
         </Link>
         
-        <form onSubmit={handleSubmit} noValidate className="bg-slate-100 p-3 rounded-lg flex items-center">
+        <form onSubmit={handleSubmit} noValidate className="bg-slate-100 p-2 rounded-lg flex items-center">
           <input
             type="text"
             placeholder="Search..."
-            className="bg-transparent focus:outline-none w-24 sm:w-64"
+            className="bg-transparent text-xs bg-slate-100 focus:outline-none w-28 sm:w-60"
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
           />
@@ -48,7 +48,7 @@ export default function Header() {
           </button>
         </form>
 
-        <ul className="flex gap-4">
+        <ul className="flex gap-4 text-sm">
           <Link to="/">
             <li className="hidden sm:inline text-slate-700 hover:underline font-bold">
               Home
