@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { axiosInstance } from '../utils/axios-instance.js' 
+import axios from '../utils/axios.js' 
 
 export const useAxiosInterceptors = () => {
     const reqInterceptorRef = useRef(null)
@@ -9,7 +9,7 @@ export const useAxiosInterceptors = () => {
     const setupInterceptors = () => {
         console.log('settin up interceptors')
        
-        reqInterceptorRef.current = axiosInstance.interceptors.request.use(function (config) {
+        reqInterceptorRef.current = axios.interceptors.request.use(function (config) {
 
             console.log('interceptor req config: ', config)
             return config;
@@ -20,7 +20,7 @@ export const useAxiosInterceptors = () => {
         });
     
 
-        resInterceptorRef.current = axiosInstance.interceptors.response.use(function (response) {
+        resInterceptorRef.current = axios.interceptors.response.use(function (response) {
 
             console.log('interceptor res success: ', response)
 
@@ -36,10 +36,10 @@ export const useAxiosInterceptors = () => {
                     console.log('verify refresh token')
 
                     try {
-                            const res = await axiosInstance.post('/api/auth/refresh-token')
+                            const res = await axios.post('/api/auth/refresh-token')
                             console.log('rft res: ', res)
                             console.log('call pending request here')
-                            return axiosInstance(error.config)
+                            return axios(error.config)
                         } catch (error) {
                             console.log('refresh token error: ', error)
                         }
@@ -61,8 +61,8 @@ export const useAxiosInterceptors = () => {
     const ejectInterceptors = () => {
         console.log('ejecting intercetors')
         setRefreshTokenExpired(false)
-        axiosInstance.interceptors.request.eject(reqInterceptorRef.current);
-        axiosInstance.interceptors.response.eject(resInterceptorRef.current);
+        axios.interceptors.request.eject(reqInterceptorRef.current);
+        axios.interceptors.response.eject(resInterceptorRef.current);
     }
 
     return [isRefreshTokenExpired, setupInterceptors, ejectInterceptors]

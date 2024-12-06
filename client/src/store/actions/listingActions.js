@@ -1,5 +1,5 @@
 import { createAsyncThunk, createAction } from "@reduxjs/toolkit";
-import { axiosInstance } from "../../utils/axios-instance";
+import axios from "../../utils/axios";
 
 export const createListing = createAsyncThunk('listing/create', async ({ listing, mode }, { rejectWithValue }) => {
     const url = mode === 'create' ? '/api/listing/create' : '/api/listing/update/' + listing.id
@@ -10,7 +10,7 @@ export const createListing = createAsyncThunk('listing/create', async ({ listing
     }
 
     try {
-        const response = await axiosInstance(url, {
+        const response = await axios(url, {
             method: method,
             data: listing
         })
@@ -22,14 +22,14 @@ export const createListing = createAsyncThunk('listing/create', async ({ listing
 
 export const fetchListings = createAsyncThunk('listings/fetch', async userId => {
     console.log('userID: ', userId)
-    const response = await axiosInstance.get('/api/user/listings/' + userId)
+    const response = await axios.get('/api/user/listings/' + userId)
     console.log('response.data: ', response.data)
     return response.data
 })
 
 export const deleteListing = createAsyncThunk('listing/delete', async (listingId, { rejectWithValue }) => {
     try {
-        const response = await axiosInstance.delete('/api/listing/delete/' + listingId)
+        const response = await axios.delete('/api/listing/delete/' + listingId)
         return response.data
     } catch (error) {
         throw rejectWithValue(error)
@@ -37,12 +37,12 @@ export const deleteListing = createAsyncThunk('listing/delete', async (listingId
 })
 
 export const getListing = createAsyncThunk('listing/get', async listingId => {
-    const response = await axiosInstance.get('/api/listing/fetch/' + listingId)
+    const response = await axios.get('/api/listing/fetch/' + listingId)
     return response.data
 })
 
 export const searchListings = createAsyncThunk('listings/search', async searchQuery => {
-    const response = await axiosInstance.get('/api/listing/search?' + searchQuery)
+    const response = await axios.get('/api/listing/search?' + searchQuery)
     return response.data
 })
 
