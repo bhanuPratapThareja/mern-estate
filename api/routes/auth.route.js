@@ -7,7 +7,7 @@ import { verifyUserToken } from '../middlewares/verifyUser.js'
 
 const router = express.Router()
  
-router.post('/signup/:admin', verifyUserToken, [
+router.post('/signup', [
     check('username')
         .trim()
         .notEmpty().withMessage('User Name cannot be empty')
@@ -24,14 +24,14 @@ router.post('/signup/:admin', verifyUserToken, [
 
 // router.post('/signup', checkSchema(singupValidationSchema) ,signup)
 // router.post('/signin' ,[
-//     // body('email')
-//     //     .trim()
-//     //     .notEmpty().withMessage('Email cannot be empty')
-//     //     .normalizeEmail()
-//     //     .isEmail().withMessage('Invalid email Id'),
-//     // body('password')
-//     //     .trim()
-//     //     .notEmpty().withMessage('Password cannot be empty')
+//     body('email')
+//         .trim()
+//         .notEmpty().withMessage('Email cannot be empty')
+//         .normalizeEmail()
+//         .isEmail().withMessage('Invalid email Id'),
+//     body('password')
+//         .trim()
+//         .notEmpty().withMessage('Password cannot be empty')
 // ], signin)
 
 router.post('/signin', checkSchema(signinValidationchema), signin)

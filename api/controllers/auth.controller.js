@@ -51,9 +51,6 @@ export const signup = async (req, res, next) => {
 };
 
 export const signin = async (req, res, next) => {
-
-  console.log('process.env.NODE_ENV:: ', process.env.NODE_ENV)
-
   const errors = validationResult(req);
 
   if(!errors.isEmpty()) {
@@ -70,12 +67,12 @@ export const signin = async (req, res, next) => {
       return next(new HttpError('Could not find a user with the provided email Id.', 404))
     }
 
-    const passwordsMatch = bcryptjs.compareSync(
+    const validPassword = bcryptjs.compareSync(
       password,
       existingUser.password
     );
     
-    if (!passwordsMatch) {
+    if (!validPassword) {
       return next(new HttpError('Incorrect password', 401))
     }  
 
@@ -84,11 +81,10 @@ export const signin = async (req, res, next) => {
     const { password: pass, ...userInfo } = existingUser.toObject({ getters: true })
 
     res
-      .cookie("access_token1", access_token, { httpOnly: true })
-      .cookie("access_token2", access_token, { httpOnly: true })
+      .cookie("access_token", access_token)
       .cookie("refresh_token", refresh_token)
       .status(200)
-      .json({ user: userInfo, enviornment: process.env.NODE_ENV });
+      .json({ status: 200, user: userInfo });
   } catch (error) {
     return next(error);
   }
@@ -99,11 +95,13 @@ export const google = async (req, res, next) => {
     const existingUser = await User.findOne({ email: req.body.email })
     
     if(existingUser) {
-      const token = jwt.sign({ id: existingUser._id }, process.env.JWT_ACCESS_TOKEN_SECRET);
+      const access_token = issueAccessToken(existingUser)
+      const refresh_token = issueRefreshToken(existingUser)
       const { password: pass, ...userInfo } = existingUser.toObject({ getters: true })
 
       res
-        .cookie("access_token", token)
+        .cookie("access_token", access_token)
+        .cookie("refresh_token", refresh_token)
         .status(200)
         .json({ user: userInfo });
     } else {
@@ -120,11 +118,13 @@ export const google = async (req, res, next) => {
 
       try {
         await newUser.save()      
-        const token = issueAccessToken(newUser)
+        const access_token = issueAccessToken(existingUser)
+        const refresh_token = issueRefreshToken(existingUser)
         const { password: pass, ...userInfo } = newUser.toObject({ getters: true })
 
         res
-          .cookie("access_token", token)
+          .cookie("access_token", access_token)
+          .cookie("refresh_token", refresh_token)
           .status(200)
           .json({ user: userInfo });
       } catch (error) {

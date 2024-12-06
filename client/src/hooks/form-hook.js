@@ -5,7 +5,7 @@ import { validateInput, validateForm, resetForm } from "../utils/form-validation
 
 const reducer = (state, action) => {
     const { name, value, resetState } = action.payload
-    const newState = JSON.parse(JSON.stringify(state))
+    const newState = {...state}
     const newInput = newState.inputs[name]
 
     switch(action.type) {

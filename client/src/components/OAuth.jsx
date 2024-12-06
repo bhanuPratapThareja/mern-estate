@@ -7,7 +7,7 @@ import { axiosInstance } from "../utils/axios-instance";
 import Button from '../shared/Button'
 import { userSliceActions } from '../store'
 
-export default function OAuth() {
+export default function OAuth({ loading }) {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const handleGoogleClick = async () => {
@@ -22,7 +22,7 @@ export default function OAuth() {
             dispatch(userSliceActions.addSignedInUser(res.data))
             navigate('/')
         } catch (error) {
-            console.log('Could not sigh in with google ', error)
+            console.log('Could not sign in with google ', error)
         }
     }
 
@@ -32,6 +32,7 @@ export default function OAuth() {
       text="Continue With Google"
       className="bg-red-700" 
       onClick={handleGoogleClick}
+      disabled={loading}
     />
   );
 }

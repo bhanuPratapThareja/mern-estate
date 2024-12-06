@@ -7,7 +7,7 @@ import { SIGN_UP, DELETE, SIGN_IN, SUCCESS } from '../../utils/types'
 const userSlice = createSlice({
     name: 'user',
     initialState: {
-        signedUpUser: null,
+        signedUpUser: { email: '' },
         currentUser: null,
         error: null,
         loading: false,
@@ -16,6 +16,7 @@ const userSlice = createSlice({
     reducers: {
         addSignedInUser(state, action) {
             state.currentUser = action.payload.user
+            state.signedUpUser.email = action.payload.user.email
             state.error = null
         },
         removeUserState(state) {
@@ -41,6 +42,7 @@ const userSlice = createSlice({
                 }
             })
             .addCase(authUser.rejected, (state, action) => {
+                console.log('action: ', action)
                 state.loading = false
                 state.error = action.error
             })

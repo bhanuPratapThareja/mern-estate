@@ -65,24 +65,19 @@ export default function Auth() {
           const signUpFormState = INITIAL_FORM_STATE
           signUpFormState.inputs.username = userName
           formResetHandler(signUpFormState)
-          // for(let key in signUpFormState.inputs) {
-          //   formUpdateHandler({ [key]: signUpFormState.inputs[key].value })
-          // }
+          // formUpdateHandler({ email: '' })
         }
 
         if(mode === SIGN_IN) {
           const signInFormState = INITIAL_FORM_STATE
           delete signInFormState.inputs.username
           formResetHandler(signInFormState)
-          // for(let key in signInFormState.inputs) {
-          //   if(key === 'password') continue;
-          //   formUpdateHandler({ [key]: signInFormState.inputs[key].value })
-          // }
-        }
-        
-        if(mode === SIGN_IN && signedUpUser) {
           formUpdateHandler({ email: signedUpUser.email })
         }
+        
+        // if(mode === SIGN_IN && signedUpUser) {
+        //   formUpdateHandler({ email: signedUpUser.email })
+        // }
 
       }, [mode])
 
@@ -146,6 +141,7 @@ export default function Auth() {
                         id={username?.name}
                         name={username?.name}
                         value={username?.value || ''}
+                        disabled={loading}
                         onChange={changeHandler}
                         onBlur={blurHandler}
                       />
@@ -158,6 +154,7 @@ export default function Auth() {
                       id={email.name}
                       name={email.name}
                       value={email.value}
+                      disabled={loading}
                       onChange={changeHandler}
                       onBlur={blurHandler}
                     />
@@ -171,14 +168,14 @@ export default function Auth() {
                       name={password.name}
                       value={password.value}
                       minLength={password.minLength}
+                      disabled={loading}
                       onChange={changeHandler}
                       onBlur={blurHandler}
                     />
                     {password.error && <FormError message={password.error} /> }
                     
-                    <Button type="submit" text={loading ? 'Please Wait' : mode === SIGN_IN ? 'Sign In' : 'Sign Up'} className="bg-slate-700" />
-                    <OAuth />
-
+                    <Button type="submit" disabled={loading} text={loading ? 'Please Wait' : mode === SIGN_IN ? 'Sign In' : 'Sign Up'} className="bg-slate-700" />
+                    <OAuth loading={loading} />
 
                     <div className="flex gap-2 ml-1 text-xs">
                       <p>{mode === SIGN_IN ? 'Dont have an account?' : 'Already have an account?'}</p>
