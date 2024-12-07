@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect , useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 
@@ -8,8 +8,8 @@ import FormError from '../shared/FormError';
 
 import { authUser } from '../store';
 import { useForm } from '../hooks/form-hook';
-import { ERROR, SIGN_IN, SIGN_UP, SUCCESS, VALIDATORS } from '../utils/types';
-import { toastSliceActions } from '../store';
+import { SIGN_IN, SIGN_UP, VALIDATORS } from '../utils/types';
+import Toast from '../shared/Toast';
 
 const INITIAL_FORM_STATE = {
     inputs: {
@@ -55,6 +55,7 @@ const userName = {
 export default function Auth() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const toastRef = useRef()
     const [mode, setMode] = useState(SIGN_IN)
 
     const { loading, error, signedUpUser } = useSelector(state => state.user)
@@ -109,20 +110,20 @@ export default function Auth() {
             navigate('/')
           } else {
             setMode(SIGN_IN)
-            dispatch(toastSliceActions.showToast({ type: SUCCESS, header: res.status, body: res.message }))
+            toastRef.current.success({ header: res.status, body: res.message })
           }
       
         })
         .catch(err => {
           console.log('catch: ', err)
-          dispatch(toastSliceActions.showToast({ type: ERROR, header: err.response.data.status, body: err.response.data.message }))
+          toastRef.current.error({ header: err.response.data.status, body: err.response.data.message })
         })
     }
     const { username, email, password } = formState.inputs
 
     return (
       <div className='flex justify-center'>
-
+        <Toast ref={toastRef} />
         <div className="flex flex-col justify-center bg-white/50 backdrop-blur-sm rounded-lg p-8 gap-4 min-h-[60%] absolute
                         w-[90%] translate-y-[30%]
                         sm:w-[50%]

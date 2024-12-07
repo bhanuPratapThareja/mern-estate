@@ -31,3 +31,26 @@ body {
     display: flex;
     justify-content: center !important;
 }
+
+
+
+.toast-custom-success {
+    background-color: #26A69A !important; 
+}
+
+.toast-custom-error {
+    background-color: #EF5350 !important;
+}
+
+.toast-custom-success,
+.toast-custom-error {
+    top: 40px !important;
+    color: white !important;
+    font-size: .8rem;
+    font-weight: 800;
+    padding-left: 1.2rem !important;
+}
+
+.Toastify__toast-icon svg path {
+    fill: white !important;
+}
