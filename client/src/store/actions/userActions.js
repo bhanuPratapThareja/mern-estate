@@ -1,12 +1,9 @@
+import axios from "axios";
 import { createAsyncThunk, createAction } from "@reduxjs/toolkit";
 
-import axios from "axios";
 import { invalidateTokenCookie } from "../../utils/cookies";
 
-import { pauseFn } from '../../utils/pause'
-
 export const authUser = createAsyncThunk('user/auth', async ({ user, mode }, { rejectWithValue }) => {
-    await pauseFn(3000)
     try {
         const response = await axios.post(`/api/auth/${mode}`, user)
         return response.data

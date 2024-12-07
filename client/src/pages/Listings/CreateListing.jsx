@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Button from '../../shared/Button'
@@ -25,16 +25,19 @@ const INITIAL_FORM = {
 export default function CreateListing() {
     const dispatch = useDispatch()
     const location = useLocation()
+    const params = useParams()
     const [files, setFiles] = useState([])
     const [formData, setFormData] = useState(INITIAL_FORM)
     const [imageUploadError, setImageUploadError] = useState('')
     const [uploading, setUploading] = useState(false)
     const [mode, setMode] = useState('create')
 
-    const [,,uploadImage] = useImageUpload()
+    const [,,,uploadImage] = useImageUpload()
     const { creating, error } = useSelector(state => state.listings)
 
     useEffect(() => {
+        // console.log(location)
+        // console.log(params)
         if(location.state) {
             setMode('edit')
             setFormData({ ...location.state.listing })
@@ -49,6 +52,7 @@ export default function CreateListing() {
             for(let i = 0; i < files.length; i++) {
                 promises.push(uploadImage(files[i]))
             }
+            console.log('promises: ', promises)
             Promise.all(promises)
                 .then(urls => {
                     setFormData({ ...formData, imageUrls: [...formData.imageUrls, ...urls] })
@@ -110,7 +114,7 @@ export default function CreateListing() {
             <h1 className='text-3xl font-semibold text-center my-7'>{mode === 'edit' ? 'Edit' : 'Create'} listing</h1>
             <form className='flex flex-col sm:flex-row gap-8' onSubmit={handleSubmit} noValidate>
                 
-                <div className='flex flex-col gap-4 flex-1'>
+                <div className='flex flex-col gap-4 flex-2'>
                     <input type="text" placeholder='Name' name='name' id='name' value={formData.name} onChange={handleChange} maxLength={62} minLength={10} required className='border p-3 rounded-lg' />
                     <textarea type="text" placeholder='Description' name='description' id='description' value={formData.description} onChange={handleChange} required className='border p-3 rounded-lg' />
                     <input type="text" placeholder='Address' name='address' id='address' value={formData.address} onChange={handleChange} required className='border p-3 rounded-lg' />
@@ -169,13 +173,13 @@ export default function CreateListing() {
 
                 </div>
 
-                <div className='flex flex-col flex-1 gap-4'>
+                <div className='flex flex-col gap-4 flex-1'>
                     <p className='font-semibold'>Images:
                         <span className='font-normal text-gray-600 ml-2'>The first image will be the cover (max 6)</span>
                     </p>
                     <div className='flex gap-4'>
                         <input type="file" onChange={e => setFiles(e.target.files)} id='images' accept='image/*' multiple className='border-2 p-3 border-grey-300 rounded w-full' />
-                        <button  onClick={handleImageSubmit} type='button' className='p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80'>
+                        <button disabled={formData.imageUrls.length === 6} onClick={handleImageSubmit} type='button' className='p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80'>
                             {uploading ? 'Uploading...' : 'Upload'}
                         </button>
                     </div>
@@ -187,16 +191,14 @@ export default function CreateListing() {
                             <button type='button' onClick={() => onRemoveImage(i)} className='p-3 text-red-700 rounded-lg uppercase hover:opacity-75'>Delete</button>
                         </div>
                     ))}
-{/* 
-                    <button type='submit' className='p-3 bg-slate-700 rounded-lg text-white uppercase disabled:opacity-70 hover:opacity-95'>
-                        {mode === 'edit' ? 'Edit Listing' : creating ? 'Creating...' : 'Create Listing'}
-                    </button> */}
+
                     <Button 
                         type="submit" 
-                        text={mode === 'edit' ? 'Edit Listing' : (mode === 'edit' && creating) ? 'Editing...' :  (mode === 'create' && creating) ? 'Creating...' :  'Create Listing'} 
                         className="bg-slate-700"
-                    />
-                    {/* {error && <p className='text-red-700 text-sm font-semibold'>{error.message}</p>} */}
+                    >
+                        {mode === 'edit' ? 'Edit Listing' : (mode === 'edit' && creating) ? 'Editing...' :  (mode === 'create' && creating) ? 'Creating...' :  'Create Listing'} 
+                    </Button>
+                    
                 </div>
             </form>
         </main>

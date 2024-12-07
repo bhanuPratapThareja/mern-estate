@@ -1,4 +1,4 @@
-export default function Button({ type, text, disabled, className, ...rest }) {
+export default function Button({ type, disabled, className, children, ...rest }) {
 
   const classes = 'capitalize text-white text-sm flex justify-center rounded-lg p-2 uppercase hover:opacity-95 disabled:opacity-75 min-w-[100px]'
 
@@ -9,7 +9,7 @@ export default function Button({ type, text, disabled, className, ...rest }) {
       className={`${classes} ${className}`}
       {...rest}
     >
-      {text}
+      {children}
     </button>
   )
 }

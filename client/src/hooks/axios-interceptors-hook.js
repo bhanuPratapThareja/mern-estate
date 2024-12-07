@@ -7,7 +7,7 @@ export const useAxiosInterceptors = () => {
     const [isRefreshTokenExpired, setRefreshTokenExpired] = useState(false)
 
     const setupInterceptors = () => {
-        console.log('settin up interceptors')
+        // console.log('settin up interceptors')
        
         reqInterceptorRef.current = axios.interceptors.request.use(function (config) {
 
@@ -59,7 +59,7 @@ export const useAxiosInterceptors = () => {
     }
 
     const ejectInterceptors = () => {
-        console.log('ejecting intercetors')
+        // console.log('ejecting intercetors')
         setRefreshTokenExpired(false)
         axios.interceptors.request.eject(reqInterceptorRef.current);
         axios.interceptors.response.eject(resInterceptorRef.current);

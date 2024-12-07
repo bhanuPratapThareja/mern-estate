@@ -7,6 +7,7 @@ import { FaBath, FaBed, FaChair, FaMapMarkerAlt, FaParking } from "react-icons/f
 
 import { getListing } from "../../store/actions/listingActions";
 import Contact from "../../components/Contact";
+import Button from "../../shared/Button";
 
 export default function ListingPage() {
   const params = useParams();
@@ -14,7 +15,7 @@ export default function ListingPage() {
   const [contact, setContact] = useState(false)
 
   const { listing, loading, error, currentUser} = useSelector(state => {
-    const { listings: { selectedListing, loading, error }, user: { currentUser} } = state
+    const { listings: { selectedListing, loading, error }, user: { currentUser } } = state
     return { listing: selectedListing, loading, error, currentUser }
   })
 
@@ -37,7 +38,7 @@ export default function ListingPage() {
       {listing && (
         <div className="flex flex-col items-center">
           
-          <div className="w-full">
+          <div className="w-full -mt-12">
             <SwipePhotos images={listing.imageUrls} />
           </div>
 
@@ -88,10 +89,10 @@ export default function ListingPage() {
                 </li>
             </ul>
           
-            {currentUser && listing.userRef !== currentUser.id && !contact &&
-              <button onClick={() => setContact(true)} className="bg-[#242D36] text-white w-full p-3 rounded-md uppercase hover:opacity-95">
+            {currentUser && listing.userRef === currentUser.id && !contact &&
+              <Button onClick={() => setContact(true)} className="bg-[#242D36]">
                 Contact Landlord
-              </button>
+              </Button>
             }
             {contact && <Contact listing={listing} />}
           </div>

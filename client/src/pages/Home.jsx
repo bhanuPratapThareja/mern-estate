@@ -35,7 +35,7 @@ export default function Home() {
   }
 
   return (
-    <div>
+    <main>
       {/* top */}
 
       <div className="flex flex-col gap-6 px-3 max-w-6xl mx-auto">
@@ -104,6 +104,6 @@ export default function Home() {
           </div>
         )}
       </div>
-    </div>
+    </main>
   )
 }

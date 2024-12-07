@@ -1,6 +1,6 @@
 export default function About() {
   return (
-    <div className='px-4 max-w-6xl mx-auto text-justify'>
+    <main className='px-4 max-w-6xl mx-auto text-justify'>
       <h1 className='text-3xl font-bold mb-4 text-slate-800'>About Mern Estate</h1>
       <p className='mb-4 text-slate-700 '>
         Mern Estate is a leading is a leading real estate agency that
@@ -21,6 +21,6 @@ export default function About() {
         experience, and we are dedicated to making that a reality for each and every
         one of our clients.
       </p>
-    </div>
+    </main>
   )
 }

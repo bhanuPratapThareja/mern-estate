@@ -6,7 +6,6 @@ import Listing from "../Listings/Listing"
 import { deleteListing, fetchListings, toastSliceActions, modalSliceActions } from '../../store'
 import { SUCCESS, ERROR } from "../../utils/types"
 
-let count = 0;
 export default function ProfileListings() {
     const { currentUser  } = useSelector(state => state.user)
     const { listings, fetchError } = useSelector(state => state.listings)
@@ -15,20 +14,12 @@ export default function ProfileListings() {
     const navigate = useNavigate()
     const [activeListing, setActiveListing] = useState(null)
 
-    useEffect(() => {
-    //    setTimeout(() => {
-    //         dispatch(fetchListings(currentUser.id))
-    //    }, 0);
-       dispatch(fetchListings(currentUser.id))
-    }, [])
-
     const handleFetchListings = () => {
         dispatch(fetchListings(currentUser.id))
     }
 
     const deleteListingHandler = listing => {
         setActiveListing(listing)
-        count = 0;
         dispatch(modalSliceActions.showModal({
             header: `Delete Listing ${listing.name}`,
             body: "Are you sure you want to delete this listing?"
@@ -36,11 +27,6 @@ export default function ProfileListings() {
     }
 
     const onDeleteListing = () => {
-        console.log('activeListing: ', activeListing)
-        if(count) {
-            return
-        }
-        count++;
         dispatch(deleteListing(activeListing.id))
             .unwrap()
             .then((res) => {
@@ -57,7 +43,6 @@ export default function ProfileListings() {
     if(confirm && activeListing) {
         setTimeout(onDeleteListing, 500);
     }
-
 
     const editListingHandler = listing => {
         navigate(`/edit-listing/${listing.id}`, { state: { listing } })

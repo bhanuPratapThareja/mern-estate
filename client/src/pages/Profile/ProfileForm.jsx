@@ -70,6 +70,7 @@ export default function ProfileForm() {
     const { currentUser, updating, error } = useSelector(state => state.user)
    
     const [imageUploadProgress, imagerUploadError, resetImageUploadProgress, uploadImage] = useImageUpload()
+
     const {
       formState, changeHandler, blurHandler, formValidateHandler, formUpdateHandler, formResetHandler
      } = useForm(INITIAL_PROFILE_STATE)
@@ -195,8 +196,12 @@ export default function ProfileForm() {
         />
           {password.error && <FormError message={password.error} /> }
 
-        <Button type="submit" disabled={!username.value && !email.value && !password.value && !avatar.value && !previewUrl} text={updating ? 'Updating': 'Update'} className="bg-slate-700" />
-        <Button type="button" text="Create Listing" className="bg-green-700" onClick={() => navigate('/create-listing')} />
+        <Button type="submit" disabled={!username.value && !email.value && !password.value && !avatar.value && !previewUrl} className="bg-slate-700">
+          {updating ? 'Updating': 'Update'}
+        </Button>
+        <Button type="button" className="bg-green-700" onClick={() => navigate('/create-listing')}>
+          Create Listing
+        </Button>
 
 
         {/* {error && <Alert type="error" message={error.message} />} */}

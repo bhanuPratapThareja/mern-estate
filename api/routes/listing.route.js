@@ -68,14 +68,14 @@ router.post("/create", verifyUserToken, checkSchema(listingValidationSchema),
 router.put("/update/:listingId", verifyUserToken,
     [
         check("name")
-        .notEmpty()
-        .withMessage("Add name for the listing"),
+          .notEmpty()
+          .withMessage("Add name for the listing"),
         check("description")
-        .notEmpty()
-        .withMessage("Add description for the listing"),
+          .notEmpty()
+          .withMessage("Add description for the listing"),
         check("address")
-        .notEmpty()
-        .withMessage("Add address for the listing"),
+          .notEmpty()
+          .withMessage("Add address for the listing"),
     ],
     updateListing
 );

@@ -10,6 +10,8 @@ export default function Contact({ listing }) {
 
     const { data: landlord, loading, error } = useSelector(state => state.contact)
 
+    console.log('landlord: ', landlord)
+
     useEffect(() => {
         fetchOwnerContact()
     }, [])
@@ -22,8 +24,12 @@ export default function Contact({ listing }) {
         setMessage(e.target.value)
     }
 
+    if(!landlord) {
+        return null
+    }
+
     return (
-        <div className='flex flex-col gap-2'>
+        <div className='flex flex-col gap-2 mt-4'>
             <p>Contact <span className='font-semibold'>{landlord.username}</span>{' '}
                 for <span className='font-semibold lowercase'>{listing.name}</span>
             </p>

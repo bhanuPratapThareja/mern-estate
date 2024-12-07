@@ -72,8 +72,7 @@ export const updateListing = async (req, res, next) => {
 
     try {
         const updatedListing = await Listing.findByIdAndUpdate(req.params.listingId, req.body, { new: true })
-        const normalizedListing = updatedListing.toObject({ getters: true })
-        res.status(200).json({ status: 200, message: 'Listing updated successfully!', listing: normalizedListing })
+        res.status(200).json({ status: 200, message: 'Listing updated successfully!', listing: updatedListing.toObject({ getters: true }) })
     } catch (error) {
         console.log('error: ', error)
         next(error)

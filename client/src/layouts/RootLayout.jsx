@@ -21,7 +21,7 @@ export default function RootLayout() {
   }, [])
 
   useEffect(() => {
-    console.log('isRefreshTokenExpired: ', isRefreshTokenExpired)
+    // console.log('isRefreshTokenExpired: ', isRefreshTokenExpired)
     if(isRefreshTokenExpired) {
       dispatch(signout())
     }

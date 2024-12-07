@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from 'react-dom'
 import { useSelector, useDispatch } from 'react-redux'
+import { MdOutlineCancel } from "react-icons/md";
 
 import Backdrop from "./Backdrop";
 import Button from "./Button";
@@ -34,7 +35,15 @@ export default function NewModal() {
         setApplyTransition(false)
         setShowModal(false)
         setTimeout(() => {
-            dispatch(onCancel())
+            dispatch(modalSliceActions.hideModal())
+        }, 300);
+    }
+
+    const onCancelled = () => {
+        dispatch(onCancel())
+        setApplyTransition(false)
+        setShowModal(false)
+        setTimeout(() => {
             dispatch(modalSliceActions.hideModal())
         }, 300);
     }
@@ -46,8 +55,9 @@ export default function NewModal() {
                 ${!applyTransition ? '-translate-y-[105%] opacity-0' : '-translate-y-[100%] opacity-100' }`}>
                 <div className="flex flex-col h-full justify-between">   
                     <div className="flex flex-col h-full p-2">
-                        <div className="m-2">
+                        <div className="m-2 flex justify-between">
                             <h3 className='text-2xl font-semibold truncate max-w-xl'>{header}</h3>
+                            <MdOutlineCancel onClick={closeModal} className="text-red-500 cursor-pointer font-bold" />
                         </div>
                         <hr className='mx-2' />
                         <div className="flex-grow p-2 overflow-scroll">
@@ -55,7 +65,7 @@ export default function NewModal() {
                         </div>
                         <hr className='mx-2' />
                         <div className="flex justify-end items-center gap-4 mx-2 mt-2">
-                            <Button type="button" onClick={closeModal} text="cancel" className="border-2 border-purple-500 !text-purple-700 h-10 flex items-center rounded-3xl shadow-sm" />
+                            <Button type="button" onClick={onCancelled} text="cancel" className="border-2 border-purple-500 !text-purple-700 h-10 flex items-center rounded-3xl shadow-sm" />
                             <Button type="button" onClick={onOk} text="ok" className="bg-purple-600 h-10 flex items-center rounded-3xl shadow-sm" />
                         </div>
                     </div>
