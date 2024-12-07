@@ -29,10 +29,11 @@ export default function OAuth({ loading }) {
   return (
     <Button
       type="button" 
-      text="Continue With Google"
       className="bg-red-700" 
       onClick={handleGoogleClick}
       disabled={loading}
-    />
+    >
+      Continue With Google
+    </Button>
   );
 }

@@ -36,15 +36,7 @@ export default function NewModal() {
         setShowModal(false)
         setTimeout(() => {
             dispatch(modalSliceActions.hideModal())
-        }, 300);
-    }
-
-    const onCancelled = () => {
-        dispatch(onCancel())
-        setApplyTransition(false)
-        setShowModal(false)
-        setTimeout(() => {
-            dispatch(modalSliceActions.hideModal())
+            dispatch(onCancel())
         }, 300);
     }
 
@@ -56,8 +48,8 @@ export default function NewModal() {
                 <div className="flex flex-col h-full justify-between">   
                     <div className="flex flex-col h-full p-2">
                         <div className="m-2 flex justify-between">
-                            <h3 className='text-2xl font-semibold truncate max-w-xl'>{header}</h3>
-                            <MdOutlineCancel onClick={closeModal} className="text-red-500 cursor-pointer font-bold" />
+                            <h3 className='text-2xl font-semibold truncate max-w-xl text-wrap'>{header}</h3>
+                            <MdOutlineCancel onClick={closeModal} className="text-red-500 text-2xl cursor-pointer font-bold" />
                         </div>
                         <hr className='mx-2' />
                         <div className="flex-grow p-2 overflow-scroll">
@@ -65,8 +57,12 @@ export default function NewModal() {
                         </div>
                         <hr className='mx-2' />
                         <div className="flex justify-end items-center gap-4 mx-2 mt-2">
-                            <Button type="button" onClick={onCancelled} text="cancel" className="border-2 border-purple-500 !text-purple-700 h-10 flex items-center rounded-3xl shadow-sm" />
-                            <Button type="button" onClick={onOk} text="ok" className="bg-purple-600 h-10 flex items-center rounded-3xl shadow-sm" />
+                            <Button type="button" onClick={closeModal} className="border-2 border-purple-500 !text-purple-700 h-10 flex items-center rounded-3xl shadow-sm">
+                                cancel
+                            </Button>
+                            <Button type="button" onClick={onOk} className="bg-purple-600 h-10 flex items-center rounded-3xl shadow-sm">
+                                ok
+                            </Button>
                         </div>
                     </div>
                 </div>

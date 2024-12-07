@@ -175,7 +175,9 @@ export default function Auth() {
                 />
                 {password.error && <FormError message={password.error} /> }
                 
-                <Button type="submit" disabled={loading} text={loading ? 'Please Wait' : mode === SIGN_IN ? 'Sign In' : 'Sign Up'} className="bg-slate-700" />
+                <Button type="submit" disabled={loading} className="bg-slate-700">
+                  {loading ? 'Please Wait' : mode === SIGN_IN ? 'Sign In' : 'Sign Up'} 
+                </Button>
                 <OAuth loading={loading} />
 
                 <div className="flex gap-2 ml-1 text-xs">

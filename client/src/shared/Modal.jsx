@@ -46,8 +46,12 @@ const Modal = forwardRef((props, ref) => {
                         </div>
                         <hr className='mx-2' />
                         <div className="flex justify-end items-center gap-4 mx-2 mt-2">
-                            <Button type="button" onClick={onCancel} text="cancel" className="border-2 border-purple-500 !text-purple-700 h-10 flex items-center rounded-3xl shadow-sm" />
-                            <Button type="button" onClick={onOk} text="ok" className="bg-purple-600 h-10 flex items-center rounded-3xl shadow-sm" />
+                            <Button type="button" onClick={onCancel} className="border-2 border-purple-500 !text-purple-700 h-10 flex items-center rounded-3xl shadow-sm">
+                                Cancel
+                            </Button>
+                            <Button type="button" onClick={onOk} className="bg-purple-600 text-white h-10 flex items-center rounded-3xl shadow-sm">
+                                Ok
+                            </Button>
                         </div>
                     </div>
                 </div>
