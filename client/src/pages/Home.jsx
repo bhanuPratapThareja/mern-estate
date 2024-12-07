@@ -49,16 +49,8 @@ export default function Home() {
         </div>
         <Link to='/search' className='text-xs sm:text-sm text-blue-800 font-bold hover:underline'>Let's get started</Link>
       </div>
-      
-      {/* swiper */}
 
-      {/* {offerListings.length >0 && offerListings.map(listing => {
-        if(listing.imageUrls.length > 1) {
-          return <SwipePhotos images={listing.imageUrls} />
-        }
-      })} */}
 
-      {/* listing results */}
       <div className="max-w-6xl mx-auto p-3 my-4 flex flex-col gap-8">
        
         {offerListings && offerListings.length > 0 && (

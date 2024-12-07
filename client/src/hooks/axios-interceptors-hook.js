@@ -11,23 +11,23 @@ export const useAxiosInterceptors = () => {
        
         reqInterceptorRef.current = axios.interceptors.request.use(function (config) {
 
-            console.log('interceptor req config: ', config)
+            // console.log('interceptor req config: ', config)
             return config;
         }, function (error) {
 
-            console.log('interceptor req error: ', error)
+            // console.log('interceptor req error: ', error)
             return Promise.reject(error);
         });
     
 
         resInterceptorRef.current = axios.interceptors.response.use(function (response) {
 
-            console.log('interceptor res success: ', response)
+            // console.log('interceptor res success: ', response)
 
             return response;
         }, async function (error) {
 
-            console.log('interceptor res error: ', error)
+            // console.log('interceptor res error: ', error)
             if(error.response.data.status === 400 && 
                 (error.response.data.message === 'ACCESS_TOKEN_EXPIRED' || 
                     error.response.data.message === 'NO_ACCESS_TOKEN')) 
@@ -37,11 +37,11 @@ export const useAxiosInterceptors = () => {
 
                     try {
                             const res = await axios.post('/api/auth/refresh-token')
-                            console.log('rft res: ', res)
-                            console.log('call pending request here')
+                            // console.log('rft res: ', res)
+                            // console.log('call pending request here')
                             return axios(error.config)
                         } catch (error) {
-                            console.log('refresh token error: ', error)
+                            // console.log('refresh token error: ', error)
                         }
 
             }
@@ -50,8 +50,8 @@ export const useAxiosInterceptors = () => {
                     error.response.data.message === 'NO_REFESH_TOKEN')) 
             {
                 
-                    console.log(2)
-                    console.log('set refresh token expired and log out')
+                    // console.log(2)
+                    // console.log('set refresh token expired and log out')
                     setRefreshTokenExpired(true)
             }
             return Promise.reject(error);

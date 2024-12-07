@@ -5,10 +5,10 @@ import RootLayout from '../layouts/RootLayout'
 import PrivateRoutes from '../routes/PrivateRoutes'
 
 import Home from '../pages/Home'
-import PageNotFound from '../pages/PageNotFound'
+import About from '../pages/About'
+import Auth from '../pages/Auth'
 
-const Auth = lazy(() => import('../pages/Auth'))
-const About = lazy(() => import('../pages/About'))
+const PageNotFound = lazy(() => import('../pages/PageNotFound'))
 const Profile = lazy(() => import('../pages/Profile/Profile'))
 const CreateListing = lazy(() => import('../pages/Listings/CreateListing'))
 const ListingPage = lazy(() => import('../pages/Listings/ListingPage'))

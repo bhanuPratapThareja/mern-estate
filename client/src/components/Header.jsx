@@ -48,7 +48,7 @@ export default function Header() {
           </button>
         </form>
 
-        <ul className="flex gap-4 text-sm">
+        <ul className="flex gap-4 text-sm items-center">
           <Link to="/">
             <li className="hidden sm:inline text-slate-700 hover:underline font-bold">
               Home

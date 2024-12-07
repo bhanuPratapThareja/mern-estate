@@ -10,17 +10,20 @@ export default function ListingCard({ listing, index }) {
                 alt={`listing ${index+1} cover`}
                 className="h-[320px] sm:h-[200px] w-full object-cover hover:scale-105 transition-scale duration-300"
              />
-             <div className="p-3 flex flex-col gap-2">
+             <div className="p-3 flex flex-col gap-2 h-full ">
+               
                 <p className="text-lg font-semibold text-slate-700 truncate">{listing.name}</p>
                 <div className="flex items-center gap-1">
-                    <MdLocationOn className="h-4 w-4 text-green-700" style={{ fontSize: '4rem'}} />
-                    <p className="text-sm text-grey-600">{listing.address}</p>
+                    <MdLocationOn className="h-4 w-4 text-green-700"/>
+                    <p className="text-sm text-grey-600 w-full">{listing.address}</p>
                 </div>
                 <p className="text-sm text-gray-600 line-clamp-2 min-h-10">{listing.description}</p>
+
+
                 <p className="text-slate-500 mt-2 font-semibold">
-                    ${listing.offer ? 
-                    listing.discountPrice.toLocaleString('en-US') : 
-                    listing.regularPrice.toLocaleString('en-US')}
+                    {listing.offer ? 
+                    listing.discountPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }) : 
+                    listing.regularPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 })}
                     {listing.type === 'rent' && ' / month'}
                 </p>
                 <div className="font-bold text-xs text-slate-700 flex gap-4">

@@ -45,10 +45,9 @@ export default function ListingPage() {
           <div className="p-2 my-7 flex flex-col gap-4 max-w-4xl mx-auto">
             <div className="">
                 <p className="text-2xl text-slate-700 font-semibold">{listing.name} - 
-                $
                 {listing.offer && listing.discountPrice
-                    ? listing.discountPrice.toLocaleString("en-US")
-                    : listing.regularPrice.toLocaleString("en-US")}
+                    ? listing.discountPrice.toLocaleString("en-US", { style: 'currency', currency: 'USD', minimumFractionDigits: 0 })
+                    : listing.regularPrice.toLocaleString("en-US", { style: 'currency', currency: 'USD', minimumFractionDigits: 0 })}
                 {listing.type === "rent" && " / month"}
                 </p>
             </div>

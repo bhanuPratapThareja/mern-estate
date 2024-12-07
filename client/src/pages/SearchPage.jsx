@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 
+import Button from '../shared/Button'
 import ListingCard from "./Listings/ListingCard"
 import { searchListings } from "../store"
 import { listingSliceActions } from "../store"
@@ -30,6 +31,7 @@ export default function SearchPage() {
 
     const handleChangeQuery = () => {
         const urlParams = new URLSearchParams(location.search)
+
         const searchesFromUrl = {}
         for(let key in formData) {
             if(key === 'errors') continue;
@@ -39,6 +41,7 @@ export default function SearchPage() {
             } 
             searchesFromUrl[key] = value
         }
+
         setFormData({ 
             ...formData, 
             searchTerm: searchesFromUrl.searchTerm || '',
@@ -68,7 +71,7 @@ export default function SearchPage() {
             setFormData({ ...formData, sort, order })
             return
         }
-        if(fieldType === 'radio' && name === 'type') {
+        if(fieldType === 'radio') {
             setFormData({ ...formData, [name]: id })
             return
         }
@@ -77,7 +80,7 @@ export default function SearchPage() {
 
     const handleSearch = e => {
         e.preventDefault()
-        const urlParams = new URLSearchParams()
+        const urlParams = new URLSearchParams(location.search)
         
         for(let key in formData) {
             if(key === 'errors') {
@@ -85,7 +88,7 @@ export default function SearchPage() {
             }
             urlParams.set(key, formData[key])
         }
-
+        
         const searchQuery = urlParams.toString()
         navigate(`/search?${searchQuery}`)
     }
@@ -95,7 +98,7 @@ export default function SearchPage() {
         const startIndex = numberOfListings
         const urlParams = new URLSearchParams(location.search)
         urlParams.set('startIndex', startIndex)
-        const searchQuery= urlParams.toString()
+        const searchQuery = urlParams.toString()
         dispatch(searchListings(searchQuery))
     }
 
@@ -151,14 +154,14 @@ export default function SearchPage() {
                     </div>
                     <div className="flex flex-wrap gap-2 items-center">
                         <label htmlFor="sort">Sort:</label>
-                        <select name="sort" id="sort" className='border rounded-lg p-3' value={`${formData.sort}_${formData.order}`} onChange={handleChange}>
-                            <option value="regularPrice_desc">High to low</option>
-                            <option value="regularPrice_asc">Low to high</option>
+                        <select name="sort" id="sort" className='outline-none border rounded-lg p-3 border-r-8 border-r-[#FFFFFF]' value={`${formData.sort}_${formData.order}`} onChange={handleChange}>
+                            <option value="regularPrice_desc">Price high to low</option>
+                            <option value="regularPrice_asc">Price low to high</option>
                             <option value="createdAt_desc">Latest</option>
                             <option value="createdAt_asc">Oldest</option>
                         </select>
                     </div>
-                    <button type="submit" className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95'>Search</button>
+                    <Button type="submit" className="bg-slate-700">Search</Button>
                 </form>
 
             </div>

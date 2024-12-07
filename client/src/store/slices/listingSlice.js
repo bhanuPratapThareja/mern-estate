@@ -51,12 +51,10 @@ const listingSlice = createSlice({
         state.fetchError = null;
       })
       .addCase(fetchListings.fulfilled, (state, action) => {
-        console.log('show listingsLL action2: ', action)
         state.loading = false;
         state.listings = action.payload
       })
       .addCase(fetchListings.rejected, (state, action) => {
-        console.log(action.error);
         state.loading = false;
         state.fetchError = action.error;
       })
